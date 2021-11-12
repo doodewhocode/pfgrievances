@@ -1,17 +1,18 @@
 import React, {useEffect} from 'react'
+import pexels from '../../assets/pexels-fauxels-3184418.jpg'
 
 function AboutUs(){
 return(
 
-    <div class="section-gap" style="margin-left: 1.5rem;">
+    <div class="section-gap" style={{marginLeft: '1.5rem'}}>
        
         <div class="about-us" id="services" class="section">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 text-center mt-5">
-                        <div class="title" style="padding: 0 150px;">We're putting
+                        <div class="title" style={{padding: '0 150px'}}>We're putting
                             imagination to work</div>
-                        <div class="description text-center mt-3" style="padding: 0 150px;">Comply HR incorporated in
+                        <div class="description text-center mt-3" style={{padding: '0 150px'}}>Comply HR incorporated in
                             2021.
                             ComplyHR is one stop shop, data
                             driven E compliance cloud based
@@ -27,7 +28,7 @@ return(
                     </div>
                     <div class="col-12 ">
                         <div class="about-img mt-5">
-                            <img src="./assets/pexels-fauxels-3184418.jpg"/>
+                            <img src={pexels}/>
                         </div>
                     </div>
                     <div class="col-md-12 mt-5">

@@ -1,45 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+import React from 'react'
+import Header  from '../header/header'
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>PF Grievnace</title>
-    <meta name="description" content="pf,grievnace">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="./assets/font-icon/style.css" rel="stylesheet">
-    <link href="styles/bootstrap.min.css" rel="stylesheet">
-    <link href="styles/slick.css" rel="stylesheet">
-    <link href="styles/slick-theme.css" rel="stylesheet">
-    <link href="styles/style.css" rel="stylesheet">
-</head>
-
-<body>
-    <!-- Header-Nav -->
-    <div class="navbar navbar-expand-md bg-inverse fixed-top scroll">
-        <div class="container">
-            <a class="navbar-brand p-0" href="#">
-                <img src="./assets/logo.png" alt="Comply-HR Logo">
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav w-100 justify-content-end">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link  p-0" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link p-0" href="./aboutus.html">About Us</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link p-0" href="./contact.html">Contact Us</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link p-0" href="#login">Login</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <section class="pf-signup pt-5" id="particles-js">
+function EmployeeSignUp(props){
+    return (
+        <>
+            <Header />  
+            <section class="pf-signup pt-5" id="particles-js">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 m-auto">
@@ -48,56 +14,56 @@
                         <div class="input-group mb-3 flex-nowrap">
                             <div class="form-group w-100">
                                 <label>Name As in Adhaar<span class="mandatory">*</span></label>
-                                <input type="text" class="form-control" placeholder="Enter Name">
+                                <input type="text" class="form-control" placeholder="Enter Name"/>
                             </div>
                             <div class="form-group w-100 ml-3">
                                 <label>Date of Birth As per Adhaar<span class="mandatory">*</span></label>
-                                <input type="date" class="form-control" placeholder="Enter Date of Birth">
+                                <input type="date" class="form-control" placeholder="Enter Date of Birth"/>
                             </div>
                         </div>
                         <div class="input-group mb-3 flex-nowrap">
                             <div class="form-group w-100">
                                 <label>UAN Number</label>
-                                <input type="text" class="form-control" placeholder="Enter UAN Number">
+                                <input type="text" class="form-control" placeholder="Enter UAN Number"/>
                             </div>
                             <div class="form-group w-100 ml-3">
                                 <label>PF Account Number<span class="mandatory">*</span></label>
-                                <input type="text" class="form-control" placeholder="Enter PF Account Number">
+                                <input type="text" class="form-control" placeholder="Enter PF Account Number"/>
                             </div>
                         </div>
                         <div class="form-group w-100">
                             <label>Employer / Company Name </label>
-                            <input type="text" class="form-control" placeholder="Enter Employer / Company Name">
+                            <input type="text" class="form-control" placeholder="Enter Employer / Company Name"/>
                         </div>
                         <div class="input-group mb-3 flex-nowrap">
                             <div class="form-group w-100">
                                 <label>Registered Email ID </label>
-                                <input type="email" class="form-control" placeholder="Enter Registered Email ID">
+                                <input type="email" class="form-control" placeholder="Enter Registered Email ID"/>
                             </div>
                             <div class="form-group w-100 ml-3">
                                 <label>Phone Number</label>
-                                <input type="text" class="form-control" placeholder="Enter Phone Number">
+                                <input type="text" class="form-control" placeholder="Enter Phone Number"/>
                             </div>
                         </div>
                         <div class="input-group flex-nowrap ">
                             <div class="form-group w-100">
                                 <label>Upload Pan Card<span class="mandatory">*</span> </label>
-                                <input class="w-100" type="file" name="file">
+                                <input class="w-100" type="file" name="file"/>
                             </div>
                             <div class="form-group w-100 ml-3">
                                 <label>Upload Aadhar card<span class="mandatory">*</span> </label>
-                                <input class="w-100" type="file" name="file">
+                                <input class="w-100" type="file" name="file"/>
                             </div>
                         </div>
                         <div class="pb-3">HR Contact Details</div>
                         <div class="input-group mb-3 flex-nowrap">
                             <div class="form-group w-100">
                                 <label>Mobile Number </label>
-                                <input type="email" class="form-control" placeholder="Enter Mobile Number">
+                                <input type="email" class="form-control" placeholder="Enter Mobile Number"/>
                             </div>
                             <div class="form-group w-100 ml-3">
                                 <label>Email ID </label>
-                                <input type="text" class="form-control" placeholder="Enter Email ID">
+                                <input type="text" class="form-control" placeholder="Enter Email ID"/>
                             </div>
                         </div>
                         <div class="d-flex  align-items-center justify-content-end pb-2">
@@ -110,10 +76,8 @@
             </div>
         </div>
     </section>
-    <script type="text/javascript" src="./scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="./scripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="./scripts/particles.js"></script>
-    <script type="text/javascript" src="./scripts/main.js"></script>
-</body>
+        </>
+    )
+}
 
-</html>
+export default EmployeeSignUp

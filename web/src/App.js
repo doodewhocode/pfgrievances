@@ -1,38 +1,45 @@
-import React, {useEffect} from 'react'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { registerNav } from './modules/Navigation'
 import { insertToken } from './redux/action/tokenAction'
 import Header from './pages/header/header'
 import Footer from './pages/footer/footer'
+import { PrivateRoute } from './modules/Auth/authentication';
 import Dashboard from './pages/dashboard/dashboard'
 import Contact from './pages/contact/contact'
 import AboutUs from './pages/aboutus/aboutus'
 import Login from './pages/login'
+import EmployeeSignUp from './pages/signup/employeeSignup'
+import EmployerSignUp from './pages/signup/employerSignup'
 
 import './App.css';
 
 function App(props) {
-  useEffect(() =>{
-	  
-  },[])
+  useEffect(() => {
+
+  }, [])
   return (
-	<div>
-		<Header />
-        <Router ref={registerNav}>
-          <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/aboutus" component={AboutUs} />
-            <Route path="/contact" component={Contact} />          
-            {props.token && [
-              <Route key="dashboard" path="/dashboard" component={Dashboard} />             
-            ]}                     
-            <Redirect to='/login' />
-          </Switch>
-        </Router>        
+    <div>
+          
+        <Switch>
+          <Route path="/app" component={Dashboard} />
+          <Route path="/login" component={Login} />
+          <Route path="/aboutus" component={AboutUs} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/employee" component={EmployeeSignUp}/>
+          <Route path="/employer" component={EmployerSignUp}/>
+          <Route exact path="/">
+            <Redirect exact from="/app" to="app" />
+          </Route>
+          <Route path="*">
+            <Redirect from="/app" to="app" />
+          </Route>
+          <Redirect exact from='/' to='/login' />
+        </Switch>      
     </div>
-    );
-  }
+  );
+}
 
 const mapStoreToProps = state => ({
   token: state.token.user_token
@@ -40,4 +47,4 @@ const mapStoreToProps = state => ({
 const mapDispatchToProps = {
   insertToken
 }
-export default connect(mapStoreToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStoreToProps, mapDispatchToProps)(App));

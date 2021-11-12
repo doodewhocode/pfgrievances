@@ -1,11 +1,13 @@
 import React, {useEffect} from 'react'
+import logo from '../../assets/logo.png'
+
 function footer(){
 	return (
     <footer class="pf-footer pt-4">
         <div class="container">
             <div class="d-flex align-self-center justify-content-between">
                 <a target="blanck" href="#">
-                    <img src="./assets/logo.png" alt="Company-Logo"/>
+                    <img src={logo} alt="Company-Logo"/>
                 </a>
                 <ul class="social-list d-flex align-self-center">
                     <li>

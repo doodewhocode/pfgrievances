@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react'
+import banner from '../../assets/banner-img2.png'
 function Contact(){
 return(
-    <div class="section-gap" style="margin-left: 1.5rem;">
+    <div class="section-gap" style={{marginLeft: '1.5rem'}}>
         
         <div class="contact-us">
             <div class="container">
@@ -17,7 +18,7 @@ return(
                     </div>
                     <div class="col-md-6 mt-5">
                         <div class="contact-img">
-                            <img src="./assets/banner-img2.png"/>
+                            <img src={banner}/>
                         </div>
                     </div>
                 </div>

@@ -1,19 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
-@import "./navbar.scss";
-@import "./sidenav.scss";
-@import "./banner.scss";
-@import "./details.scss";
-@import "./login.scss";
-@import "./footer.scss";
-@import "./dashboard.scss";
-@import "./query.scss";
-@import "./signup.scss";
-@import "./profile.scss";
-@import "./grievance.scss";
-@import "./aboutus.scss";
-@import "./contact.scss";
-@import "./online.scss";
-@import "./offline.scss";
+@import "./pages/header/navbar.scss";
+@import "./pages/header/sidenav.scss";
+@import "./pages/banner.scss";
+@import "./pages/details.scss";
+@import "./pages/login/login.scss";
+@import "./pages/footer/footer.scss";
+@import "./pages/dashboard/dashboard.scss";
+@import "./pages/query.scss";
+@import "./pages/signup/signup.scss";
+@import "./pages/profile/profile.scss";
+@import "./pages/grievance.scss";
+@import "./pages/aboutus/aboutus.scss";
+@import "./pages/contact/contact.scss";
+@import "./pages/form//online.scss";
+
 
 body,
 html {

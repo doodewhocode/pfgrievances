@@ -1,14 +1,87 @@
 import React, {useEffect} from 'react'
+import businessPeople from  '../../assets/business-people-png-13458.png';
+import Footer from '../footer/footer'
+import Header from '../header/header'
+import ofc from '../../assets/261-2614319_office-team-business-people-white-background.png'
+import business from '../../assets/business-png-9395.png'
+import PngItem from '../../assets/PngItem_1542519.png'
+import { history } from '../../modules/helpers'
 
-function Login(){
+function Login(props){
+    function signUp(type){
+        if(type === 'employee'){
+            history.push('/employee')
+        }else{
+            history.push('/employer')
+        }
+    }
     return (
 	<>
+    <Header />  
+    <header class="pf-banner" id="home">
+                <div class="pf-background"></div>
+                <div class="pf-carousel">
+                    <div class="carousel-slide">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 col-xs-12">
+                                    <div class="banner-content">
+                                        <h2 class="title">Comply HR is a one stop shop for all your PF Grievances.</h2>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-xs-12 p-0">
+                                    <div class="banner-img" style={{ width: "650px" }}>
+                                        <img src={ofc}
+                                            alt="Banner-Image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 col-xs-12">
+                                    <div class="banner-content">
+                                        <h2 class="title pb-5" style={{ paddingBottom: "50px" }}>PF Query process made simple
+                                            with our solution</h2>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-xs-12 pt-5">
+                                    <div class="banner-img m-auto">
+                                        <img src={business} alt="Banner-Image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 col-xs-12">
+                                    <div class="banner-content">
+                                        <h2 class="title" style={{ paddingBottom: "50px" }}>Get your PF Grievances solved with
+                                            our Expert Team </h2>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-xs-12 p-0">
+                                    <div class="banner-img m-auto" style={{ width: "400px" }}>
+                                        <img src={PngItem} alt="Banner-Image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
    <section class="pf-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-md-12 p-0">
                     <div>
-                        <img src="./assets/business-people-png-13458.png" alt="Description-Image"/>
+                        <img src={businessPeople} alt="Description-Image"/>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 pl-5 align-self-center">
@@ -58,7 +131,7 @@ function Login(){
                             </div>
                             <div class="d-flex  align-items-center justify-content-between pb-2">
                                 <button type="button" class="btn btn-common ml-2"><a
-                                        href="./employee_signup.html">Register</a></button>
+                                        onClick={()=>signUp('employee')}>Register</a></button>
                                 <div class="d-flex  align-items-center">
                                     <button type="button" class="btn btn-secondary">Cancel</button>
                                     <button type="button" class="btn btn-common ml-2"><a
@@ -99,7 +172,7 @@ function Login(){
                             </div>
                             <div class="d-flex  align-items-center justify-content-between pb-2">
                                 <button type="button" class="btn btn-common ml-2"><a
-                                        href="./employer_signup.html">Register</a></button>
+                                        onClick={()=>signUp('employer')}>Register</a></button>
                                 <div class="d-flex  align-items-center">
                                     <button type="button" class="btn btn-secondary">Cancel</button>
                                     <button type="button" class="btn btn-common ml-2"><a
@@ -112,6 +185,7 @@ function Login(){
             </div>
         </div>
     </section>
+    <Footer/>
 </>	
 	)
 }
