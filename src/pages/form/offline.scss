@@ -1,0 +1,33 @@
+.offline-cardwrapper {
+    padding: 20px;
+
+    .offline-card {
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 0.625rem;
+        padding: 1.25rem;
+        min-height: 15.625rem;
+        max-height: 15.625rem;
+
+        i {
+            font-size: 40px;
+            color: red;
+        }
+
+        .offline-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .offline-desp {
+            font-size: 0.75rem;
+        }
+
+        .click {
+            font-size: 0.625rem;
+            text-decoration: underline;
+            color: #3eadcf;
+
+        }
+    }
+}
