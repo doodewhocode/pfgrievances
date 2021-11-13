@@ -12,6 +12,8 @@ import AboutUs from './pages/aboutus/aboutus'
 import Login from './pages/login'
 import EmployeeSignUp from './pages/signup/employeeSignup'
 import EmployerSignUp from './pages/signup/employerSignup'
+import Reset from './pages/forgotpassword/reset'
+import ForgotPassword from './pages/forgotpassword'
 
 import './App.css';
 
@@ -29,6 +31,8 @@ function App(props) {
           <Route path="/contact" component={Contact} />
           <Route path="/employee" component={EmployeeSignUp}/>
           <Route path="/employer" component={EmployerSignUp}/>
+          <Route path='/reset/:token' component={Reset} />
+          <Route path="/forgotpassword" component={ForgotPassword} />
           <Route exact path="/">
             <Redirect exact from="/app" to="app" />
           </Route>

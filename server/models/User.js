@@ -15,10 +15,11 @@ const userSchema = new mongoose.Schema({
   defaultPayment:String,
   firstName:String,
   lastName:String,
+  dob:Date,
   employerName:String,
   uanNo:String,
   pfNo:String,
-  phNo:String,
+  phNo:{ type: String, index: true },
   panNo:String,
   panImg:{
     data: Buffer,
@@ -36,7 +37,10 @@ esicRegNo:String,
 pfOfficeAddr:String,
 esicOfficeAddr:String,
 employerAddr:String,
-employerCity:String
+employerCity:String,
+resetPasswordToken: { type: String },
+resetPasswordExpires: { type: String },
+otp: {type: Number}
 })
 
 userSchema.plugin(passportLocalMongoose, {
