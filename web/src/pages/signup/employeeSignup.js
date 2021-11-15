@@ -79,20 +79,25 @@ function EmployeeSignUp(props) {
     function onSubmit() {
         const formData = new FormData();
         console.log(panImg)
-        formData.set("panImg", panImg, panImg.name);
-        formData.set("aadharImg", aadharImg, aadharImg.name);
+        formData.set("panImg", panImg);
+        formData.set("aadharImg", aadharImg);
         let isValid = isValidForm(form)
         if (isValid) {
-            for (let key in form) {
-                console.log(key + ',' + form[key])
-                if (key !== 'image') {
-                    formData.set(key, form[key])
-                }
-            }
+            const json = JSON.stringify(form);
+            const blob = new Blob([json], {
+                type: 'application/json'
+            });
+            formData.append('json', blob)
+            // for (let key in form) {
+            //     console.log(key + ',' + form[key])
+            //     if (key !== 'image') {
+            //         formData.set(key, form[key])
+            //     }
+            // }
         }
         props.registerEmployee(formData)
     }
-   
+
 
     return (
         <>
@@ -106,17 +111,17 @@ function EmployeeSignUp(props) {
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Name As in Adhaar<span class="mandatory">*</span></label>
-                                        <input id={'firstName'} type="text" class="form-control" placeholder="Enter Name"  onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'firstName'} type="text" class="form-control" placeholder="Enter Name" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Date of Birth As per Adhaar<span class="mandatory">*</span></label>
-                                        <input id={'dob'} type="date" class="form-control" placeholder="Enter Date of Birth" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'dob'} type="date" class="form-control" placeholder="Enter Date of Birth" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>UAN Number</label>
-                                        <input id ={'uanNo'} type="text" class="form-control" placeholder="Enter UAN Number" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'uanNo'} type="text" class="form-control" placeholder="Enter UAN Number" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>PF Account Number<span class="mandatory">*</span></label>
@@ -128,22 +133,22 @@ function EmployeeSignUp(props) {
                                             }} />
                                     </div>
                                 </div>
-    
+
                                 <div class="form-group w-100">
                                     <label>Employer / Company Name </label>
-                                    <input id={'employerName'} type="text" class="form-control" placeholder="Enter Employer / Company Name" onChange={(e)=>onChangeHandler(e)}/>
+                                    <input id={'employerName'} type="text" class="form-control" placeholder="Enter Employer / Company Name" onChange={(e) => onChangeHandler(e)} />
                                 </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Registered Email ID </label>
-                                        <input id={'emailId'} type="email" class="form-control" placeholder="Enter Registered Email ID" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'emailId'} type="email" class="form-control" placeholder="Enter Registered Email ID" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Phone Number</label>
-                                        <input id={'phNo'} type="text" class="form-control" placeholder="Enter Phone Number" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'phNo'} type="text" class="form-control" placeholder="Enter Phone Number" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
-    
+
                                 <div class="input-group flex-nowrap ">
                                     <div class="form-group w-100">
                                         <label>Upload Pan Card<span class="mandatory">*</span> </label>
@@ -158,22 +163,22 @@ function EmployeeSignUp(props) {
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Mobile Number </label>
-                                        <input id={'hrEmailId'} type="email" class="form-control" placeholder="Enter Mobile Number" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'hrEmailId'} type="email" class="form-control" placeholder="Enter Mobile Number" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Email ID </label>
-                                        <input id={'hrMobileNo'} type="text" class="form-control" placeholder="Enter Email ID" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'hrMobileNo'} type="text" class="form-control" placeholder="Enter Email ID" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
 
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Password </label>
-                                        <input id={'password'} type="email" class="form-control" placeholder="Enter Mobile Number" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'password'} type="email" class="form-control" placeholder="Enter Mobile Number" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Confirm Password </label>
-                                        <input id={'confirmPassword'} type="text" class="form-control" placeholder="Enter Email ID" onChange={(e)=>onChangeHandler(e)}/>
+                                        <input id={'confirmPassword'} type="text" class="form-control" placeholder="Enter Email ID" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
                                 <div class="d-flex  align-items-center justify-content-end pb-2">

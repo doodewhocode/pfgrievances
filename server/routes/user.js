@@ -1,34 +1,82 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken')
-const User = require('../middleware/User');
+const User = require('../models/User')
 const TypedError = require('../middleware/ErrorHandler')
 const Image = require('../middleware/Image')
 var multer = require('multer');
 var fs = require('fs')
 const crypto = require('crypto');
+var FileReader = require('filereader')
+const path = require("path");
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const conn = require('../models/init')
+const mongodb = require('mongodb')
 
-const storage = multer.diskStorage({
-  destination: "public/data/",
-  filename: function(req, file, cb){
-    crypto.randomBytes(20, (err, buf) => {
-      cb(null, buf.toString("hex") + path.extname(file.originalname))
-    })
+const storage = new GridFsStorage({
+  url: process.env.MONGO_URI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+      });
+    });
   }
 });
-var upload = multer({ storage: storage });
+
+const upload = multer({ storage });
 
 //POST /signin
 router.post('/employee_register', upload.fields([{ name: 'panImg', maxCount: 1 }, {
   name: 'aadharImg', maxCount: 1
-}]), function (req, res, next) {
-  console.log("hehe", req.file);
+}, { name: 'json', maxCount: 1 }]), async function (req, res, next) {
+  console.log("hehe", req.files);
   // var img = fs.readFileSync(req.file.path);
   // var encode_img = img.toString('base64');
   // var final_img = {
   //   contentType: req.file.mimetype,
   //   image: new Buffer(encode_img, 'base64')
   // };
+  gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
+  console.log(gfs)
+  console.log("hehe", req.files['json'][0].id)
+  var writeStream, readStream, buffer = "";
+  await gfs.files.findOne({ _id: mongodb.ObjectId(req.files['json'][0].id) }, (err, file) => {
+    // Check if file
+    if (!file || file.length === 0) {
+      console.log("not found")
+      return res.status(404).json({ err: 'No file exists' });
+    }
+    console.log("file", file)
+  })
+  // writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
+  // fs.createReadStream().pipe(writeStream);
+  // writeStream.on("close", function(){
+  //   readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
+  //   readStream.on("data", function(chunk){
+  //     buffer+=chunk;
+  //   })
+  //   readStream.on("end", function(){
+  //     console.log("contents", buffer);
+  //   })
+  // })
+  //  gfs.files.findOne({ _id: req.files['json'][0].id }, (err, file) => {
+  //   //check if files
+  //   if (!file || file.legth === 0) {
+  //     //return res.status(404).json({ err: 'No file exists' })
+  //     }
+  //     console.log("file",file)
+
+  // })
   let obj = req.body
   //const { fullname, email, password, verifyPassword } = req.body
   req.checkBody('firstName', 'fullname is required').notEmpty();
@@ -53,11 +101,13 @@ router.post('/employee_register', upload.fields([{ name: 'panImg', maxCount: 1 }
     })
     return next(err)
   }
+  console.log("check", obj)
   obj['encryptedStore'] = obj['password']
   delete obj['password']
   delete obj['confirmPassword']
   var newUser = new User(obj);
-  User.getUserByEmail(email, function (error, user) {
+  //console.log(newUser)
+  User.getUserByEmail(obj.emailId, function (error, user) {
     if (error) return next(err)
     if (user) {
       let err = new TypedError('signin error', 409, 'invalid_field', {
@@ -65,13 +115,50 @@ router.post('/employee_register', upload.fields([{ name: 'panImg', maxCount: 1 }
       })
       return next(err)
     }
+    console.log("hehe", user)
     User.createUser(newUser, function (err, user) {
+      console.log(user)
       if (err) return next(err);
       res.json({ message: 'user created' })
     });
   })
 
 });
+
+router.get('/files', (req, res) => {
+  gfs.files.find().toArray((err, files) => {
+    //check if files
+    if (!files || files.legth === 0) {
+      return res.status(404).json({
+        err: 'No files exists'
+      })
+    }
+    return res.json(files);
+  })
+})
+
+
+router.get('/file/:filename', (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    //check if files
+    if (!file || file.legth === 0) {
+      return res.status(404).json({
+        err: 'No file exists'
+      })
+    }
+    return res.json(files);
+  })
+})
+
+router.get('/delete/:filename', (req, res) => {
+  gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, res) => {
+    //check if file is deleted
+    if (err) {
+      return res.status(404).json({ err: err })
+    }
+    return res.status(200).json(res)
+  })
+})
 
 //POST /login
 router.post('/login', function (req, res, next) {

@@ -1,25 +1,52 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const mongoose = require('mongoose');
 var fileUpload = require('express-fileupload');
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const authMiddleware = require('./middleware/auth')
+var expressValidator  = require('express-validator');//req.checkbody()
+
+const methodOverride = require('method-override');
 
 const config = require('./config')
+//let conn = mongoose.createConnection(process.env.MONGO_URI)
+
+
 
 const server = express()
 server.set("view engine", "ejs");
+server.use(methodOverride('_method'));
 // Middleware
 server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.use(cors({ credentials: true }))
 server.use(authMiddleware.initialize)
-server.use(fileUpload({
-  useTempFiles:true
-}))
 
+// Express validator
+server.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+    var namespace = param.split('.'),
+    root          = namespace.shift(),
+    formParam     = root;
+    
+    while(namespace.lenght) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
+// let gfs;
+// conn.once('open',()=>{
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection('uploads');
+// })
 
 // Routes
 server.use([require('./routes/auth'), require('./routes/user')])

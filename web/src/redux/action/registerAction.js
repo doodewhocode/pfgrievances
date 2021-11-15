@@ -4,12 +4,13 @@ import axios from 'axios'
 export const registerEmployee = (payload) => {
     return dispatch => {
         dispatch({ type: 'EMPLOYEE_REG_LOADING', loading: true, error: false })
-
-        return axios({
-            method: "post",
-            url: "http://localhost:7000/employee_register",
-            data: payload            
-        }).then(res => {
+        // axios({
+        //     method: 'post',
+        //     url: 'http://localhost:7000/employee_register',
+        //     data: formData,
+        //     headers: { 'Content-Type': 'multipart/form-data' }
+        //   });
+        return axios.post("http://localhost:7000/employee_register",payload, {}).then(res => {
             return dispatch({ type: 'EMPLOYEE_REG', loading: false, data: res.data, error: false })
         }).catch(err => {
             dispatch({ type: 'EMPLOYEE_REG_ERROR', loading: false, data: err, error: true })
