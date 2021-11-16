@@ -6,7 +6,7 @@ class Auth {
     return this.user_token.token
   }
   getUserId() {
-    return this.user_token.user_id
+    return this.user_token.userId
   }
   setUserToken(new_token) {
     this.user_token = new_token

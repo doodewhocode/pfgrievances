@@ -33,7 +33,7 @@ export const Authentication ={
 export const PrivateRoute = ({ component: Component, ...rest }) => (
 	<Route
 	  {...rest}
-	  render={props => localStorage.getItem('user') // your auth mechanism goes here
+	  render={props => localStorage.getItem('auth') // your auth mechanism goes here
 		? <Component {...props} />
 		: <Redirect to={{ pathname: '/login' }} />}
 	/>

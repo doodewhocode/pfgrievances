@@ -4,7 +4,7 @@ import signin from './signinReducer'
 import RegisterReducer from './registerReducer'
 
 export default combineReducers({
-  RegisterReducer,
-  token,
-  signin 
+  registerReducer: RegisterReducer,
+  loginReducer: token,
+  signin
 })

@@ -95,7 +95,7 @@ function EmployeeSignUp(props) {
             //     }
             // }
         }
-        props.registerEmployee(formData)
+        props.registerEmployee(form)
     }
 
 
@@ -149,7 +149,7 @@ function EmployeeSignUp(props) {
                                     </div>
                                 </div>
 
-                                <div class="input-group flex-nowrap ">
+                                {/* <div class="input-group flex-nowrap ">
                                     <div class="form-group w-100">
                                         <label>Upload Pan Card<span class="mandatory">*</span> </label>
                                         <input id={'panImg'} class="w-100" type="file" name="file" id={'panImg'} onChange={(e) => onFileChange(e)} />
@@ -158,7 +158,7 @@ function EmployeeSignUp(props) {
                                         <label>Upload Aadhar card<span class="mandatory">*</span> </label>
                                         <input id={'aadharImg'} class="w-100" type="file" name="file" id={'aadharImg'} onChange={(e) => onFileChange(e)} />
                                     </div>
-                                </div>
+                                </div> */}
                                 <div class="pb-3">HR Contact Details</div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
@@ -174,11 +174,11 @@ function EmployeeSignUp(props) {
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Password </label>
-                                        <input id={'password'} type="email" class="form-control" placeholder="Enter Mobile Number" onChange={(e) => onChangeHandler(e)} />
+                                        <input id={'password'} type="password" class="form-control" placeholder="Password" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Confirm Password </label>
-                                        <input id={'confirmPassword'} type="text" class="form-control" placeholder="Enter Email ID" onChange={(e) => onChangeHandler(e)} />
+                                        <input id={'confirmPassword'} type="password" class="form-control" placeholder="Password" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
                                 <div class="d-flex  align-items-center justify-content-end pb-2">

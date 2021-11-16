@@ -6,9 +6,12 @@ import Profile from '../profile'
 import Timeline from '../timeline'
 import Form from '../form'
 import Summary from './home'
+import Auth from '../../modules/Auth'
 
 
 function Dashboard(props) {
+
+    
     return (
         <div class="app-wrapper">
             <div class="navbar navbar-expand-md bg-inverse fixed-top">
@@ -26,6 +29,42 @@ function Dashboard(props) {
                                 <i class="icon-logout icon-lg"></i>
                             </li>
                         </ul>
+                        <ul class="navbar-nav align-items-center ml-auto">
+                            <li class="nav-item dropdown no-caret mr-3 dropdown-notifications">
+                                <a class="btn btn-icon btn-transparent-dark dropdown-toggle"
+                                    id="navbarDropdownAlerts" href="javascript:void(0);" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bell fa-fw"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownAlerts"><h6 class="dropdown-header dropdown-notifications-header">
+                                    Alerts Center</h6><a class="dropdown-item dropdown-notifications-item" href="#!"><div class="dropdown-notifications-item-icon bg-warning"></div>
+                                        <div class="dropdown-notifications-item-content">
+                                            <div class="dropdown-notifications-item-content-details">December 29, 2019</div>
+                                            <div class="dropdown-notifications-item-content-text">This is an alert message. It's nothing serious, but it requires your attention.</div></div></a><a class="dropdown-item dropdown-notifications-item" href="#!"><div class="dropdown-notifications-item-icon bg-info"></div><div class="dropdown-notifications-item-content"><div class="dropdown-notifications-item-content-details">December 22, 2019</div><div class="dropdown-notifications-item-content-text">
+                                                A new monthly report is ready. Click here to view!</div></div>
+                                    </a><a class="dropdown-item dropdown-notifications-item" href="#!">
+                                        <div class="dropdown-notifications-item-icon bg-danger"></div>
+                                        <div class="dropdown-notifications-item-content">
+                                            <div class="dropdown-notifications-item-content-details">December 8, 2019</div>
+                                            <div class="dropdown-notifications-item-content-text">Critical system failure, systems shutting down.</div></div></a><a class="dropdown-item dropdown-notifications-item" href="#!">
+                                        <div class="dropdown-notifications-item-icon bg-success"></div>
+                                        <div class="dropdown-notifications-item-content">
+                                            <div class="dropdown-notifications-item-content-details">December 2, 2019</div>
+                                            <div class="dropdown-notifications-item-content-text">New user request. Woody has requested
+                                                access to the organization.</div></div></a><a class="dropdown-item dropdown-notifications-footer"
+                                                    href="#!">View All Alerts</a></div></li><li class="nav-item dropdown no-caret mr-3
+                           dropdown-notifications"><a class="btn btn-icon btn-transparent-dark dropdown-toggle"
+                                    id="navbarDropdownMessages" href="javascript:void(0);" role="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope fa-fw"></i></a>
+                            </li><li class="nav-item dropdown no-caret mr-3 dropdown-user show">
+                                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);"
+                                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <img class="img-fluid" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" /></a><div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up show" aria-labelledby="navbarDropdownUserImage"><h6 class="dropdown-header d-flex align-items-center">
+                                        <img class="dropdown-user-img" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" /><div class="dropdown-user-details"><div class="dropdown-user-details-name"></div><div class="dropdown-user-details-email">
+                                        </div></div></h6><div class="dropdown-divider"></div><a class="dropdown-item" href="/app/userprofile">
+                                        <div class="dropdown-item-icon">
+                                        </div>Account</a>
+                                    <a class="dropdown-item" onClick={()=>Auth.logout()}><div class="dropdown-item-icon">
+                                    </div>Logout</a></div></li></ul>
                     </div>
                 </div>
             </div>
@@ -116,23 +155,23 @@ function Dashboard(props) {
                     <div class="container-fluid">
                         <Switch>
                             <Route path="/app/home" component={Summary} />
-                            <Route path="/app/profile" component={Profile} /> 
-                            <Route path="/app/form" component={Form} />    
-                            <Route path="/app/timeline" component={Timeline}/>                        
+                            <Route path="/app/profile" component={Profile} />
+                            <Route path="/app/form" component={Form} />
+                            <Route path="/app/timeline" component={Timeline} />
                             <Redirect from="/" to="/app/home" />
                         </Switch>
                     </div>
                     <footer className="footer mt-auto footer-light">
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-md-6 small">Copyright © complyhr 2021</div>
-                            <div className="col-md-6 text-md-right small">
-                                <a href="#!">Privacy Policy</a>                                ·
-                                <a href="#!">Terms &amp; Conditions</a>
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-md-6 small">Copyright © complyhr 2021</div>
+                                <div className="col-md-6 text-md-right small">
+                                    <a href="#!">Privacy Policy</a>                                ·
+                                    <a href="#!">Terms &amp; Conditions</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </footer>
+                    </footer>
                 </div>
             </div>
         </div>

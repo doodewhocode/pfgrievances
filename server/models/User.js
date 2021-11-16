@@ -33,6 +33,7 @@ aadharImg:{
 hrMobileNo: Number,
 hrEmailId: String,
 setRegNo:String,
+pfRegNo:String,
 esicRegNo:String,
 pfOfficeAddr:String,
 esicOfficeAddr:String,
@@ -57,8 +58,8 @@ var  User = (module.exports = conn.mongoose.model('user_details', userSchema))
 
 module.exports.createUser = function(newUser, callback){
     bcrypt.genSalt(10, function (err, salt) {
-        bcrypt.hash(newUser.password, salt, function (err, hash) {
-            newUser.password = hash;
+        bcrypt.hash(newUser.encryptedStore, salt, function (err, hash) {
+            newUser.encryptedStore = hash;
             newUser.save(callback);
         });
     });

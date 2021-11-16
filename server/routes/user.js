@@ -34,19 +34,19 @@ const storage = new GridFsStorage({
 });
 
 const upload = multer({ storage });
-
+//upload.fields([{ name: 'panImg', maxCount: 1 }, {  name: 'aadharImg', maxCount: 1}, { name: 'json', maxCount: 1 }]), 
 //POST /signin
-router.post('/employee_register', upload.fields([{ name: 'panImg', maxCount: 1 }, {
-  name: 'aadharImg', maxCount: 1
-}, { name: 'json', maxCount: 1 }]), async function (req, res, next) {
-  console.log("hehe", req.files);
+router.post('/employee_register', 
+async function (req, res, next) {
+  //console.log("hehe", req.files);
   // var img = fs.readFileSync(req.file.path);
   // var encode_img = img.toString('base64');
   // var final_img = {
   //   contentType: req.file.mimetype,
   //   image: new Buffer(encode_img, 'base64')
   // };
-  gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
+
+  /*gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
   console.log(gfs)
   console.log("hehe", req.files['json'][0].id)
   var writeStream, readStream, buffer = "";
@@ -58,27 +58,19 @@ router.post('/employee_register', upload.fields([{ name: 'panImg', maxCount: 1 }
     }
     console.log("file", file)
   })
-  // writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
-  // fs.createReadStream().pipe(writeStream);
-  // writeStream.on("close", function(){
-  //   readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
-  //   readStream.on("data", function(chunk){
-  //     buffer+=chunk;
-  //   })
-  //   readStream.on("end", function(){
-  //     console.log("contents", buffer);
-  //   })
-  // })
-  //  gfs.files.findOne({ _id: req.files['json'][0].id }, (err, file) => {
-  //   //check if files
-  //   if (!file || file.legth === 0) {
-  //     //return res.status(404).json({ err: 'No file exists' })
-  //     }
-  //     console.log("file",file)
-
-  // })
-  let obj = req.body
-  //const { fullname, email, password, verifyPassword } = req.body
+  writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
+  fs.createReadStream().pipe(writeStream);
+  writeStream.on("close", function(){
+    readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
+    readStream.on("data", function(chunk){
+      buffer+=chunk;
+    })
+    readStream.on("end", function(){
+      console.log("contents", buffer);
+    })
+  })*/
+  
+  let obj = req.body  
   req.checkBody('firstName', 'fullname is required').notEmpty();
   req.checkBody('pfNo', 'pfNo is required').notEmpty();
   req.checkBody('emailId', 'Email is required').notEmpty();
@@ -173,7 +165,8 @@ router.post('/login', function (req, res, next) {
       let err = new TypedError('login error', 403, 'invalid_field', { message: "Incorrect email or password" })
       return next(err)
     }
-    User.comparePassword(password, user.password, function (err, isMatch) {
+    console.log("heheh", user)
+    User.comparePassword(password, user.encryptedStore, function (err, isMatch) {
       if (err) return next(err)
       if (isMatch) {
         let token = jwt.sign(
@@ -183,10 +176,11 @@ router.post('/login', function (req, res, next) {
         )
         res.status(201).json({
           user_token: {
-            user_id: user.id,
-            user_name: user.fullname,
-            email: user.email,
-            admin: (('admin' in user) ? user.admin : false),
+            userId: user._id,
+            firstName: user.firstName,
+            lastName:user.lastName,
+            email: user.emailId,
+            userType: user.userType,
             token: token,
             expire_in: '7d'
           }

@@ -7,9 +7,11 @@ import {
 } from '../action/tokenAction'
 
 const initialState = {
-  user_token: {},
-  token_loading: false,
-  error: {},
+  login: {
+    loading: true,
+    error: false,  
+    data: {}
+  },
   insert_token_error: false
 }
 
@@ -18,20 +20,30 @@ export default (state = initialState, action) => {
     case POST_TOKEN_BEGIN:
       return {
         ...state,
-        token_loading: true,
-        error: {}
+        login: {
+          loading: true,
+          error: false,  
+          data: {}
+        }
+        
       }
     case POST_TOKEN_SUCCESS:
       return {
         ...state,
-        user_token: action.payload.data.user_token,
-        token_loading: false
+        login: {
+          loading: false,
+          error: false,  
+          data: action.payload.data.user_token
+        }        
       }
     case POST_TOKEN_FAIL:
       return {
         ...state,
-        token_loading: false,
-        error: action.payload.error.response.data
+        login: {
+          loading: false,
+          error: true,  
+          data: action.payload.error.response.data
+        }        
       }
     case INSERT_TOKEN_SUCCESS:
       return {
