@@ -10,7 +10,7 @@ export const registerEmployee = (payload) => {
         //     data: formData,
         //     headers: { 'Content-Type': 'multipart/form-data' }
         //   });
-        return axios.post("http://localhost:7000/employee_register",payload, {}).then(res => {
+        return axios.post("https://complyhrapi.herokuapp.com/employee_register",payload, {}).then(res => {
             return dispatch({ type: 'EMPLOYEE_REG', loading: false, data: res.data, error: false })
         }).catch(err => {
             dispatch({ type: 'EMPLOYEE_REG_ERROR', loading: false, data: err, error: true })
@@ -22,7 +22,7 @@ export const registerEmployee = (payload) => {
 export const registerEmployer = (payload) => {
     return dispatch => {
         dispatch({ type: 'EMPLOYER_REG_LOADING', loading: true, error: false })
-        return axios.post("http://localhost:7000/employer_register",payload, {}).then(res => {
+        return axios.post("https://complyhrapi.herokuapp.com/employer_register",payload, {}).then(res => {
             return dispatch({ type: 'EMPLOYER_REG', loading: false, data: res.data, error: false })
         }).catch(err => {
             dispatch({ type: 'EMPLOYER_REG_ERROR', loading: false, data: err, error: true })

@@ -5,7 +5,7 @@ import qs from 'qs'
 import paypalConfig from '../../configs/paypalConfig'
 
 
-const URL = 'http://localhost:7000'
+const URL = 'https://complyhrapi.herokuapp.com'
 
 const serverCall = (config) => {
   //header authorization
