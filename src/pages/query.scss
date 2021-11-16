@@ -1,0 +1,50 @@
+hr {
+  margin: 10px 0;
+}
+
+
+@media only screen and (max-width: 991px) {
+  .navbar-hover {
+    .show {
+      >.dropdown-toggle {
+        &::after {
+          transform: rotate(-90deg);
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .navbar-hover {
+    ul {
+      li {
+        position: relative;
+
+        &:hover {
+          >ul {
+            display: block;
+          }
+        }
+      }
+
+      ul {
+        position: absolute !important;
+        top: 100%;
+        left: 0;
+        min-width: 100%;
+        display: none;
+
+        ul {
+          position: absolute;
+          top: 0;
+          left: 100%;
+          min-width: 500px;
+          display: none;
+          overflow-y: scroll;
+          height: 300px;
+        }
+      }
+    }
+  }
+}
