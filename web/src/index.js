@@ -6,8 +6,9 @@ import 'jquery/dist/jquery.slim'
 import 'popper.js'
 import 'bootstrap/dist/js/bootstrap.min'
 import './style.css';
+import './assets/css/sb-admin-2.min.css'
 import './index.css';
-import './style.scss';
+
 import App from './App';
 import { Router } from "react-router-dom";
 import {Provider} from 'react-redux'

@@ -1,6 +1,6 @@
 class Auth {
   constructor() {
-    this.user_token = JSON.parse(localStorage.getItem('auth'))||{}
+    this.user_token = (localStorage.getItem('auth') !== 'undefined') ? JSON.parse(localStorage.getItem('auth')) : {}
   }
   getToken() {
     return this.user_token.token

@@ -6,7 +6,7 @@ import { insertToken } from './redux/action/tokenAction'
 import Header from './pages/header/header'
 import Footer from './pages/footer/footer'
 import { PrivateRoute } from './modules/Auth/authentication';
-import Dashboard from './pages/dashboard/dashboard'
+import Dashboard from './pages/dashboard'
 import Contact from './pages/contact/contact'
 import AboutUs from './pages/aboutus/aboutus'
 import Login from './pages/login'

@@ -27,7 +27,7 @@ export const postToken = (email, password) => dispatch => {
 
 export const insertToken = () => dispatch => {
   let token
-  if (localStorage.getItem('auth')) {
+  if (localStorage.getItem('auth') !== 'undefined') {
     token = JSON.parse(localStorage.getItem('auth'))
     dispatch({
       type: INSERT_TOKEN_SUCCESS,

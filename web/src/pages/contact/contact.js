@@ -1,7 +1,10 @@
 import React, {useEffect} from 'react'
 import banner from '../../assets/banner-img2.png'
+import Header from '../header/header'
 function Contact(){
 return(
+    <>
+    <Header/>
     <div class="section-gap" style={{marginLeft: '1.5rem'}}>
         
         <div class="contact-us">
@@ -25,6 +28,7 @@ return(
             </div>
         </div>
     </div>
+    </>
 	)
 	}
 	export default Contact
