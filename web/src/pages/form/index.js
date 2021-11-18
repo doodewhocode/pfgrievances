@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import pdf from "../../assets/form/New-Joint-Declaration-Form.pdf"
 import { PDFDocument } from 'pdf-lib'
 let reqList = [
@@ -25,6 +25,21 @@ function Form(props) {
     const [selectedForm, setSelectedForm] = useState({})
     const [selectedPDF, setSelectedPDF] = useState("")
     const [currentPdf, setCurrentPdf] = useState("")
+    const [state, setState] = useState({
+        forms: []
+    })
+    const fileInputRef = useRef([]);
+
+    useEffect(() => {
+        formList.map((e, key) => {
+            if (selectedForm !== {}) {
+                if (e.id == selectedForm.id) {
+                    fileInputRef.current = fileInputRef.current.slice(0, e.form.length)
+                }
+            }
+        })
+    }, [selectedForm])
+
     function onChangeHandler() {
 
     }
@@ -34,18 +49,20 @@ function Form(props) {
     }
     function onSelectPDF(value) {
         console.log(value)
-        //setSelectedPDF(value)
-        //loadPDF("../.." + value)
+        setSelectedPDF(value)
+        loadPDF("../.." + value)
     }
     function onClickDownloadPDF() {
 
     }
+
     function formHTML() {
-        return formList.map((e, key) => {
+        var list = null
+        formList.map((e, key) => {
             if (selectedForm !== {}) {
                 if (e.id == selectedForm.id) {
-                    return e.form.map((e, key) => {
-                        return (<div key={key}>
+                    e.form.map((e, key) => {
+                        list.push(<div key={key}>
                             <label>{key + ". " + e.value}</label>
                             <button className="btn btn-secondary btn-sm" onClick={() => { onSelectPDF(e.loc) }}>View</button>
                             <button className="btn btn-secondary btn-sm" onClick={() => onClickDownloadPDF(e.loc)}>Download</button>
@@ -56,13 +73,35 @@ function Form(props) {
                 }
             }
         })
+        return list
     }
     let pdfDoc = null
     async function loadPDF(url) {
+        url = 'https://pdf-lib.js.org/assests/dod_character.pdf'
         const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
         pdfDoc = await PDFDocument.load(arrayBuffer);
         console.log(pdfDoc.saveAsBase64({ dataUri: true }));
         setCurrentPdf(await pdfDoc.saveAsBase64({ dataUri: true }))
+    }
+
+    function fileUploadChange(e) {
+        console.log("obj", { id: e.target.id, value: e.target.value })
+        setState((prevState) => {
+            prevState.forms = [...prevState.forms, { id: e.target.id, value: e.target.value }]
+            return ({ ...prevState })
+        })
+    }
+
+    function fileUploadAction() {
+        return fileInputRef.current.click();
+    }
+
+    function printFileName(id) {
+        console.log("hehe", id)
+        let returnObj = {}
+        returnObj = (state.forms.length > 0) ? state.forms.find((obj) => obj.id == id) : {}
+        console.log("hehe obj", returnObj)
+        return (returnObj !== {} && returnObj !== undefined) ? returnObj.value : ""
     }
     return (
         <>
@@ -87,17 +126,20 @@ function Form(props) {
                                     <div class="header d-flex align-items-center justify-content-center" style={{ fontSize: '20px' }}>
                                         List of Documents
                                     </div><br />
-                                    <form>
+                                    <div>
+                                        {/* {formHTML()} */}
                                         {formList.map((e, key) => {
                                             if (selectedForm !== {}) {
                                                 if (e.id == selectedForm.id) {
                                                     return e.form.map((e, key) => {
                                                         return (<div key={key}>
                                                             <label>{(key + 1) + ". " + e.value}</label>
-                                                            <button className="btn btn-secondary btn-sm" onClick={() => onSelectPDF(e.loc)}>View</button>
+                                                            <button className="btn btn-secondary btn-sm" onClick={() => { onSelectPDF(e.loc) }}>View</button>
                                                             <button className="btn btn-secondary btn-sm" onClick={() => onClickDownloadPDF(e.loc)}>Download</button>
-                                                            <button className="btn btn-secondary btn-sm">Upload</button>
-                                                            <br /><span></span>
+                                                            <div><input type="file" id={e.id} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
+                                                                <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
+                                                                <br /><span>{printFileName(e.id)}</span>
+                                                            </div>
                                                         </div>)
                                                     })
                                                 }
@@ -110,7 +152,7 @@ function Form(props) {
                                             <button type="button" class="btn btn-secondary ml-2">Save</button>
                                             <button type="button" class="btn btn-common ml-2">Submit</button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
 
                             </div>
@@ -149,7 +191,7 @@ function Form(props) {
                             </div>
                         </div>
                         <div>
-                            {selectedPDF !== "" && <iframe src={currentPdf} width="800" height="600"></iframe>}
+                            {currentPdf !== "" && <iframe src={pdfDoc} width="800" height="600"></iframe>}
                         </div>
                     </div>
                 </div>
