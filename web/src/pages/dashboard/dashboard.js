@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } fr
 import { connect } from 'react-redux'
 import logo from '../../assets/logo.png'
 import Profile from '../profile'
-import Timeline from '../timeline'
+import Track from '../track'
 import Form from '../form'
 import Summary from './home'
 import Auth from '../../modules/Auth'
@@ -157,7 +157,7 @@ function Dashboard(props) {
                             <Route path="/app/home" component={Summary} />
                             <Route path="/app/profile" component={Profile} />
                             <Route path="/app/form" component={Form} />
-                            <Route path="/app/timeline" component={Timeline} />
+                            <Route path="/app/track" component={Track} />
                             <Redirect from="/" to="/app/home" />
                         </Switch>
                     </div>

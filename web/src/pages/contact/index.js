@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import banner from '../../assets/banner-img2.png'
-import Header from '../header/header'
+import Header from '../header'
 function Contact(){
 return(
     <>

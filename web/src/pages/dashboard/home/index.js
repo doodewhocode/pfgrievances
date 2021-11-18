@@ -3,7 +3,6 @@ import React from "react";
 function Summary(props) {
     return (
         <>
-
             <div class="row pt-5">
                 <div class="col-xl-4 col-md-6">
                     <div class="card card-stats bg-green">

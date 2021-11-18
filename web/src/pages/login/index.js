@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import businessPeople from '../../assets/business-people-png-13458.png';
 import Footer from '../footer/footer'
-import Header from '../header/header'
+import Header from '../header'
 import ofc from '../../assets/261-2614319_office-team-business-people-white-background.png'
 import business from '../../assets/business-png-9395.png'
 import PngItem from '../../assets/PngItem_1542519.png'
 import { history } from '../../modules/helpers'
-import {postToken} from '../../redux/action/tokenAction'
+import { postToken } from '../../redux/action/tokenAction'
 
 let validationList = ['emailId', 'password', 'phNo', 'otp']
 
@@ -23,8 +23,10 @@ function Login(props) {
     function signUp(type) {
         if (type === 'employee') {
             history.push('/employee')
-        } else {
+        } else if(type === 'employer') {
             history.push('/employer')
+        }else{
+            history.push('/forgotpassword')
         }
     }
     function validateEmail(email) { //Validates the email address
@@ -37,13 +39,13 @@ function Login(props) {
         return phoneRegex.test(phone);
     }
 
-    function isValidForm(form) {       
-            if(form['emailId'].trim().length !== 0 && form['password'].trim().length !==0){               
-                    return validateEmail(form['emailId'])               
-            }
-            if(form['phNo'].trim().length !== 0 && form['otp'].trim().length !==0){               
-                    return validatePhone(form['phNo'].trim())                
-            }
+    function isValidForm(form) {
+        if (form['emailId'].trim().length !== 0 && form['password'].trim().length !== 0) {
+            return validateEmail(form['emailId'])
+        }
+        if (form['phNo'].trim().length !== 0 && form['otp'].trim().length !== 0) {
+            return validatePhone(form['phNo'].trim())
+        }
     }
     function onChangeHandler(e) {
         let key = e.target.id, value = e.target.value
@@ -54,19 +56,19 @@ function Login(props) {
     }
     function loginSubmit() {
         let isValid = isValidForm(form)
-        if(isValid){
+        if (isValid) {
             props.postToken(form.emailId, form.password)
         }
     }
-    useEffect(()=>{
-        if(!props.login['loading']){
-            if(!props.login['error']){
+    useEffect(() => {
+        if (!props.login['loading']) {
+            if (!props.login['error']) {
                 history.push('/app/')
             }
         }
-    },[props.login])
+    }, [props.login])
     console.log(props)
-    
+
     return (
         <>
             <Header />
@@ -157,17 +159,17 @@ function Login(props) {
                                 <form>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Enter Email-Id</label>
-                                        <input type="email" id="emailId" onChange={(e) => onChangeHandler(e)}  class="form-control" placeholder="Enter Email-Id" />
+                                        <input type="email" id="emailId" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter Email-Id" />
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Password</label>
-                                        <input type="password" id="password" onChange={(e) => onChangeHandler(e)}   class="form-control" placeholder="Enter your Password" />
+                                        <input type="password" id="password" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter your Password" />
                                     </div>
                                     <div class="d-flex justify-content-center pb-2"> (OR) </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Enter your Phone Number</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" id="phNo" onChange={(e) => onChangeHandler(e)}  class="form-control" placeholder="Enter your Phone Number" />
+                                            <input type="text" id="phNo" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter your Phone Number" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text btn-primary" style={{ padding: "0 0" }} id="basic-addon2">Get  OTP</span>
                                             </div>
@@ -183,14 +185,14 @@ function Login(props) {
                                             <label class="form-check-label" for="defaultCheck1">
                                                 Remember me </label>
                                         </div>
-                                        <a target="blanck" href="#">Forget Password?</a>
+                                        <a target="blanck" onClick={() => signUp('forgotpassword')}>Forget Password?</a>
                                     </div>
                                     <div class="d-flex  align-items-center justify-content-between pb-2">
                                         <button type="button" class="btn btn-common ml-2"><a
-                                          onClick={() => signUp('employee')}>Register</a></button>
+                                            onClick={() => signUp('employee')}>Register</a></button>
                                         <div class="d-flex  align-items-center">
                                             <button type="button" class="btn btn-secondary">Cancel</button>
-                                            <button type="button" class="btn btn-common ml-2"  onClick={() => loginSubmit()} >Login</button>
+                                            <button type="button" class="btn btn-common ml-2" onClick={() => loginSubmit()} >Login</button>
                                         </div>
                                     </div>
                                 </form>
@@ -223,15 +225,14 @@ function Login(props) {
                                             <label class="form-check-label" for="defaultCheck1">
                                                 Remember me </label>
                                         </div>
-                                        <a target="blanck" href="#">Forget Password?</a>
+                                        <a target="blanck" onClick={() => signUp('forgotpassword')}>Forget Password?</a>
                                     </div>
                                     <div class="d-flex  align-items-center justify-content-between pb-2">
-                                        <button type="button" class="btn btn-common ml-2"><a
+                                    <button type="button" class="btn btn-common ml-2"><a
                                             onClick={() => signUp('employer')}>Register</a></button>
                                         <div class="d-flex  align-items-center">
                                             <button type="button" class="btn btn-secondary">Cancel</button>
-                                            <button type="button" class="btn btn-common ml-2"><a
-                                                href="./dashboard.html">Login</a></button>
+                                            <button type="button" class="btn btn-common ml-2" onClick={() => loginSubmit()}>Login</button>
                                         </div>
                                     </div>
                                 </form>

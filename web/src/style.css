@@ -7,7 +7,7 @@
 .navbar .navbar-nav .nav-item .nav-link {
   position: relative;
   color: #3eadcf;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   min-height: 30px;
   margin-left: 30px;
@@ -38,47 +38,6 @@
   height: 3.4375rem;
   -webkit-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
-}
-
-.sidenav {
-  position: fixed;
-  top: 3.75rem;
-  bottom: 0;
-  min-width: 200px;
-  max-width: 200px;
-  min-height: calc(100vh - 60px);
-  z-index: 500;
-  background-color: #63a4ff;
-  background-image: linear-gradient(315deg, #63a4ff 0%, #83eaf1 74%);
-  box-shadow: 15px 0px 10px -15px rgba(0, 0, 0, 0.2);
-}
-.sidenav .navbar-nav {
-  margin-top: 3.75rem;
-  padding: 0 0.625rem;
-}
-.sidenav .navbar-nav .nav-item {
-  margin-bottom: 0.625rem;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}
-.sidenav .navbar-nav .nav-item .nav-link {
-  background: #FFFFFF;
-  color: #111111;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-}
-.sidenav .navbar-nav .nav-item .nav-link i {
-  color: #111111;
-  margin-right: 0.625rem;
-}
-.sidenav .navbar-nav .nav-item .nav-link .nav-link-text {
-  font-size: 0.875rem;
-}
-.sidenav .navbar-nav .nav-item .nav-link.active {
-  color: #ffffff;
-  background: #3ecf8e;
-}
-.sidenav .navbar-nav .nav-item .nav-link.active i {
-  color: #ffffff;
 }
 
 .pf-banner {
@@ -126,7 +85,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 .login-section .login-details .header {
@@ -523,25 +482,9 @@ i.icon-dull {
   height: 100%;
 }
 
-.section-gap {
-  margin: 3.75rem 0 1rem 12.5rem;
-}
 
-.btn {
-  display: inline-block;
-  font-size: 14px;
-  padding: 10px 15px;
-  border-radius: 5px;
-  letter-spacing: 3px;
-  font-weight: 500;
-  color: #ffffff;
-  cursor: pointer;
-  text-transform: uppercase;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
+
+
 .btn:focus {
   box-shadow: none;
   outline: none;

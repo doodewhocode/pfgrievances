@@ -3,15 +3,14 @@ import { BrowserRouter as Router, Route, Switch, withRouter, Redirect } from 're
 import { connect } from 'react-redux'
 import { registerNav } from './modules/Navigation'
 import { insertToken } from './redux/action/tokenAction'
-import Header from './pages/header/header'
-import Footer from './pages/footer/footer'
 import { PrivateRoute } from './modules/Auth/authentication';
 import Dashboard from './pages/dashboard'
-import Contact from './pages/contact/contact'
-import AboutUs from './pages/aboutus/aboutus'
+import Contact from './pages/contact'
+import AboutUs from './pages/aboutus'
 import Login from './pages/login'
 import EmployeeSignUp from './pages/signup/employeeSignup'
 import EmployerSignUp from './pages/signup/employerSignup'
+import AdminSignUp from './pages/signup/adminSignup'
 import Reset from './pages/forgotpassword/reset'
 import ForgotPassword from './pages/forgotpassword'
 import { history } from './modules/helpers'
@@ -40,6 +39,7 @@ function App(props) {
         <Route path="/contact" component={Contact} />
         <Route path="/employee" component={EmployeeSignUp} />
         <Route path="/employer" component={EmployerSignUp} />
+        <Route path="/admin" component={AdminSignUp} />
         <Route path='/reset/:token' component={Reset} />
         <Route path="/forgotpassword" component={ForgotPassword} />
         <Route exact path="/">

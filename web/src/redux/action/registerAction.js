@@ -23,7 +23,7 @@ export const registerEmployee = (payload) => {
 export const registerEmployer = (payload) => {
     return dispatch => {
         dispatch({ type: 'EMPLOYER_REG_LOADING', loading: true, error: false })
-        return axios.post(BASE_URL + "/employer_register", payload, {}).then(res => {
+        return axios.post(BASE_URL + "/register", payload, {}).then(res => {
             return dispatch({ type: 'EMPLOYER_REG', loading: false, data: res.data, error: false })
         }).catch(err => {
             dispatch({ type: 'EMPLOYER_REG_ERROR', loading: false, data: err, error: true })

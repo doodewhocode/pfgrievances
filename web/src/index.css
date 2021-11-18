@@ -277,10 +277,7 @@ fieldset.border {
   border-color: transparent;
 }
 
-.btn:hover {
-  color: #687281;
-  text-decoration: none;
-}
+
 
 .btn-icon {
   padding: 0;

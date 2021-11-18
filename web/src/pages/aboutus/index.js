@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import pexels from '../../assets/pexels-fauxels-3184418.jpg'
-import Header from '../header/header'
+import Header from '../header'
 
 function AboutUs(){
 return(

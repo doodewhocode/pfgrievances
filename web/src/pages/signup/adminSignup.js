@@ -1,28 +1,19 @@
-import React, { useState } from 'react'
-import Header from '../header'
+import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import { registerEmployer } from '../../redux/action/registerAction'
+import Header from '../header'
 let validationList = ['firstName', 'emailId', 'phNo', 'userType', 'password', 'confirmPassword']
-
 let initializeObj = {
     "firstName": "",
     "lastName": "",
-    "employerName": "",
     emailId: "",
     phNo: "",
-    seRegNo: "",
-    panNo: "",
-    pfRegNo: "",
-    esicRegNo: "",
-    pfOfficeAddr: "",
-    esicOfficeAddr: "",
-    employerAddr: "",
     password: "",
     confirmPassword: "",
-    userType: "employer"
+    userType: "admin"
 }
 
-function EmployerSignUp(props) {
+function AdminSignUp(props) {
     const [form, setForm] = useState(initializeObj)
     function validateEmail(email) { //Validates the email address
         var emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -72,7 +63,6 @@ function EmployerSignUp(props) {
         }
 
     }
-
     return (
         <>
             <Header />
@@ -92,10 +82,6 @@ function EmployerSignUp(props) {
                                         <input type="text" id="lastName" class="form-control" placeholder="Enter Last Name" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
-                                <div class="form-group w-100">
-                                    <label>Employer / Company Name </label>
-                                    <input type="text" id="employerName" class="form-control" placeholder="Enter Employer / Company Name" onChange={(e) => onChangeHandler(e)} />
-                                </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
                                         <label>Registered Email ID </label>
@@ -105,41 +91,6 @@ function EmployerSignUp(props) {
                                         <label>Phone Number<span class="mandatory">*</span></label>
                                         <input type="text" id="phNo" class="form-control" placeholder="Enter Phone Number" onChange={(e) => onChangeHandler(e)} />
                                     </div>
-                                </div>
-                                <div class="input-group mb-3 flex-nowrap">
-                                    <div class="form-group w-100">
-                                        <label>S&E Registraion Number </label>
-                                        <input type="text" id="seRegNo" class="form-control" placeholder="Enter S&E Registraion Number" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-
-                                    <div class="form-group w-100 ml-3">
-                                        <label>Pan Number </label>
-                                        <input type="text" id="panNo" class="form-control" placeholder="Enter Pan Number" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-                                </div>
-                                <div class="input-group mb-3 flex-nowrap">
-                                    <div class="form-group w-100">
-                                        <label>PF Registraion Number / Allotment Number </label>
-                                        <input type="text" id="pfRegNo" class="form-control" placeholder="Enter PF Registraion Number" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-                                    <div class="form-group w-100 ml-3">
-                                        <label>PF Office Full Address </label>
-                                        <input type="text" id="pfOfficeAddr" class="form-control" placeholder="Enter PF Office Address" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-                                </div>
-                                <div class="input-group mb-3 flex-nowrap">
-                                    <div class="form-group w-100">
-                                        <label>ESIC Registraion Number / Allotment Number </label>
-                                        <input type="email" id="esicRegNo" class="form-control" placeholder="Enter ESIC Registraion Number" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-                                    <div class="form-group w-100 ml-3">
-                                        <label>ESIC Office Full Address </label>
-                                        <input type="text" id="esicOfficeAddr" class="form-control" placeholder="Enter ESIC Office Address" onChange={(e) => onChangeHandler(e)} />
-                                    </div>
-                                </div>
-                                <div class="form-group w-100">
-                                    <label>Company Full Address </label>
-                                    <input type="text" id="employerAddr" class="form-control" placeholder="Enter Company Full Address" onChange={(e) => onChangeHandler(e)} />
                                 </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
@@ -158,10 +109,10 @@ function EmployerSignUp(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </div></div>
             </section>
         </>
+
     )
 }
 
@@ -172,4 +123,4 @@ const mapDispatchToProps = {
     registerEmployer
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(EmployerSignUp)
+export default connect(mapStoreToProps, mapDispatchToProps)(AdminSignUp)

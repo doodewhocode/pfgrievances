@@ -36,86 +36,135 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 //upload.fields([{ name: 'panImg', maxCount: 1 }, {  name: 'aadharImg', maxCount: 1}, { name: 'json', maxCount: 1 }]), 
 //POST /signin
-router.post('/employee_register', 
-async function (req, res, next) {
-  //console.log("hehe", req.files);
-  // var img = fs.readFileSync(req.file.path);
-  // var encode_img = img.toString('base64');
-  // var final_img = {
-  //   contentType: req.file.mimetype,
-  //   image: new Buffer(encode_img, 'base64')
-  // };
+router.post('/employee_register',
+  async function (req, res, next) {
+    //console.log("hehe", req.files);
+    // var img = fs.readFileSync(req.file.path);
+    // var encode_img = img.toString('base64');
+    // var final_img = {
+    //   contentType: req.file.mimetype,
+    //   image: new Buffer(encode_img, 'base64')
+    // };
 
-  /*gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
-  console.log(gfs)
-  console.log("hehe", req.files['json'][0].id)
-  var writeStream, readStream, buffer = "";
-  await gfs.files.findOne({ _id: mongodb.ObjectId(req.files['json'][0].id) }, (err, file) => {
-    // Check if file
-    if (!file || file.length === 0) {
-      console.log("not found")
-      return res.status(404).json({ err: 'No file exists' });
-    }
-    console.log("file", file)
-  })
-  writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
-  fs.createReadStream().pipe(writeStream);
-  writeStream.on("close", function(){
-    readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
-    readStream.on("data", function(chunk){
-      buffer+=chunk;
+    /*gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
+    console.log(gfs)
+    console.log("hehe", req.files['json'][0].id)
+    var writeStream, readStream, buffer = "";
+    await gfs.files.findOne({ _id: mongodb.ObjectId(req.files['json'][0].id) }, (err, file) => {
+      // Check if file
+      if (!file || file.length === 0) {
+        console.log("not found")
+        return res.status(404).json({ err: 'No file exists' });
+      }
+      console.log("file", file)
     })
-    readStream.on("end", function(){
-      console.log("contents", buffer);
-    })
-  })*/
-  
-  let obj = req.body  
-  req.checkBody('firstName', 'fullname is required').notEmpty();
-  req.checkBody('pfNo', 'pfNo is required').notEmpty();
-  req.checkBody('emailId', 'Email is required').notEmpty();
-  req.checkBody('phNo', 'Phone No is required').notEmpty();
-  req.checkBody('password', 'Password is required').notEmpty();
-  req.checkBody('confirmPassword', 'verifyPassword is required').notEmpty();
-  let missingFieldErrors = req.validationErrors();
-  if (missingFieldErrors) {
-    let err = new TypedError('signin error', 400, 'missing_field', {
-      errors: missingFieldErrors,
-    })
-    return next(err)
-  }
-  req.checkBody('emailId', 'Email is not valid').isEmail();
-  req.checkBody('password', 'Passwords have to match').equals(req.body.confirmPassword);
-  let invalidFieldErrors = req.validationErrors()
-  if (invalidFieldErrors) {
-    let err = new TypedError('signin error', 400, 'invalid_field', {
-      errors: invalidFieldErrors,
-    })
-    return next(err)
-  }
-  console.log("check", obj)
-  obj['encryptedStore'] = obj['password']
-  delete obj['password']
-  delete obj['confirmPassword']
-  var newUser = new User(obj);
-  //console.log(newUser)
-  User.getUserByEmail(obj.emailId, function (error, user) {
-    if (error) return next(err)
-    if (user) {
-      let err = new TypedError('signin error', 409, 'invalid_field', {
-        message: "user is existed"
+    writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
+    fs.createReadStream().pipe(writeStream);
+    writeStream.on("close", function(){
+      readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
+      readStream.on("data", function(chunk){
+        buffer+=chunk;
+      })
+      readStream.on("end", function(){
+        console.log("contents", buffer);
+      })
+    })*/
+
+    let obj = req.body
+    req.checkBody('firstName', 'fullname is required').notEmpty();
+    req.checkBody('pfNo', 'pfNo is required').notEmpty();
+    req.checkBody('emailId', 'Email is required').notEmpty();
+    req.checkBody('phNo', 'Phone No is required').notEmpty();
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('confirmPassword', 'verifyPassword is required').notEmpty();
+    let missingFieldErrors = req.validationErrors();
+    if (missingFieldErrors) {
+      let err = new TypedError('signin error', 400, 'missing_field', {
+        errors: missingFieldErrors,
       })
       return next(err)
     }
-    console.log("hehe", user)
-    User.createUser(newUser, function (err, user) {
-      console.log(user)
-      if (err) return next(err);
-      res.json({ message: 'user created' })
-    });
+    req.checkBody('emailId', 'Email is not valid').isEmail();
+    req.checkBody('password', 'Passwords have to match').equals(req.body.confirmPassword);
+    let invalidFieldErrors = req.validationErrors()
+    if (invalidFieldErrors) {
+      let err = new TypedError('signin error', 400, 'invalid_field', {
+        errors: invalidFieldErrors,
+      })
+      return next(err)
+    }
+    console.log("check", obj)
+    obj['encryptedStore'] = obj['password']
+    delete obj['password']
+    delete obj['confirmPassword']
+    var newUser = new User(obj);
+    //console.log(newUser)
+    User.getUserByEmail(obj.emailId, function (error, user) {
+      if (error) return next(err)
+      if (user) {
+        let err = new TypedError('signin error', 409, 'invalid_field', {
+          message: "user is existed"
+        })
+        return next(err)
+      }
+      console.log("hehe", user)
+      User.createUser(newUser, function (err, user) {
+        console.log(user)
+        if (err) return next(err);
+        res.json({ message: 'user created' })
+      });
+    })
+
+  });
+
+
+router.post('/register',
+  async function (req, res, next) {
+    let obj = req.body
+    req.checkBody('firstName', 'fullname is required').notEmpty();
+    req.checkBody('emailId', 'Email is required').notEmpty();
+    req.checkBody('phNo', 'Phone No is required').notEmpty();
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('confirmPassword', 'verifyPassword is required').notEmpty();
+    let missingFieldErrors = req.validationErrors();
+    if (missingFieldErrors) {
+      let err = new TypedError('signin error', 400, 'missing_field', {
+        errors: missingFieldErrors,
+      })
+      return next(err)
+    }
+    req.checkBody('emailId', 'Email is not valid').isEmail();
+    req.checkBody('password', 'Passwords have to match').equals(req.body.confirmPassword);
+    let invalidFieldErrors = req.validationErrors()
+    if (invalidFieldErrors) {
+      let err = new TypedError('signin error', 400, 'invalid_field', {
+        errors: invalidFieldErrors,
+      })
+      return next(err)
+    }
+    console.log("check", obj)
+    obj['encryptedStore'] = obj['password']
+    delete obj['password']
+    delete obj['confirmPassword']
+    var newUser = new User(obj);
+    //console.log(newUser)
+    User.getUserByEmail(obj.emailId, function (error, user) {
+      if (error) return next(err)
+      if (user) {
+        let err = new TypedError('signin error', 409, 'invalid_field', {
+          message: "user is existed"
+        })
+        return next(err)
+      }
+      console.log("hehe", user)
+      User.createUser(newUser, function (err, user) {
+        console.log(user)
+        if (err) return next(err);
+        res.json({ message: 'user created' })
+      });
+    })
   })
 
-});
 
 router.get('/files', (req, res) => {
   gfs.files.find().toArray((err, files) => {
@@ -178,7 +227,7 @@ router.post('/login', function (req, res, next) {
           user_token: {
             userId: user._id,
             firstName: user.firstName,
-            lastName:user.lastName,
+            lastName: user.lastName,
             email: user.emailId,
             userType: user.userType,
             token: token,

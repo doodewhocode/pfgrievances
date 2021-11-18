@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import Header from '../header/header'
+import Header from '../header'
 import { registerEmployee } from '../../redux/action/registerAction'
 
 

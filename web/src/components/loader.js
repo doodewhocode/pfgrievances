@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import image from '../assets/img/loader.gif'
+import image from '../assets/logo.png'
 const style = {
     overlay: {
         position: 'fixed',
