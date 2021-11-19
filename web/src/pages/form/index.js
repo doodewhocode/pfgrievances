@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { connect } from 'react-redux'
+import { submitQuery } from '../../redux/action/formAction'
 import pdf from "../../assets/form/New-Joint-Declaration-Form.pdf"
 import { PDFDocument } from 'pdf-lib'
 let reqList = [
@@ -26,7 +28,8 @@ function Form(props) {
     const [selectedPDF, setSelectedPDF] = useState("")
     const [currentPdf, setCurrentPdf] = useState("")
     const [state, setState] = useState({
-        forms: []
+        forms: [],
+        note: ""
     })
     const fileInputRef = useRef([]);
 
@@ -40,7 +43,14 @@ function Form(props) {
         })
     }, [selectedForm])
 
-    function onChangeHandler() {
+
+
+    function onChangeHandler(e) {
+        let id = e.target.id, value = e.target.value
+        setState((prevState) => {
+            prevState[id] = value = e.target.value
+            return ({ ...prevState })
+        })
 
     }
     function onChangeDropdown(e) {
@@ -103,6 +113,21 @@ function Form(props) {
         console.log("hehe obj", returnObj)
         return (returnObj !== {} && returnObj !== undefined) ? returnObj.value : ""
     }
+
+    function onClickSubmit() {
+        let obj = {
+            grivId: (selectedForm != {}) ? selectedForm.id : "",
+            grivType: (selectedForm != {}) ? selectedForm.value : "",
+            userId: localStorage.getItem('auth').userId,
+            note: state.note,
+            status: "Created",
+            paymentStatus: "Pending",
+            paidAmount: "200",
+            paymentMethod: "CARD"
+        }
+
+    }
+
     return (
         <>
             <div class="section-gap"><br />
@@ -146,6 +171,16 @@ function Form(props) {
                                             }
                                         })}
                                         {/* <a href=""></a> */}
+                                        {(selectedForm !== {}) && <div>
+                                            <label for="note">Note (Optional):</label>
+                                            <textarea id={'note'} value={state.note} style={{
+                                                height: '65px',
+                                                width: '400px'
+                                            }} onChange={onChangeHandler}></textarea>
+                                            <br />
+                                            <label for="note">Processing Fee:</label>
+                                            <span>200</span>
+                                        </div>}
                                         < hr />
                                         <div class="d-flex  align-items-center justify-content-end pb-2">
                                             <button type="button" class="btn btn-secondary">Cancel</button>
@@ -199,5 +234,13 @@ function Form(props) {
         </>
     )
 }
+const mapStoreToProps = state => ({
+    sub_query_loading: state.formReducer.getIn(['sub_query', 'loading'], true),
+    sub_query: state.formReducer.getIn(['sub_query'], new Map()),
+    login: state.loginReducer['login']
+})
+const mapDispatchToProps = {
+    submitQuery
+}
 
-export default Form
+export default connect(mapStoreToProps, mapDispatchToProps)(Form)

@@ -20,8 +20,8 @@ const server = express()
 server.set("view engine", "ejs");
 server.use(methodOverride('_method'));
 // Middleware
-server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({ extended: true }))
 server.use(cors({ credentials: true }))
 server.use(authMiddleware.initialize)
 
