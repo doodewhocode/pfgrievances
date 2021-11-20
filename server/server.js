@@ -7,7 +7,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const authMiddleware = require('./middleware/auth')
-var expressValidator  = require('express-validator');//req.checkbody()
+var expressValidator = require('express-validator');//req.checkbody()
 
 const methodOverride = require('method-override');
 
@@ -27,18 +27,18 @@ server.use(authMiddleware.initialize)
 
 // Express validator
 server.use(expressValidator({
-  errorFormatter: function(param, msg, value) {
+  errorFormatter: function (param, msg, value) {
     var namespace = param.split('.'),
-    root          = namespace.shift(),
-    formParam     = root;
-    
-    while(namespace.lenght) {
+      root = namespace.shift(),
+      formParam = root;
+
+    while (namespace.lenght) {
       formParam += '[' + namespace.shift() + ']';
     }
     return {
-      param : formParam,
-      msg   : msg,
-      value : value
+      param: formParam,
+      msg: msg,
+      value: value
     };
   }
 }));
@@ -50,6 +50,7 @@ server.use(expressValidator({
 
 // Routes
 server.use([require('./routes/auth'), require('./routes/user')])
+server.use([require('./routes/grievance')])
 
 // Error handling
 server.use((error, req, res, next) => {

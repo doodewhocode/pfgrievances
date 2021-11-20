@@ -22,7 +22,7 @@ let formList = [
     { id: "1", form: [{ id: "1", value: "New Joint Declaration Form", loc: "/assets/form/New-Joint-Declaration-Form.pdf" }, { id: "2", value: "Form 5", loc: "/assets/form/New-Joint-Declaration-Form.pdf" }] }
 ]
 
-
+let validationList = ['grivId', 'grivType', 'userId']
 function Form(props) {
     const [selectedForm, setSelectedForm] = useState({})
     const [selectedPDF, setSelectedPDF] = useState("")
@@ -95,9 +95,10 @@ function Form(props) {
     }
 
     function fileUploadChange(e) {
-        console.log("obj", { id: e.target.id, value: e.target.value })
+        console.log("obj", { id: e.target.id, value: e.target.name })
+        console.log("file", e.target.files)
         setState((prevState) => {
-            prevState.forms = [...prevState.forms, { id: e.target.id, value: e.target.value }]
+            prevState.forms = [...prevState.forms, { id: e.target.id, value: e.target.value, file: e.target.files[0] }]
             return ({ ...prevState })
         })
     }
@@ -114,16 +115,41 @@ function Form(props) {
         return (returnObj !== {} && returnObj !== undefined) ? returnObj.value : ""
     }
 
+    function isValidForm(form) {
+        for (let i = 0; i < validationList.length; i++) {
+            if (form[validationList[i]].trim().length == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function onClickSubmit() {
         let obj = {
             grivId: (selectedForm != {}) ? selectedForm.id : "",
             grivType: (selectedForm != {}) ? selectedForm.value : "",
-            userId: localStorage.getItem('auth').userId,
+            userId: JSON.parse(localStorage.getItem('auth')).userId,
             note: state.note,
             status: "Created",
-            paymentStatus: "Pending",
+            paymentStatus: "Paid",
             paidAmount: "200",
             paymentMethod: "CARD"
+        }
+        console.log(obj)
+        let formData = new FormData();
+        let isValid = isValidForm(obj)
+        if (isValid) {
+            for (let key in obj) {
+                console.log(key + ',' + obj[key])
+                if (key !== 'image') {
+                    formData.set(key, obj[key])
+                }
+            }
+
+            for (var i = 0; i < state.forms.length; i++) {
+                formData.set("file" + i + 1, state.forms[i].file, state.forms[i].id)
+            }
+            props.submitQuery(formData)
         }
 
     }
@@ -185,7 +211,7 @@ function Form(props) {
                                         <div class="d-flex  align-items-center justify-content-end pb-2">
                                             <button type="button" class="btn btn-secondary">Cancel</button>
                                             <button type="button" class="btn btn-secondary ml-2">Save</button>
-                                            <button type="button" class="btn btn-common ml-2">Submit</button>
+                                            <button type="button" class="btn btn-common ml-2" onClick={onClickSubmit}>Submit</button>
                                         </div>
                                     </div>
                                 </div>

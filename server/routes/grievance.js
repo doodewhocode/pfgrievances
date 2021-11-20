@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const PFGrievance = require('../models/PFGrievance')
 const TypedError = require('../middleware/ErrorHandler')
 const Image = require('../middleware/Image')
 var multer = require('multer');
@@ -13,6 +13,7 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const conn = require('../models/init')
 const mongodb = require('mongodb')
+const ensureAuthenticated = require('../middleware/ensureAuthenticated')
 
 const storage = new GridFsStorage({
     url: process.env.MONGO_URI,
@@ -35,5 +36,35 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.post('/query', upload.fields([{ name: 'panImg', maxCount: 1 }, { name: 'aadharImg', maxCount: 1 }]), async function (req, res, next) {
+router.post('/query', ensureAuthenticated, upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async function (req, res, next) {
+    let obj = req.body
+    req.checkBody('grivId', 'grivId is required').notEmpty();
+    req.checkBody('grivType', 'grivType is required').notEmpty();
+    req.checkBody('userId', 'userId is required').notEmpty();
+    let missingFieldErrors = req.validationErrors();
+    if (missingFieldErrors) {
+        let err = new TypedError('signin error', 400, 'missing_field', {
+            errors: missingFieldErrors,
+        })
+        return next(err)
+    }
+    console.log("req.files['file1']", req.files['file1'])
+    obj['grivDoc1'] = {
+        formId: req.files['file1'][0].id,
+        id: req.files['file1'][0].id,
+        fileName: req.files['file1'][0].filename
+    }
+    obj['grivDoc2'] = {
+        formId: req.files['file2'][0].id,
+        id: req.files['file2'][0].id,
+        fileName: req.files['file2'][0].filename
+    }
+    obj['startDate'] = new Date()
+    var newGrievance = new PFGrievance(obj);
+    PFGrievance.saveQuery(newGrievance, function (err, user) {
+        console.log(user)
+        if (err) return next(err);
+        res.json({ message: 'Query created' })
+    });
+
 })
