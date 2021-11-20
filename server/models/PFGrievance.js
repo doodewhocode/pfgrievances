@@ -4,9 +4,9 @@ const passportLocalMongoose = require('passport-local-mongoose')
 const grievanceSchema = new conn.mongoose.Schema({
     grivId: String,
     grivType: String,
-    userId: Number,
+    userId: String,
     status: String,
-    employerId: Number,
+    employerId: String,
     startDate: Date,
     modifiedDateBy: String,
     modifiedDate: Date,
@@ -20,10 +20,10 @@ const grievanceSchema = new conn.mongoose.Schema({
     assignedTo: String,
     pendingDays: Number,
     submitterId: Number,
-    grivDoc1: Object,
-    grivDoc2: Object,
-    grivDoc3: Object,
-    proofDocZip: Object,
+    grivDoc1: Array,
+    grivDoc2: Array,
+    grivDoc3: Array,
+    proofDocZip: Array,
     paymentStatus: String,
     paidAmount: String,
     paymentMethod: String
@@ -49,6 +49,16 @@ module.exports.getAllPFGrievance = function (callback) {
     PFGrievance.find(callback)
 }
 
-module.exports.getPFGrievanceById = function (id, callback) {
+module.exports.getGrivByUserId = function (id, callback) {
+    var query = { 'userId': id }
+    PFGrievance.find(query, callback);
+}
+
+module.exports.getGrivById = function (id, callback) {
     PFGrievance.findById(id, callback);
+}
+
+module.exports.getAllGrivByEmployer = function (employer, callback) {
+    var query = { 'employerName': employer }
+    PFGrievance.find(query, callback);
 }

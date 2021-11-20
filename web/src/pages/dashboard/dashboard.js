@@ -158,6 +158,7 @@ function Dashboard(props) {
                             <Route path="/app/profile" component={Profile} />
                             <Route path="/app/form" component={Form} />
                             <Route path="/app/track" component={Track} />
+                            <Route path="/app/track/:id" component={Track} />
                             <Redirect from="/" to="/app/home" />
                         </Switch>
                     </div>

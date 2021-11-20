@@ -22,7 +22,7 @@ let formList = [
     { id: "1", form: [{ id: "1", value: "New Joint Declaration Form", loc: "/assets/form/New-Joint-Declaration-Form.pdf" }, { id: "2", value: "Form 5", loc: "/assets/form/New-Joint-Declaration-Form.pdf" }] }
 ]
 
-let validationList = ['grivId', 'grivType', 'userId']
+let validationList = ['grivId', 'grivType', 'userId', 'employerName']
 function Form(props) {
     const [selectedForm, setSelectedForm] = useState({})
     const [selectedPDF, setSelectedPDF] = useState("")
@@ -129,11 +129,15 @@ function Form(props) {
             grivId: (selectedForm != {}) ? selectedForm.id : "",
             grivType: (selectedForm != {}) ? selectedForm.value : "",
             userId: JSON.parse(localStorage.getItem('auth')).userId,
+            employerName: JSON.parse(localStorage.getItem('auth')).employerName,
             note: state.note,
             status: "Created",
-            paymentStatus: "Paid",
+            paymentStatus: true,
             paidAmount: "200",
-            paymentMethod: "CARD"
+            paymentMethod: "CARD",
+            queryLevel: -1,
+            endDate: '',
+            comments: []
         }
         console.log(obj)
         let formData = new FormData();
@@ -147,7 +151,7 @@ function Form(props) {
             }
 
             for (var i = 0; i < state.forms.length; i++) {
-                formData.set("file" + i + 1, state.forms[i].file, state.forms[i].id)
+                formData.set("file" + (i + 1), state.forms[i].file, state.forms[i].id)
             }
             props.submitQuery(formData)
         }

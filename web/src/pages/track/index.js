@@ -1,26 +1,35 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Timeline from './timeline'
 
 
 function Track(props) {
+    const [checkOutLevel, setCheckOutLevel] = useState({
+        current: 1
+    })
+
+    function toggleCheckout(value) {
+        setCheckOutLevel(prevState => {
+            prevState.current = value
+            return ({ ...prevState })
+        })
+    }
     return (
         <>
             <Timeline />
-
             <div class="card mt-3 tab-card">
                 <div class="card-header tab-card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">Request Details</a>
+                            <a className={"nav-link " + (checkOutLevel.current === 1 ? 'active show' : '')} id="one-tab" data-toggle="tab" onClick={() => toggleCheckout(1)} href="#one" role="tab" aria-controls="One" aria-selected="true">Request Details</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">Chat History</a>
+                            <a className={"nav-link " + (checkOutLevel.current === 2 ? 'active show' : '')} id="two-tab" data-toggle="tab" onClick={() => toggleCheckout(2)} href="#two" role="tab" aria-controls="Two" aria-selected="false">Chat History</a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active p-3" id="one" role="tabpanel" aria-labelledby="one-tab">
+                    <div className={"tab-pane fade  p-3 " + (checkOutLevel.current === 1 ? 'active show' : '')} id="one" role="tabpanel" aria-labelledby="one-tab" >
                         <div className="row">
                             <div className="col-md-5">
                                 <div class="form-group row">
@@ -58,10 +67,10 @@ function Track(props) {
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                    <div className={"tab-pane fade p-3 " + (checkOutLevel.current === 2 ? 'active show' : '')} id="two" role="tabpanel" aria-labelledby="two-tab" >
                         <h5 class="card-title">Tab Card Two</h5>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        
+
                     </div>
                 </div>
             </div>

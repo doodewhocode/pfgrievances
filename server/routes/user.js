@@ -230,6 +230,7 @@ router.post('/login', function (req, res, next) {
             lastName: user.lastName,
             email: user.emailId,
             userType: user.userType,
+            employerName: user.employerName,
             token: token,
             expire_in: '7d'
           }

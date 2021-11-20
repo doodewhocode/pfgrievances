@@ -36,35 +36,67 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.post('/query', ensureAuthenticated, upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async function (req, res, next) {
+router.post('/query', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async function (req, res, next) {
     let obj = req.body
+    console.log(obj)
     req.checkBody('grivId', 'grivId is required').notEmpty();
     req.checkBody('grivType', 'grivType is required').notEmpty();
     req.checkBody('userId', 'userId is required').notEmpty();
     let missingFieldErrors = req.validationErrors();
     if (missingFieldErrors) {
-        let err = new TypedError('signin error', 400, 'missing_field', {
+        let err = new TypedError('error', 400, 'missing_field', {
             errors: missingFieldErrors,
         })
         return next(err)
     }
     console.log("req.files['file1']", req.files['file1'])
-    obj['grivDoc1'] = {
-        formId: req.files['file1'][0].id,
+    obj['grivDoc1'] = [{
+        formId: req.files['file1'][0].originalname,
         id: req.files['file1'][0].id,
-        fileName: req.files['file1'][0].filename
-    }
-    obj['grivDoc2'] = {
-        formId: req.files['file2'][0].id,
+        fileName: req.files['file1'][0].filename,
+        date: new Date()
+    }]
+    obj['grivDoc2'] = [{
+        formId: req.files['file2'][0].originalname,
         id: req.files['file2'][0].id,
-        fileName: req.files['file2'][0].filename
-    }
+        fileName: req.files['file2'][0].filename,
+        date: new Date()
+    }]
     obj['startDate'] = new Date()
     var newGrievance = new PFGrievance(obj);
-    PFGrievance.saveQuery(newGrievance, function (err, user) {
-        console.log(user)
+    PFGrievance.saveQuery(newGrievance, function (err, grievance) {
+        console.log(grievance)
         if (err) return next(err);
         res.json({ message: 'Query created' })
     });
 
 })
+
+router.get('/getemployeereq', async function (req, res, next) {
+    let id = req.query.id
+    PFGrievance.getGrivByUserId(id, function (err, grievance) {
+        console.log(grievance)
+        if (err) return next(err);
+        res.json(grievance)
+    });
+})
+
+router.get('/getemployerreq', async function (req, res, next) {
+    let id = req.query.id
+    PFGrievance.getAllGrivByEmployer(id, function (err, grievance) {
+        console.log(grievance)
+        if (err) return next(err);
+        res.json(grievance)
+    });
+})
+
+router.get('/getadminreq', async function (req, res, next) {
+    let id = req.query.id
+    PFGrievance.getAllPFGrievance(id, function (err, grievance) {
+        console.log(grievance)
+        if (err) return next(err);
+        res.json(grievance)
+    });
+})
+
+module.exports = router;

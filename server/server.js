@@ -1,8 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-const mongoose = require('mongoose');
-var fileUpload = require('express-fileupload');
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -49,8 +48,8 @@ server.use(expressValidator({
 // })
 
 // Routes
-server.use([require('./routes/auth'), require('./routes/user')])
 server.use([require('./routes/grievance')])
+server.use([require('./routes/auth'), require('./routes/user')])
 
 // Error handling
 server.use((error, req, res, next) => {

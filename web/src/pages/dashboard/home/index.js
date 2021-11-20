@@ -1,6 +1,84 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { connect } from 'react-redux'
+import { AgGridReact } from '@ag-grid-community/react'
+import { AllCommunityModules } from '@ag-grid-community/all-modules';
+import '@ag-grid-community/all-modules/dist/styles/ag-grid.css'
+import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css'
+import { Map, List } from 'immutable'
+import { history } from '../../../modules/helpers'
+import Modal from '../../../components/modal'
+import Confirmation from '../../../components/confirmation'
+import { fetchEmployeeReqs, fetchEmployerReqs, fetchAdminReqs } from '../../../redux/action/dashboardAction'
+
 
 function Summary(props) {
+    const [gridApi, setGridApi] = useState(null)
+    const [rowData, setRowData] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalDeleteFlg, setModalDeleteFlg] = useState(false)
+
+    let gridOptions = {
+        modules: AllCommunityModules,
+        columnDefs: [
+            { headerName: 'Query ID', field: '_id', width: 150, filter: false },
+            { headerName: "Query Name", field: "grivType", width: 120 },
+            { headerName: "Note", field: "note", width: 100, filter: false },
+            { headerName: "Created Date", field: "createDate", width: 75 },
+            { headerName: "Status", field: "status", width: 75 },
+            { headerName: "End Date", field: "endDate", width: 100 },
+            { headerName: "Payment", field: "paymentStatus", width: 70 },
+            { headerName: "view", filter: false, width: 50, cellRendererFramework: clickableField },
+        ],
+        rowSelection: 'single',
+        rowData: [],
+        defaultColDef: {
+            editable: false,
+            resizable: true,
+            filter: true
+        },
+        context: { componentParent: this }
+    }
+
+    useEffect(() => {
+        async function loadFirst() {
+            let userId = await JSON.parse(localStorage.getItem('auth')).userId
+            let employerName = await JSON.parse(localStorage.getItem('auth')).employerName
+            props.fetchEmployeeReqs(userId)
+        }
+        loadFirst()
+    }, [])
+
+    useEffect(() => {
+        if (!props.empl_reqs_loading) {
+            if (!props.empl_reqs.toJS().error) {
+                console.log(props.empl_reqs.toJS())
+                setRowData(props.empl_reqs.toJS()['data'])
+            }
+        }
+    }, [props.empl_reqs_loading])
+
+    const viewClickHandler = (data) => {
+        history.push('/app/track/' + data._id)
+    }
+    const deleteClickHandler = () => {
+        setModalDeleteFlg(true)
+    }
+
+    function clickableField(gridProps) {
+        let { data, colDef } = gridProps
+        if (colDef.field === "view") {
+            return <button className={'btn btn-sm btn-primary rounded-0'} onClick={() => { viewClickHandler(data) }}><i className={'fa fa-file'}></i></button>
+        } else if (colDef.field === "cancel") {
+            return <button className={'btn btn-sm btn-secondary rounded-0'} onClick={() => { deleteClickHandler(data) }}><i className={'fa fa-trash'}></i></button>
+        }
+        return null
+    }
+    const onGridReady = (params) => {
+        const { api, columnApi } = params
+        api.sizeColumnsToFit();
+        api.refreshCells()
+        setGridApi(api);
+    }
     return (
         <>
             <div class="row pt-5">
@@ -11,11 +89,11 @@ function Summary(props) {
                                 <div class="col">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-tick icon-lg"
-                                            style={{color: '#FFFFFF', fontSize: '40px'}}></i>
+                                            style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
                                         <h1><b>7</b></h1>
                                     </div>
-                                    <hr style={{borderColor: '#FFFFFF'}}/>
-                                    <h5 class ="text-right">Active Query</h5>
+                                    <hr style={{ borderColor: '#FFFFFF' }} />
+                                    <h5 class="text-right">Active Query</h5>
                                 </div>
                             </div>
                         </div>
@@ -28,11 +106,11 @@ function Summary(props) {
                                 <div class="col">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-listview_search icon-lg"
-                                            style={{color: '#FFFFFF', fontSize: '40px'}}></i>
+                                            style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
                                         <h1><b>3</b></h1>
                                     </div>
-                                    <hr style={{borderColor: '#FFFFFF'}}/>
-                                    <h5 class ="text-right">Pending Query</h5>
+                                    <hr style={{ borderColor: '#FFFFFF' }} />
+                                    <h5 class="text-right">Pending Query</h5>
                                 </div>
                             </div>
                         </div>
@@ -45,11 +123,11 @@ function Summary(props) {
                                 <div class="col">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-error icon-lg"
-                                            style={{color: '#FFFFFF', fontSize: '40px'}}></i>
+                                            style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
                                         <h1><b>14</b></h1>
                                     </div>
-                                    <hr style={{borderColor: '#FFFFFF'}}/>
-                                    <h5 class ="text-right">Closed Query</h5>
+                                    <hr style={{ borderColor: '#FFFFFF' }} />
+                                    <h5 class="text-right">Closed Query</h5>
                                 </div>
                             </div>
                         </div>
@@ -57,257 +135,32 @@ function Summary(props) {
                 </div>
             </div>
             <div class="row pt-5">
-                <div class="table-bg p-0 col-12 m-auto">
-                    <div class="header d-flex align-items-center justify-content-between w-100">
-                        <div>Query List</div>
-                        <div class="d-flex align-items-center">
-                            <div class="input-group rounded mr-3" style={{width: '300px'}}>
-                                <input type=" search" class="form-control rounded" placeholder="Search Query"
-                                    aria-label="Search" aria-describedby="search-addon" />
-                                <span class="input-group-text border-0 p-0" id="search-addon"
-                                    style={{position: 'absolute', top: '7px', right: '4px', background: 'none'}}>
-                                    <i class=" icon-search icon-md"></i>
-                                </span>
-                            </div>
-                            <i class="icon-filter" role="presentation" data-toggle="collapse"
-                                href="#collapseExample" role="button" aria-expanded="false"
-                                aria-controls="collapseExample"></i>
-                        </div>
-
-                    </div>
-                    <div class="collapse pl-3 pr-3 pt-3" id="collapseExample">
-                        <div class="input-group flex-nowrap">
-                            <div class="form-group w-100">
-                                <label>Query Status</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Pending</option>
-                                    <option>Completed</option>
-                                </select>
-                            </div>
-                            <div class="form-group w-100 ml-3">
-                                <label>Assigned Office</label>
-                                <select class="form-control" id="exampleFormControlSelect2">
-                                    <option>Chennai</option>
-                                    <option>Bangalore</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Query ID</th>
-                                    <th scope="col">Query Name</th>
-                                    <th scope="col">Query Description</th>
-                                    <th scope="col">Query Date</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Assigned Office</th>
-                                    <th scope="col">Closed Date</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>125542</td>
-                                    <td style={{verticalAlign:'middle'}}>DOE Correction</td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Pending</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>125552</td>
-                                    <td style={{verticalAlign:'middle'}}>DOB Correction</td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Completed</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>125652</td>
-                                    <td style={{verticalAlign:'middle'}}>PF Partial Withdrawal with Adhaar</td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Pending</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128952</td>
-                                    <td style={{verticalAlign:'middle'}}>PF Partial Withdrawal without Adhaar
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128952</td>
-                                    <td style={{verticalAlign:'middle'}}>Fund Transfer
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Completed</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>Password change Mobile Number Lost
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Completed</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>Password change with Mobile Number
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>Completed</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>UAN Activation
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Bangalore</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>KYC Activation
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>Mark Exit through Employee Portal
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>Nominee Updation
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>Death Case
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="row" style={{verticalAlign:'middle'}}>128232</td>
-                                    <td style={{verticalAlign:'middle'}}>To Apply Pension Benefit Online (Scheme
-                                        Ceritificate)
-                                    </td>
-                                    <td style={{verticalAlign:'middle'}}>Lorem ipsum dolor sit amet, consectetur
-                                        adipisicing </td>
-                                    <td style={{verticalAlign:'middle'}}>18/09/2021</td>
-
-                                    <td style={{verticalAlign:'middle'}}>In-Progress</td>
-                                    <td style={{verticalAlign:'middle'}}>Chennai</td>
-                                    <td style={{verticalAlign:'middle'}}>19/10/2021</td>
-                                    <td>
-                                        <a role="presentation" href="#">View</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="ag-theme-balham" style={{ height: '450px', width:'790px' }}>
+                    <AgGridReact
+                        modules={AllCommunityModules}
+                        columnDefs={gridOptions.columnDefs}
+                        rowData={rowData}
+                        onGridReady={onGridReady}
+                        pagination={true}
+                        context={gridOptions.context}
+                        defaultColDef={gridOptions.defaultColDef}
+                        gridOptions={gridOptions}
+                        rowSelection={gridOptions.rowSelection}
+                        floatingFilter={true}
+                    >
+                    </AgGridReact>
                 </div>
             </div>
 
         </>
     )
 }
-export default Summary
+const mapStoreToProps = state => ({
+    empl_reqs_loading: state.dashboardReducer.getIn(['empl_reqs', 'loading'], true),
+    empl_reqs: state.dashboardReducer.getIn(['empl_reqs'], new Map()),
+})
+const mapDispatchToProps = {
+    fetchEmployeeReqs, fetchEmployerReqs, fetchAdminReqs
+}
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Summary)
