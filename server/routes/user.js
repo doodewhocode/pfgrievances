@@ -270,5 +270,12 @@ router.post('/reset/:token', function (req, res, next) {
   })
 })
 
-
+router.get('/fetchuserbyid', function (req, res, next) {
+  let id = req.query.id
+  User.getUserById(id, function (err, user) {
+    console.log(user)
+    if (err) return next(err);
+    res.json(user)
+  });
+})
 module.exports = router;

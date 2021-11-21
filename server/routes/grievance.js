@@ -99,4 +99,13 @@ router.get('/getadminreq', async function (req, res, next) {
     });
 })
 
+router.get('/getgrivbyid', async function (req, res, next) {
+    let id = req.query.id
+    PFGrievance.getGrivById(id, function (err, grievance) {
+        console.log(grievance)
+        if (err) return next(err);
+        res.json(grievance)
+    });
+})
+
 module.exports = router;
