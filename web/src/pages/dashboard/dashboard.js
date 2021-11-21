@@ -11,7 +11,7 @@ import Auth from '../../modules/Auth'
 
 function Dashboard(props) {
 
-    
+
     return (
         <div class="app-wrapper">
             <div class="navbar navbar-expand-md bg-inverse fixed-top">
@@ -63,7 +63,7 @@ function Dashboard(props) {
                                         </div></div></h6><div class="dropdown-divider"></div><a class="dropdown-item" href="/app/userprofile">
                                         <div class="dropdown-item-icon">
                                         </div>Account</a>
-                                    <a class="dropdown-item" onClick={()=>Auth.logout()}><div class="dropdown-item-icon">
+                                    <a class="dropdown-item" onClick={() => Auth.logout()}><div class="dropdown-item-icon">
                                     </div>Logout</a></div></li></ul>
                     </div>
                 </div>

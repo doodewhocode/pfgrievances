@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import Timeline from './timeline'
+import QueryDetails from './querydetails'
+import UserDetails from './userdetails'
+import { fetchGrivById } from '../../redux/action/trackAction'
 
 
 function Track(props) {
     const [checkOutLevel, setCheckOutLevel] = useState({
         current: 1
     })
-
+    const [rowData, setRowData] = useState({})
     function toggleCheckout(value) {
         setCheckOutLevel(prevState => {
             prevState.current = value
             return ({ ...prevState })
         })
     }
+    console.log("heheersr", props.location.pathname.replace("/app/track/", ""))
+    useEffect(() => {
+        props.fetchGrivById(props.location.pathname.replace("/app/track/", ""))
+    }, [])
+
+    useEffect(() => {
+        if (!props.griv_by_id_loading) {
+            if (!props.griv_by_id.toJS().error) {
+                console.log(props.griv_by_id.toJS())
+                setRowData(props.griv_by_id.toJS()['data'])
+            }
+        }
+    }, [props.griv_by_id_loading])
     return (
         <>
             <Timeline />
@@ -23,54 +40,35 @@ function Track(props) {
                             <a className={"nav-link " + (checkOutLevel.current === 1 ? 'active show' : '')} id="one-tab" data-toggle="tab" onClick={() => toggleCheckout(1)} href="#one" role="tab" aria-controls="One" aria-selected="true">Request Details</a>
                         </li>
                         <li class="nav-item">
-                            <a className={"nav-link " + (checkOutLevel.current === 2 ? 'active show' : '')} id="two-tab" data-toggle="tab" onClick={() => toggleCheckout(2)} href="#two" role="tab" aria-controls="Two" aria-selected="false">Chat History</a>
+                            <a className={"nav-link " + (checkOutLevel.current === 2 ? 'active show' : '')} id="two-tab" data-toggle="tab" onClick={() => toggleCheckout(2)} href="#two" role="tab" aria-controls="Two" aria-selected="false">User Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a className={"nav-link " + (checkOutLevel.current === 3 ? 'active show' : '')} id="three-tab" data-toggle="tab" onClick={() => toggleCheckout(3)} href="#three" role="tab" aria-controls="Three" aria-selected="false">Chat History</a>
                         </li>
                     </ul>
                 </div>
-
                 <div class="tab-content" id="myTabContent">
                     <div className={"tab-pane fade  p-3 " + (checkOutLevel.current === 1 ? 'active show' : '')} id="one" role="tabpanel" aria-labelledby="one-tab" >
-                        <div className="row">
-                            <div className="col-md-5">
-                                <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-5 col-form-label">Query Id:</label>
-                                    <div class="col-sm-7"> </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Query Name:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Query Description:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Query Date:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Form:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Requester Name:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Requester Email Id:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-5 col-form-label">Requester Phone No:</label>
-                                    <div class="col-sm-7"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <QueryDetails data={rowData} />
                     </div>
                     <div className={"tab-pane fade p-3 " + (checkOutLevel.current === 2 ? 'active show' : '')} id="two" role="tabpanel" aria-labelledby="two-tab" >
-                        <h5 class="card-title">Tab Card Two</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-
+                        <UserDetails userId={(rowData !== {}) ? rowData.userId : ""} />
+                    </div>
+                    <div className={"tab-pane fade p-3 " + (checkOutLevel.current === 3 ? 'active show' : '')} id="three" role="tabpanel" aria-labelledby="three-tab" >
+                        <table>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Comment</th>
+                            <tbody>
+                                {rowData.comments.map((obj, key) => {
+                                    <tr>
+                                        <td>{obj.user}</td>
+                                        <td>{obj.date}</td>
+                                        <td>{obj.comment}</td>
+                                    </tr>
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -79,4 +77,12 @@ function Track(props) {
     )
 }
 
-export default Track
+const mapStoreToProps = state => ({
+    griv_by_id_loading: state.trackReducer.getIn(['griv_by_id', 'loading'], true),
+    griv_by_id: state.trackReducer.getIn(['griv_by_id'], new Map())
+})
+const mapDispatchToProps = {
+    fetchGrivById
+}
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Track)

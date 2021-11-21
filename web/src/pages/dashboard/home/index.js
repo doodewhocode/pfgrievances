@@ -16,11 +16,22 @@ function Summary(props) {
     const [rowData, setRowData] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalDeleteFlg, setModalDeleteFlg] = useState(false)
-
+    let userId = null, employerName = null, userType = null
     let gridOptions = {
         modules: AllCommunityModules,
         columnDefs: [
-            { headerName: 'Query ID', field: '_id', width: 150, filter: false },
+            {
+                headerName: 'Query ID', field: '_id', width: 150, filter: false, cellRenderer: (params) => {
+                    var link = document.createElement('a');
+                    link.href = '#';
+                    link.innerHTML = params.value;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault()
+                        idClickHandler(params.value)
+                    })
+                    return link
+                }
+            },
             { headerName: "Query Name", field: "grivType", width: 120 },
             { headerName: "Note", field: "note", width: 100, filter: false },
             { headerName: "Created Date", field: "createDate", width: 75 },
@@ -41,8 +52,9 @@ function Summary(props) {
 
     useEffect(() => {
         async function loadFirst() {
-            let userId = await JSON.parse(localStorage.getItem('auth')).userId
-            let employerName = await JSON.parse(localStorage.getItem('auth')).employerName
+            userId = await JSON.parse(localStorage.getItem('auth')).userId
+            userType = await JSON.parse(localStorage.getItem('auth')).userType
+            employerName = await JSON.parse(localStorage.getItem('auth')).employerName
             props.fetchEmployeeReqs(userId)
         }
         loadFirst()
@@ -57,6 +69,9 @@ function Summary(props) {
         }
     }, [props.empl_reqs_loading])
 
+    const idClickHandler = (id) => {
+        history.push('/app/track/' + id)
+    }
     const viewClickHandler = (data) => {
         history.push('/app/track/' + data._id)
     }
@@ -134,8 +149,12 @@ function Summary(props) {
                     </div>
                 </div>
             </div>
+            {((userType !== null || userType !== undefined) && userType === 'employer') && <div>
+                <button className={'btn btn-sm btn-danger'} >All Requests</button>
+                <button className={'btn btn-sm btn-danger'}>My Requests</button>
+            </div>}
             <div class="row pt-5">
-                <div className="ag-theme-balham" style={{ height: '450px', width:'790px' }}>
+                <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
                     <AgGridReact
                         modules={AllCommunityModules}
                         columnDefs={gridOptions.columnDefs}
