@@ -30,14 +30,14 @@ export const fetchUserById = (id) => {
 
 export const updateQuery = (id) => {
     return dispatch => {
-        // dispatch({ type: 'GRIV_BY_ID_LOADING', loading: true, error: false })
-        // return serverCall({
-        //     method: 'GET',
-        //     url: '/getgrivbyid?id=' + id,
-        // }).then(res => {
-        //     return dispatch({ type: 'GRIV_BY_ID', loading: false, data: res.data, error: false })
-        // }).catch(err => {
-        //     dispatch({ type: 'GRIV_BY_ID_ERROR', loading: false, data: err, error: true })
-        // })
+        dispatch({ type: 'UPDATE_QUERY_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'POST',
+            url: '/updatequery',
+        }).then(res => {
+            return dispatch({ type: 'UPDATE_QUERY', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'UPDATE_QUERY_ERROR', loading: false, data: err, error: true })
+        })
     }
 }

@@ -12,8 +12,16 @@ function QueryDetails(props) {
     const [query, setQuery] = useState(props.data)
     const [comment, setComment] = useState('')
     const [confirmationFlg, setConfirmationFlg] = useState(false)
+    let userId = JSON.parse(localStorage.getItem('auth'))['userId']
     let userName = JSON.parse(localStorage.getItem('auth'))['userName']
     let userType = JSON.parse(localStorage.getItem('auth'))['userType']
+
+    useEffect(() => {
+        setQuery(prevState => {
+            prevState = props.data
+            return ({ ...prevState })
+        })
+    }, [props.data])
     const onChangeHandler = (e) => {
         let id = e.target.id, value = e.target.value
         if (value) {
@@ -37,12 +45,13 @@ function QueryDetails(props) {
     function postComment() {
         if (query && comment) {
             setQuery(prevState => {
-                let commentsArr = prevState.comments
+                let commentsArr = (typeof prevState.comments !== 'number') ? prevState.comments : []
                 prevState.comments = commentsArr.push({
                     user: (userType !== 'employer' && userType !== 'admin') ? userName : userType,
                     date: new Date(),
                     comment
                 })
+                prevState['lastModifiedBy'] = userName
                 return ({ ...prevState })
             })
             props.updateQuery(query)
@@ -52,7 +61,10 @@ function QueryDetails(props) {
     function confirmationHandler() {
         if (query) {
             setQuery(prevState => {
-                prevState.orderLevel = 5
+                prevState['lastModifiedBy'] = userName
+                prevState['employerId'] = userId
+                prevState['assignedTo'] = userName
+                prevState['status'] = prevState.queryLevel
                 return ({ ...prevState })
             })
             props.updateQuery(query)
@@ -79,7 +91,7 @@ function QueryDetails(props) {
 
             {(userType == 'employer' && userType == 'admin') &&
                 <div className={'row pull-right'}>
-                    <div className={'col-md-10'}> <select className={'form-control rounded-0'} id={'orderLevel'} value={query && query.orderLevel} onChange={(e) => onChangeHandler(e)}>
+                    <div className={'col-md-10'}> <select className={'form-control rounded-0'} id={'queryLevel'} value={query && query.queryLevel} onChange={(e) => onChangeHandler(e)}>
                         <option value='' >Select</option>
                         {arr.map(item => <option value={item.key}>{item.value}</option>)}
                     </select></div> <div className={'col-md-2'}>
@@ -90,18 +102,19 @@ function QueryDetails(props) {
                 <div className="col-md-6">
                     <h4>Request Information</h4><hr />
                     <ul>
-                        <li><strong>User ID :</strong>{query && query.userId}</li>
-                        <li><strong>Grievance ID:</strong> {query && query.grivId}</li>
-                        <li><strong>Grievance Type:</strong>{query && query.grivType}</li>
-                        <li><strong>Note :</strong>{query && query.note}  </li>                        
-                        <li><strong>Status :</strong>{query && query.status}</li>
-                        <li><strong>Doc :</strong>grivDoc1</li>
+                        <li><strong>User ID: </strong>{query && query.userId}</li>
+                        <li><strong>Grievance ID: </strong> {query && query.grivId}</li>
+                        <li><strong>Grievance Type: </strong>{query && query.grivType}</li>
+                        <li><strong>Note: </strong>{query && query.note}  </li>
+                        <li><strong>Status: </strong>{query && query.status}</li>
+                        <li><strong>Doc: </strong>{query && query.grivDoc1.map((obj, key) => <p>{obj.id} </p>
+                        )}</li>
                         <li><strong>Start Date :</strong>{query && query.startDate}</li>
                         <li><strong>Land Mark :</strong>{query && query.userId}</li>
                         <li><strong>Status :</strong>{query && query.status}</li>
                         <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
                         <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
-                        <li><strong>Paid :</strong>{query && query.paidAmount}</li>                      
+                        <li><strong>Paid :</strong>{query && query.paidAmount}</li>
                     </ul>
                     <div className={'row '}>
                         <div className={'col-6 '}>
@@ -109,16 +122,20 @@ function QueryDetails(props) {
                             <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => postComment()}>Post</button>
                         </div>
                         <div className="col-6 pull-right">
-                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Order</button>
+                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
                         </div>
                     </div>
+                </div>
+                <div className="col-md-6">
+
                 </div>
             </div>
         </>
     )
 }
 const mapStoreToProps = state => ({
-
+    update_query_loading: state.trackReducer.getIn(['update_query', 'loading'], true),
+    update_query: state.trackReducer.getIn(['update_query'], new Map())
 })
 const mapDispatchToProps = {
     updateQuery

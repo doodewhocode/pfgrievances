@@ -9,6 +9,7 @@ import { history } from '../../../modules/helpers'
 import Modal from '../../../components/modal'
 import Confirmation from '../../../components/confirmation'
 import { fetchEmployeeReqs, fetchEmployerReqs, fetchAdminReqs } from '../../../redux/action/dashboardAction'
+import PieChart from "../../chart";
 
 
 function Summary(props) {
@@ -169,6 +170,7 @@ function Summary(props) {
                     >
                     </AgGridReact>
                 </div>
+                <div className={'col-md-3'}><PieChart /></div>
             </div>
 
         </>

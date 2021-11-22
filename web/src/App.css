@@ -92,6 +92,9 @@
   border:none;
   transition: all 200ms ease-in;
 }
+span.date{
+  margin-bottom: 13px;
+}
 .li.date{
   padding-bottom: 15px;
 }

@@ -5,11 +5,12 @@ const grievanceSchema = new conn.mongoose.Schema({
     grivId: String,
     grivType: String,
     userId: String,
+    queryLevel: Number,
     status: String,
     employerId: String,
     startDate: Date,
-    modifiedDateBy: String,
-    modifiedDate: Date,
+    lastModifiedBy: String,
+    lastModifiedDate: Date,
     endDate: Date,
     previousStatus: String,
     note: String,
@@ -38,11 +39,10 @@ module.exports.saveQuery = function (newGrievance, callback) {
 }
 
 
-module.exports.updateQuery = function (req, callback) {
-    let query = { _id: req.body._id }
+module.exports.updateQuery = function (obj, callback) {
+    let query = { _id: obj._id }
     //var newvalues = { $set: { status: "", c 
-    PFGrievance.updateOne(query, req.body, function (err, result) {
-    })
+    PFGrievance.updateOne(query, obj, { upsert: true }, callback)
 }
 
 module.exports.getAllPFGrievance = function (callback) {

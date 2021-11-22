@@ -23,9 +23,9 @@ function Login(props) {
     function signUp(type) {
         if (type === 'employee') {
             history.push('/employee')
-        } else if(type === 'employer') {
+        } else if (type === 'employer') {
             history.push('/employer')
-        }else{
+        } else {
             history.push('/forgotpassword')
         }
     }
@@ -74,9 +74,14 @@ function Login(props) {
             <Header />
             <header class="pf-banner" id="home">
                 <div class="pf-background"></div>
-                <div class="pf-carousel">
-                    <div class="carousel-slide">
-                        <div class="container">
+                <div id="myCarousel" class="pf-banner carousel slide" style={{paddingTop:'100px'}} data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class=""></li>
+                        <li data-target="#myCarousel" data-slide-to="1" class=""></li>
+                        <li data-target="#myCarousel" data-slide-to="2" class="active"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-xs-12">
                                     <div class="banner-content">
@@ -90,9 +95,7 @@ function Login(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="carousel-slide">
-                        <div class="container">
+                        <div class="carousel-item active carousel-item-left">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-xs-12">
                                     <div class="banner-content">
@@ -107,26 +110,32 @@ function Login(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="carousel-slide">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12 col-xs-12">
-                                    <div class="banner-content">
-                                        <h2 class="title" style={{ paddingBottom: "50px" }}>Get your PF Grievances solved with
-                                            our Expert Team </h2>
+                        <div class="carousel-item carousel-item-next carousel-item-left">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12 col-xs-12">
+                                        <div class="banner-content">
+                                            <h2 class="title" style={{ paddingBottom: "50px" }}>Get your PF Grievances solved with
+                                                our Expert Team </h2>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12 col-xs-12 p-0">
-                                    <div class="banner-img m-auto" style={{ width: "400px" }}>
-                                        <img src={PngItem} alt="Banner-Image" />
+                                    <div class="col-lg-6 col-md-12 col-xs-12 p-0">
+                                        <div class="banner-img m-auto" style={{ width: "400px" }}>
+                                            <img src={PngItem} alt="Banner-Image" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
             </header>
             <section class="pf-section">
@@ -228,7 +237,7 @@ function Login(props) {
                                         <a target="blanck" onClick={() => signUp('forgotpassword')}>Forget Password?</a>
                                     </div>
                                     <div class="d-flex  align-items-center justify-content-between pb-2">
-                                    <button type="button" class="btn btn-common ml-2"><a
+                                        <button type="button" class="btn btn-common ml-2"><a
                                             onClick={() => signUp('employer')}>Register</a></button>
                                         <div class="d-flex  align-items-center">
                                             <button type="button" class="btn btn-secondary">Cancel</button>

@@ -6,6 +6,7 @@ import 'jquery/dist/jquery.slim'
 import 'popper.js'
 import 'bootstrap/dist/js/bootstrap.min'
 import './style.css';
+import './slick.css';
 import './assets/css/sb-admin-2.min.css'
 import './index.css';
 

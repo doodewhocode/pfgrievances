@@ -60,13 +60,13 @@ function Track(props) {
                             <th>Date</th>
                             <th>Comment</th>
                             <tbody>
-                                {rowData.comments.map((obj, key) => {
+                                {/* {(rowData !== {}) && rowData.comments.map((obj, key) => {
                                     <tr>
                                         <td>{obj.user}</td>
                                         <td>{obj.date}</td>
                                         <td>{obj.comment}</td>
                                     </tr>
-                                })}
+                                })} */}
                             </tbody>
                         </table>
                     </div>

@@ -108,4 +108,15 @@ router.get('/getgrivbyid', async function (req, res, next) {
     });
 })
 
+router.post('/updatequery', async function (req, res, next) {
+    let obj = req.body
+    obj['lastModifiedDate'] = new Date()
+    console.log("update query", obj)
+    PFGrievance.updateQuery(obj, function (err, grievance) {
+        console.log(grievance)
+        if (err) return next(err);
+        res.json(grievance)
+    })
+})
+
 module.exports = router;
