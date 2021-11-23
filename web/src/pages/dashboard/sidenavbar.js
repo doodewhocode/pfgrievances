@@ -6,6 +6,8 @@ import Profile from '../profile'
 import Track from '../track'
 import Form from '../form'
 import Summary from './home'
+import FormControl from '../formcontrol'
+import Users from '../users'
 
 function SideNavbar(props) {
     console.log(props)
@@ -38,14 +40,14 @@ function SideNavbar(props) {
                             </div>
 
                             <div className="sidenav-menu-heading">Administrative</div>
-                            {(props.login['data'].userType === 'employee') &&
+                            {/* {(props.login['data'].userType === 'employee') && */}
                                 <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
                                     data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Faculty
+                                    <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Admin
                                     <div className="sidenav-collapse-arrow">
                                         <i className="fa fa-angle-down"></i>
                                     </div>
-                                </a>}
+                                </a>
                             <div className="collapse" id="collapseLayouts" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                                     <Link className="nav-link" to="/app/usercontrol"> User Control</Link>
@@ -71,6 +73,8 @@ function SideNavbar(props) {
                         <Route path="/app/profile" component={Profile} />
                         <Route path="/app/form" component={Form} />
                         <Route path="/app/track" component={Track} />
+                        <Route path="/app/usercontrol" component={Users } />
+                        <Route path="/app/formcontrol" component={FormControl } />
                         <Redirect from="/" to="/app/home" />
                     </Switch>
                 </div>

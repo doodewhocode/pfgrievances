@@ -38,6 +38,18 @@ function DashboardReducer(state = initialState, action) {
                 .setIn(['admin_reqs', 'loading'], action.loading)
                 .setIn(['admin_reqs', 'error'], action.error)
 
+        case 'ALL_USERS_LOADING':
+            return state.setIn(['all_users', 'loading'], action.loading)
+                .setIn(['all_users', 'error'], action.error)
+        case 'ALL_USERS':
+            return state.setIn(['all_users', 'data'], action.data)
+                .setIn(['all_users', 'loading'], action.loading)
+                .setIn(['all_users', 'error'], action.error)
+        case 'ALL_USERS_ERROR':
+            return state.setIn(['all_users', 'data'], action.data)
+                .setIn(['all_users', 'loading'], action.loading)
+                .setIn(['all_users', 'error'], action.error)
+
 
         default:
             return state

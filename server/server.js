@@ -11,7 +11,9 @@ var expressValidator = require('express-validator');//req.checkbody()
 const methodOverride = require('method-override');
 
 const config = require('./config')
-//let conn = mongoose.createConnection(process.env.MONGO_URI)
+const conn = require('./models/init')
+const Grid = require('gridfs-stream');
+//let conn = conn.mongoose.createConnection(process.env.MONGO_URI)
 
 
 
@@ -42,8 +44,9 @@ server.use(expressValidator({
   }
 }));
 // let gfs;
-// conn.once('open',()=>{
-//   gfs = Grid(conn.db, mongoose.mongo);
+// conn.mongoose.connection.once('open', () => {
+//   var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+//   gfs = Grid(db, mongoDriver);
 //   gfs.collection('uploads');
 // })
 

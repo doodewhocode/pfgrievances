@@ -15,8 +15,16 @@ import PieChart from "../../chart";
 function Summary(props) {
     const [gridApi, setGridApi] = useState(null)
     const [rowData, setRowData] = useState(null)
+    const [status, setStatus] = useState({
+        pending: 0,
+        new: 0,
+        inReview: 0,
+        inProgress: 0,
+        completed: 0
+    })
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalDeleteFlg, setModalDeleteFlg] = useState(false)
+
     let userId = null, employerName = null, userType = null
     let gridOptions = {
         modules: AllCommunityModules,
@@ -66,6 +74,14 @@ function Summary(props) {
             if (!props.empl_reqs.toJS().error) {
                 console.log(props.empl_reqs.toJS())
                 setRowData(props.empl_reqs.toJS()['data'])
+                let obj = calChartSummary(props.empl_reqs.toJS()['data'])
+                console.log("hehe", obj)
+                setStatus((prevState) => {
+                    for (let key in obj) {
+                        prevState[key] = obj[key]
+                    }
+                    return ({ ...prevState })
+                })
             }
         }
     }, [props.empl_reqs_loading])
@@ -95,6 +111,40 @@ function Summary(props) {
         api.refreshCells()
         setGridApi(api);
     }
+
+    function calChartSummary(data) {
+        let a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        for (var i = 0; i < data.length; i++) {
+            console.log(data[i].status)
+            if (data[i].status === 'Pending') { a++; }
+            else if (data[i].status === 'New') b++;
+            else if (data[i].status === 'In-Review') c++;
+            else if (data[i].status === 'In-Progress') d++;
+            else if (data[i].status === 'Completed') e++;
+            //else f++;
+            //return obj
+        }
+        return {
+            pending: a,
+            new: b,
+            inReview: c,
+            inProgress: d,
+            completed: e,
+           // other: f
+        }
+    }
+
+    let labels = ['Pending', 'New', 'In-Review', 'In-Progress', 'Completed']
+
+    const arrChartData = () => {
+        let arr = []
+        for (let key in status) {
+            arr.push(status[key])
+        }
+
+        return arr
+    }
+
     return (
         <>
             <div class="row pt-5">
@@ -109,7 +159,7 @@ function Summary(props) {
                                         <h1><b>7</b></h1>
                                     </div>
                                     <hr style={{ borderColor: '#FFFFFF' }} />
-                                    <h5 class="text-right">Active Query</h5>
+                                    <h5 class="text-right">Total Query</h5>
                                 </div>
                             </div>
                         </div>
@@ -170,9 +220,8 @@ function Summary(props) {
                     >
                     </AgGridReact>
                 </div>
-                <div className={'col-md-3'}><PieChart /></div>
+                <div className={'col-md-3'}><PieChart labels={labels} data={arrChartData()} /></div>
             </div>
-
         </>
     )
 }

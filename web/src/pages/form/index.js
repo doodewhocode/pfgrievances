@@ -131,7 +131,7 @@ function Form(props) {
             userId: JSON.parse(localStorage.getItem('auth')).userId,
             employerName: JSON.parse(localStorage.getItem('auth')).employerName,
             note: state.note,
-            status: "Created",
+            status: "New",
             paymentStatus: true,
             paidAmount: "200",
             paymentMethod: "CARD",

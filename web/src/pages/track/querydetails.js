@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { updateQuery } from '../../redux/action/trackAction'
+import { updateQuery, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
 
-let arr = [{ key: -1, value: 'New' },
-{ key: 0, value: 'Confirmed' },
-{ key: 1, value: 'Processing' },
-{ key: 2, value: 'Completed' }
+let arr = [
+    { key: -2, value: 'Pending' },
+    { key: -1, value: 'New' },
+    { key: 0, value: 'In-Review' },
+    { key: 1, value: 'In-Progress' },
+    { key: 2, value: 'Completed' }
 ]
 function QueryDetails(props) {
     const [query, setQuery] = useState(props.data)
@@ -22,6 +24,25 @@ function QueryDetails(props) {
             return ({ ...prevState })
         })
     }, [props.data])
+
+    useEffect(() => {
+        if (!props.file_by_id_loading) {
+            if (!props.file_by_id.toJS().error) {
+
+                console.log(props.file_by_id.toJS().data)
+                const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
+                //let blob = new Blob([props.file_by_id.toJS().data])
+                let pdfWindow = window.open("")
+                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                // var fileURL = URL.createObjectURL(blob);
+                // const link = document.createElement('a');
+                // link.href = fileURL;
+                // link.setAttribute('download', "doc1.pdf"); //or any other extension
+                // document.body.appendChild(link);
+                // link.click()
+            }
+        }
+    }, [props.file_by_id_loading])
     const onChangeHandler = (e) => {
         let id = e.target.id, value = e.target.value
         if (value) {
@@ -75,6 +96,10 @@ function QueryDetails(props) {
         setConfirmationFlg(false)
     }
 
+    function getFile(id) {
+        props.fetchFileById(id)
+    }
+
 
 
     return (
@@ -107,10 +132,12 @@ function QueryDetails(props) {
                         <li><strong>Grievance Type: </strong>{query && query.grivType}</li>
                         <li><strong>Note: </strong>{query && query.note}  </li>
                         <li><strong>Status: </strong>{query && query.status}</li>
-                        <li><strong>Doc: </strong>{query && query.grivDoc1.map((obj, key) => <p>{obj.id} </p>
+                        <li><strong>Doc: </strong>{(query && query.grivDoc1) && query.grivDoc1.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
+                        )}</li>
+                        <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
                         )}</li>
                         <li><strong>Start Date :</strong>{query && query.startDate}</li>
-                        <li><strong>Land Mark :</strong>{query && query.userId}</li>
+                        <li><strong>User ID :</strong>{query && query.userId}</li>
                         <li><strong>Status :</strong>{query && query.status}</li>
                         <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
                         <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
@@ -127,7 +154,7 @@ function QueryDetails(props) {
                     </div>
                 </div>
                 <div className="col-md-6">
-
+                    <iframe src="" />
                 </div>
             </div>
         </>
@@ -135,10 +162,15 @@ function QueryDetails(props) {
 }
 const mapStoreToProps = state => ({
     update_query_loading: state.trackReducer.getIn(['update_query', 'loading'], true),
-    update_query: state.trackReducer.getIn(['update_query'], new Map())
+    update_query: state.trackReducer.getIn(['update_query'], new Map()),
+
+    file_by_id_loading: state.trackReducer.getIn(['file_by_id', 'loading'], true),
+    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map())
 })
 const mapDispatchToProps = {
-    updateQuery
+    updateQuery,
+    fetchFileById,
+    fetchFileByName
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(QueryDetails)

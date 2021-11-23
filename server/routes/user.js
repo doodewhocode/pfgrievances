@@ -12,7 +12,7 @@ const path = require("path");
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const conn = require('../models/init')
-const mongodb = require('mongodb')
+const mongoose = require('mongoose')
 
 const storage = new GridFsStorage({
   url: process.env.MONGO_URI,
@@ -167,6 +167,7 @@ router.post('/register',
 
 
 router.get('/files', (req, res) => {
+
   gfs.files.find().toArray((err, files) => {
     //check if files
     if (!files || files.legth === 0) {
@@ -178,16 +179,70 @@ router.get('/files', (req, res) => {
   })
 })
 
+router.get('/file/:id', (req, res) => {
+
+  var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+  gfs = Grid(db, mongoDriver);
+  gfs.collection('uploads');
+  // let gfsChunks = Grid(db, mongoDriver);
+  //gfsChunks.collection('uploads.chunks');
+  //console.log("gfs", gfs)
+
+  gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) }, (err, file) => {
+    // Check if file
+    //console.log("file", file, err)
+    if (!file || file.length === 0) {
+      console.log("not found")
+      return res.status(404).json({ err: 'No file exists' });
+    }
+    if (err) {
+      return res.status(404).json({ err: err })
+    }
+
+    // gfsChunks.chunks.find({ files_id: file._id }, (err, chunks) => {
+    //   if (err) return res.status(404).json({ err: err })
+    //   if (!chunks || chunks.length === 0) res.status(404).json({ err: 'No file exists' });
+    //   let finalData = [];
+    //   console.log("chunks", chunks)
+
+    // })
+
+    var readStream = gfs.createReadStream({
+      filename: file.filename
+    });
+
+    readStream.on('data', function (data) {
+      
+      let bufData = data.toString('base64')
+      //console.log("bufData", bufData);
+      let finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+      res.status(200).json(finalFile);
+    })
+
+    //res.setHeader('Content-disposition','attachment; filename='+file.filename);
+    //res.setHeader('Content-type', file.contentType);
+    // readStream.pipe(res)
+    //console.log("file", file)
+    //return res.status(200).json(file)
+  })
+})
+
 
 router.get('/file/:filename', (req, res) => {
+  var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+  console.log(db)
+  const gfs = Grid(db, mongoDriver, { bucketName: 'uploads' });
+
+  console.log("gfs", gfs)
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     //check if files
+    console.log(file)
     if (!file || file.legth === 0) {
       return res.status(404).json({
         err: 'No file exists'
       })
     }
-    return res.json(files);
+    return res.json(file);
   })
 })
 
@@ -278,4 +333,12 @@ router.get('/fetchuserbyid', function (req, res, next) {
     res.json(user)
   });
 })
+router.get('/fetchallusers', function (req, res, next) {
+   User.getAllUsers( function (err, user) {
+    console.log(user)
+    if (err) return next(err);
+    res.json(user)
+  });
+})
+
 module.exports = router;

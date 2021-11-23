@@ -38,6 +38,30 @@ function TrackReducer(state = initialState, action) {
                 .setIn(['update_query', 'loading'], action.loading)
                 .setIn(['update_query', 'error'], action.error)
 
+        case 'FILE_BY_ID_LOADING':
+            return state.setIn(['file_by_id', 'loading'], action.loading)
+                .setIn(['file_by_id', 'error'], action.error)
+        case 'FILE_BY_ID':
+            return state.setIn(['file_by_id', 'data'], action.data)
+                .setIn(['file_by_id', 'loading'], action.loading)
+                .setIn(['file_by_id', 'error'], action.error)
+        case 'FILE_BY_ID_ERROR':
+            return state.setIn(['file_by_id', 'data'], action.data)
+                .setIn(['file_by_id', 'loading'], action.loading)
+                .setIn(['file_by_id', 'error'], action.error)
+
+        case 'FILE_BY_NAME_LOADING':
+            return state.setIn(['file_by_name', 'loading'], action.loading)
+                .setIn(['file_by_name', 'error'], action.error)
+        case 'FILE_BY_NAME':
+            return state.setIn(['file_by_name', 'data'], action.data)
+                .setIn(['file_by_name', 'loading'], action.loading)
+                .setIn(['file_by_name', 'error'], action.error)
+        case 'FILE_BY_NAME_ERROR':
+            return state.setIn(['file_by_name', 'data'], action.data)
+                .setIn(['file_by_name', 'loading'], action.loading)
+                .setIn(['file_by_name', 'error'], action.error)
+
         default:
             return state
     }

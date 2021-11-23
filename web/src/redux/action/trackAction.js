@@ -41,3 +41,31 @@ export const updateQuery = (id) => {
         })
     }
 }
+
+export const fetchFileById = (id) => {
+    return dispatch => {
+        dispatch({ type: 'FILE_BY_ID_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'GET',
+            url: '/file/' + id,
+        }).then(res => {
+            return dispatch({ type: 'FILE_BY_ID', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'FILE_BY_ID_ERROR', loading: false, data: err, error: true })
+        })
+    }
+}
+
+export const fetchFileByName = (id) => {
+    return dispatch => {
+        dispatch({ type: 'FILE_BY_NAME_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'GET',
+            url: '/file/' + id,
+        }).then(res => {
+            return dispatch({ type: 'FILE_BY_NAME', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'FILE_BY_NAME_ERROR', loading: false, data: err, error: true })
+        })
+    }
+}

@@ -60,3 +60,18 @@ export const fetchAdminReqs = (payload) => {
         })
     }
 }
+
+
+export const fetchAllUsers = () => {
+    return dispatch => {
+        dispatch({ type: 'ALL_USERS_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'GET',
+            url: '/fetchallusers',
+        }).then(res => {
+            return dispatch({ type: 'ALL_USERS', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'ALL_USERS_ERROR', loading: false, data: err, error: true })
+        })
+    }
+}
