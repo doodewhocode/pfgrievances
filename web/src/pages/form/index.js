@@ -149,13 +149,11 @@ function Form(props) {
                     formData.set(key, obj[key])
                 }
             }
-
             for (var i = 0; i < state.forms.length; i++) {
                 formData.set("file" + (i + 1), state.forms[i].file, state.forms[i].id)
             }
             props.submitQuery(formData)
         }
-
     }
 
     return (

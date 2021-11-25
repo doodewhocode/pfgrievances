@@ -156,7 +156,7 @@ function Summary(props) {
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-tick icon-lg"
                                             style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
-                                        <h1><b>7</b></h1>
+                                        <h1><b>{rowData && rowData.length}</b></h1>
                                     </div>
                                     <hr style={{ borderColor: '#FFFFFF' }} />
                                     <h5 class="text-right">Total Query</h5>
@@ -173,7 +173,7 @@ function Summary(props) {
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-listview_search icon-lg"
                                             style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
-                                        <h1><b>3</b></h1>
+                                        <h1><b>{status.pending}</b></h1>
                                     </div>
                                     <hr style={{ borderColor: '#FFFFFF' }} />
                                     <h5 class="text-right">Pending Query</h5>
@@ -190,7 +190,7 @@ function Summary(props) {
                                     <div class="d-flex align-items-center justify-content-between">
                                         <i class="icon-error icon-lg"
                                             style={{ color: '#FFFFFF', fontSize: '40px' }}></i>
-                                        <h1><b>14</b></h1>
+                                        <h1><b>{status.completed}</b></h1>
                                     </div>
                                     <hr style={{ borderColor: '#FFFFFF' }} />
                                     <h5 class="text-right">Closed Query</h5>

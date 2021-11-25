@@ -51,7 +51,7 @@ server.use(expressValidator({
 // })
 
 // Routes
-server.use([require('./routes/grievance')])
+server.use([require('./routes/grievance'), require('./routes/query')])
 server.use([require('./routes/auth'), require('./routes/user')])
 
 // Error handling

@@ -126,7 +126,7 @@ function QueryDetails(props) {
             <div className="row">
                 <div className="col-md-6">
                     <h4>Request Information</h4><hr />
-                    <ul>
+                    <ul className="tracklist">
                         <li><strong>User ID: </strong>{query && query.userId}</li>
                         <li><strong>Grievance ID: </strong> {query && query.grivId}</li>
                         <li><strong>Grievance Type: </strong>{query && query.grivType}</li>

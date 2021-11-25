@@ -157,3 +157,6 @@ padding: 2px 15px;
 .tab-card-header > .tab-content {
 padding-bottom: 0;
 }
+.tracklist{
+list-style: none;
+}

@@ -25,18 +25,7 @@ function Users(props) {
     let gridOptions = {
         modules: AllCommunityModules,
         columnDefs: [
-            {
-                headerName: 'User ID', field: '_id', width: 150, filter: false, cellRenderer: (params) => {
-                    var link = document.createElement('a');
-                    link.href = '#';
-                    link.innerHTML = params.value;
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault()
-                        idClickHandler(params.value)
-                    })
-                    return link
-                }
-            },
+            { headerName: 'User ID', field: '_id', width: 150, filter: false },
             { headerName: "First Name", field: "firstName", width: 120 },
             { headerName: "Last Name", field: "lastName", width: 100, filter: false },
             { headerName: "Email Id", field: "emailId", width: 75 },
