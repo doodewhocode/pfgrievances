@@ -30,3 +30,19 @@ export const registerEmployer = (payload) => {
         })
     }
 }
+
+
+export const updateUser = (payload)=>{
+    return dispatch => {
+        dispatch({ type: 'UPDATE_USER_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'POST',
+            url: '/updateuser',
+            data: payload
+        }).then(res => {
+            return dispatch({ type: 'UPDATE_USER', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'UPDATE_USER_ERROR', loading: false, data: err, error: true })
+        })
+    }
+}

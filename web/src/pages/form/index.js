@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { submitQuery } from '../../redux/action/formAction'
 import pdf from "../../assets/form/New-Joint-Declaration-Form.pdf"
 import { PDFDocument } from 'pdf-lib'
+import { fetchGrivById, updateQuery, fetchFileById, fetchFileByName, updateFileQuery } from '../../redux/action/trackAction'
+
 let reqList = [
     { id: "1", value: "Name Change Correction" },
     { id: "2", value: "DOB Correction" },
@@ -27,6 +29,8 @@ function Form(props) {
     const [selectedForm, setSelectedForm] = useState({})
     const [selectedPDF, setSelectedPDF] = useState("")
     const [currentPdf, setCurrentPdf] = useState("")
+    const [rowData, setRowData] = useState({})
+    const [update, setUpdate] = useState(false)
     const [state, setState] = useState({
         forms: [],
         note: ""
@@ -44,6 +48,49 @@ function Form(props) {
     }, [selectedForm])
 
 
+    var pathParam = props.location.pathname.replace("/app/form", "")
+    useEffect(() => {
+        if (pathParam !== "") {
+            props.fetchGrivById(props.location.pathname.replace("/app/form/", ""))
+            setUpdate(true)
+        }
+    }, [])
+
+    useEffect(async () => {
+        if (!props.griv_by_id_loading) {
+            if (!props.griv_by_id.toJS().error) {
+                //console.log(props.griv_by_id.toJS())
+                if (Object.keys(props.griv_by_id.toJS()['data']).length > 0) {
+                    await existFormDecl(props.griv_by_id.toJS()['data'])
+                    //setRowData(props.griv_by_id.toJS()['data'])
+                    let obj = reqList.find((obj) => obj.id == rowData.grivId)
+                    setSelectedForm(obj)
+                }
+            }
+        }
+    }, [props.griv_by_id_loading])
+
+    useEffect(async () => {
+        if (!props.file_by_id_loading) {
+            if (!props.file_by_id.toJS().error) {
+                let pdfWindow = window.open("")
+                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+            }
+        }
+    }, [props.file_by_id_loading])
+
+    function existFormDecl(obj) {
+        //let obj = props.griv_by_id.toJS()['data']
+        setRowData((prevState) => {
+            for (var key in obj) {
+                prevState[key] = obj[key]
+            }
+            return ({ ...prevState })
+        })
+
+    }
+
+
 
     function onChangeHandler(e) {
         let id = e.target.id, value = e.target.value
@@ -58,12 +105,16 @@ function Form(props) {
         setSelectedForm(obj)
     }
     function onSelectPDF(value) {
-        console.log(value)
         setSelectedPDF(value)
         loadPDF("../.." + value)
     }
-    function onClickDownloadPDF() {
-
+    function onClickDownloadPDF(value) {
+        //var fileURL = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = "../.." + value;
+        link.setAttribute('download', "doc1.pdf"); //or any other extension
+        document.body.appendChild(link);
+        link.click()
     }
 
     function formHTML() {
@@ -90,13 +141,13 @@ function Form(props) {
         url = 'https://pdf-lib.js.org/assests/dod_character.pdf'
         const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
         pdfDoc = await PDFDocument.load(arrayBuffer);
-        console.log(pdfDoc.saveAsBase64({ dataUri: true }));
+        //console.log(pdfDoc.saveAsBase64({ dataUri: true }));
         setCurrentPdf(await pdfDoc.saveAsBase64({ dataUri: true }))
     }
 
     function fileUploadChange(e) {
-        console.log("obj", { id: e.target.id, value: e.target.name })
-        console.log("file", e.target.files)
+        //console.log("obj", { id: e.target.id, value: e.target.name })
+        // console.log("file", e.target.files)
         setState((prevState) => {
             prevState.forms = [...prevState.forms, { id: e.target.id, value: e.target.value, file: e.target.files[0] }]
             return ({ ...prevState })
@@ -108,10 +159,10 @@ function Form(props) {
     }
 
     function printFileName(id) {
-        console.log("hehe", id)
+        //   console.log("hehe", id)
         let returnObj = {}
         returnObj = (state.forms.length > 0) ? state.forms.find((obj) => obj.id == id) : {}
-        console.log("hehe obj", returnObj)
+        // console.log("hehe obj", returnObj)
         return (returnObj !== {} && returnObj !== undefined) ? returnObj.value : ""
     }
 
@@ -124,6 +175,61 @@ function Form(props) {
         return true;
     }
 
+    function getFile(id) {
+        props.fetchFileById(id)
+    }
+
+    function onClickSave() {
+        let obj = {
+            grivId: (selectedForm != {}) ? selectedForm.id : "",
+            grivType: (selectedForm != {}) ? selectedForm.value : "",
+            userId: JSON.parse(localStorage.getItem('auth')).userId,
+            employerName: JSON.parse(localStorage.getItem('auth')).employerName,
+            note: state.note,
+            status: "Pending",
+            paymentStatus: false,
+            paidAmount: "",
+            paymentMethod: "",
+            queryLevel: -2,
+            endDate: '',
+            comments: []
+        }
+        //console.log(obj)
+        let formData = new FormData();
+        let isValid = isValidForm(obj)
+        if (isValid) {
+            for (let key in obj) {
+                //console.log(key + ',' + obj[key])
+                if (key !== 'image') {
+                    formData.set(key, obj[key])
+                }
+            }
+            for (var i = 0; i < state.forms.length; i++) {
+                formData.set("file" + (i + 1), state.forms[i].file, state.forms[i].id)
+            }
+            props.submitQuery(formData)
+        }
+    }
+
+    function onClickUpdate() {
+        if (state.forms.length > 0) {
+            let formData = new FormData();
+            console.log(rowData)
+            var obj = rowData
+            for (var key in obj) {
+                if (key === "grivDoc1" || key === "grivDoc2") {
+                    formData.set(key, JSON.stringify(obj[key]))
+                } else
+                    formData.set(key, obj[key])
+            }
+            for (var i = 0; i < state.forms.length; i++) {
+                formData.set("file" + (i + 1), state.forms[i].file, state.forms[i].id)
+            }
+            props.updateFileQuery(formData)
+        } else {
+
+        }
+    }
     function onClickSubmit() {
         let obj = {
             grivId: (selectedForm != {}) ? selectedForm.id : "",
@@ -139,12 +245,12 @@ function Form(props) {
             endDate: '',
             comments: []
         }
-        console.log(obj)
+        //console.log(obj)
         let formData = new FormData();
         let isValid = isValidForm(obj)
         if (isValid) {
             for (let key in obj) {
-                console.log(key + ',' + obj[key])
+                //console.log(key + ',' + obj[key])
                 if (key !== 'image') {
                     formData.set(key, obj[key])
                 }
@@ -155,6 +261,16 @@ function Form(props) {
             props.submitQuery(formData)
         }
     }
+    console.log("selectedForm", selectedForm)
+    function existingDoc(formId) {
+        let tempArr = rowData['grivDoc1'].concat(rowData['grivDoc2'])
+        return tempArr.map((obj, key) => {
+            if (formId == obj.formId)
+                return (
+                    <div> <a onClick={() => getFile(obj.id)}>{obj.id} </a> , <span>{obj.date}</span></div>
+                )
+        })
+    }
 
     return (
         <>
@@ -164,8 +280,8 @@ function Form(props) {
                         <div class="row">
                             <div class="col-7">
                                 <div className={'col-md-12'}>
-                                    <select className='form-control rounded-0' value={(selectedForm !== {}) ? selectedForm.id : ""} onChange={(e) => onChangeDropdown(e)}>
-                                        <option>Select Type of Form</option>
+                                    <select className='form-control rounded-0' value={(Object.keys(selectedForm).length > 0 && selectedForm !== undefined && selectedForm !== null) ? selectedForm.id : ""} onChange={(e) => onChangeDropdown(e)}>
+                                        <option>Select Type of Query</option>
                                         {reqList.map((e, key) => {
                                             return <option key={key} value={e.id}>{e.value}</option>;
                                         })
@@ -193,6 +309,7 @@ function Form(props) {
                                                                 <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
                                                                 <br /><span>{printFileName(e.id)}</span>
                                                             </div>
+                                                            {update && existingDoc(e.id)}
                                                         </div>)
                                                     })
                                                 }
@@ -212,7 +329,8 @@ function Form(props) {
                                         < hr />
                                         <div class="d-flex  align-items-center justify-content-end pb-2">
                                             <button type="button" class="btn btn-secondary">Cancel</button>
-                                            <button type="button" class="btn btn-secondary ml-2">Save</button>
+                                            <button type="button" class="btn btn-secondary ml-2" onClick={onClickSave}>Save</button>
+                                            {update && <button type="button" class="btn btn-secondary ml-2" onClick={onClickUpdate}>{(update && rowData['queryLevel'] === -2 ? "Submit" : "Update")}</button>}
                                             <button type="button" class="btn btn-common ml-2" onClick={onClickSubmit}>Submit</button>
                                         </div>
                                     </div>
@@ -265,10 +383,26 @@ function Form(props) {
 const mapStoreToProps = state => ({
     sub_query_loading: state.formReducer.getIn(['sub_query', 'loading'], true),
     sub_query: state.formReducer.getIn(['sub_query'], new Map()),
-    login: state.loginReducer['login']
+
+    login: state.loginReducer['login'],
+
+    griv_by_id_loading: state.trackReducer.getIn(['griv_by_id', 'loading'], true),
+    griv_by_id: state.trackReducer.getIn(['griv_by_id'], new Map()),
+
+    update_query_loading: state.trackReducer.getIn(['update_query', 'loading'], true),
+    update_query: state.trackReducer.getIn(['update_query'], new Map()),
+
+    file_by_id_loading: state.trackReducer.getIn(['file_by_id', 'loading'], true),
+    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map())
+
 })
 const mapDispatchToProps = {
-    submitQuery
+    submitQuery,
+    fetchGrivById,
+    updateQuery,
+    fetchFileById,
+    fetchFileByName,
+    updateFileQuery
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Form)

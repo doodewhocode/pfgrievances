@@ -13,6 +13,42 @@ function QueryControlReducer(state = initialState, action) {
             return state.setIn(['create_query', 'data'], action.data)
                 .setIn(['create_query', 'loading'], action.loading)
                 .setIn(['create_query', 'error'], action.error)
+
+        case 'UPDATE_QUERY_CTL_LOADING':
+            return state.setIn(['update_query_ctl', 'loading'], action.loading)
+                .setIn(['update_query_ctl', 'error'], action.error)
+        case 'UPDATE_QUERY_CTL':
+            return state.setIn(['update_query_ctl', 'data'], action.data)
+                .setIn(['update_query_ctl', 'loading'], action.loading)
+                .setIn(['update_query_ctl', 'error'], action.error)
+        case 'UPDATE_QUERY_CTL_ERROR':
+            return state.setIn(['update_query_ctl', 'data'], action.data)
+                .setIn(['update_query_ctl', 'loading'], action.loading)
+                .setIn(['update_query_ctl', 'error'], action.error)
+
+        case 'DELETE_QUERY_CTL_LOADING':
+            return state.setIn(['delete_query_ctl', 'loading'], action.loading)
+                .setIn(['delete_query_ctl', 'error'], action.error)
+        case 'DELETE_QUERY_CTL':
+            return state.setIn(['delete_query_ctl', 'data'], action.data)
+                .setIn(['delete_query_ctl', 'loading'], action.loading)
+                .setIn(['delete_query_ctl', 'error'], action.error)
+        case 'DELETE_QUERY_CTL_ERROR':
+            return state.setIn(['delete_query_ctl', 'data'], action.data)
+                .setIn(['delete_query_ctl', 'loading'], action.loading)
+                .setIn(['delete_query_ctl', 'error'], action.error)
+
+        case 'QUERY_LIST_LOADING':
+            return state.setIn(['query_list', 'loading'], action.loading)
+                .setIn(['query_list', 'error'], action.error)
+        case 'QUERY_LIST':
+            return state.setIn(['query_list', 'data'], action.data)
+                .setIn(['query_list', 'loading'], action.loading)
+                .setIn(['query_list', 'error'], action.error)
+        case 'QUERY_LIST_ERROR':
+            return state.setIn(['query_list', 'data'], action.data)
+                .setIn(['query_list', 'loading'], action.loading)
+                .setIn(['query_list', 'error'], action.error)
         default:
             return state
     }

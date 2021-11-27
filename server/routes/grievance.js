@@ -56,6 +56,7 @@ router.post('/query', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'fi
         fileName: req.files['file1'][0].filename,
         date: new Date()
     }]
+
     obj['grivDoc2'] = [{
         formId: req.files['file2'][0].originalname,
         id: req.files['file2'][0].id,
@@ -115,6 +116,42 @@ router.post('/updatequery', async function (req, res, next) {
     PFGrievance.updateQuery(obj, function (err, grievance) {
         console.log(grievance)
         if (err) return next(err);
+        res.json(grievance)
+    })
+})
+
+router.post('/updatefilequery', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async function (req, res, next) {
+    let obj = req.body
+    console.log("req.files['file1']", req.files['file1'])
+    var tempArr1 = JSON.parse(obj['grivDoc1'])
+    var tempArr2 = JSON.parse(obj['grivDoc2'])
+    if (req.files['file1'] !== undefined) {
+        tempArr1.push({
+            formId: req.files['file1'][0].originalname,
+            id: req.files['file1'][0].id,
+            fileName: req.files['file1'][0].filename,
+            date: new Date()
+        })
+    }
+    if (req.files['file2'] !== undefined) {
+        tempArr2.push({
+            formId: req.files['file2'][0].originalname,
+            id: req.files['file2'][0].id,
+            fileName: req.files['file2'][0].filename,
+            date: new Date()
+        })
+    }
+    console.log(tempArr1, tempArr2)
+    obj['grivDoc1'] = tempArr1
+    obj['grivDoc2'] = tempArr2
+    obj['lastModifiedDate'] = new Date()
+    console.log("update file query", obj)
+    PFGrievance.updateQuery(obj, function (err, grievance) {
+        console.log(grievance)
+        if (err) {
+            console.log(err)
+            return next(err);
+        }
         res.json(grievance)
     })
 })

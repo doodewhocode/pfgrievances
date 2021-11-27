@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { updateQuery, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
+import { history } from '../../modules/helpers'
 
 let arr = [
     { key: -2, value: 'Pending' },
@@ -29,7 +30,7 @@ function QueryDetails(props) {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
 
-                console.log(props.file_by_id.toJS().data)
+                //console.log(props.file_by_id.toJS().data)
                 const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
                 //let blob = new Blob([props.file_by_id.toJS().data])
                 let pdfWindow = window.open("")
@@ -101,7 +102,9 @@ function QueryDetails(props) {
     }
 
 
-
+    function reUploadDoc() {
+        history.push('/app/form/' + query._id)
+    }
     return (
         <>
             <br />
@@ -150,6 +153,9 @@ function QueryDetails(props) {
                         </div>
                         <div className="col-6 pull-right">
                             <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
+                        </div>
+                        <div className="col-6 pull-right">
+                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
                         </div>
                     </div>
                 </div>

@@ -50,27 +50,63 @@ router.post('/createquery', upload.fields([{ name: 'file1', maxCount: 1 }, { nam
         return next(err)
     }
     console.log("req.files['file1']", req.files['file1'])
-    obj['docs'] = []
-    obj.docs.push({
-        formId: req.files['file1'][0].originalname,
-        id: req.files['file1'][0].id,
-        fileName: req.files['file1'][0].filename,
-        date: new Date()
-    })
-    obj.docs.push({
-        formId: req.files['file2'][0].originalname,
-        id: req.files['file2'][0].id,
-        fileName: req.files['file2'][0].filename,
-        date: new Date()
-    })
+    //obj['docs'] = []
+    console.log("req.files['file2'][0]", req.files['file2'])
+    for (var i = 0; i < obj.docs.length; i++) {
+        if (obj.docs[i].docId === req.files['file1'][0].originalname) {
+            obj.docs[i]['fileId'] = req.files['file1'][0].id;
+            obj.docs[i]['fileName'] = req.files['file1'][0].filename;
+            obj.docs[i]['date'] = new Date()
+        }
+        if (req.files['file2'] !== undefined) {
+            if (obj.docs[i].docId === req.files['file2'][0].originalname) {
+                obj.docs[i]['fileId'] = req.files['file2'][0].id;
+                obj.docs[i]['fileName'] = req.files['file2'][0].filename;
+                obj.docs[i]['date'] = new Date()
+            }
+        }
+    }
+
     obj['createDate'] = new Date()
-    var newQuery = new Query(obj);
-    Query.saveQuery(newQuery, function (err, query) {
+    console.log("hehe", obj)
+    
+    Query.saveQuery(obj, function (err, query) {
         console.log(query)
         if (err) return next(err);
         res.json({ message: 'Query created' })
     });
 
 })
+
+
+router.post('/updatequeryctl', async function (req, res, next) {
+    let obj = req.body
+    obj['modifiedDate'] = new Date()
+    console.log("update query", obj)
+    Query.updateQuery(obj, function (err, query) {
+        console.log(query)
+        if (err) return next(err);
+        res.json(query)
+    })
+})
+
+router.get('/deletequeryctl', async function (req, res, next) {
+    console.log("delete query", req.query.id)
+    Query.deleteQuery(req.query.id, function (err, query) {
+        console.log(query)
+        if (err) return next(err);
+        res.json(query)
+    })
+})
+
+router.get('/fetchallquery', async function (req, res, next) {
+    Query.getQueryList(function (err, query) {
+        console.log(query)
+        if (err) return next(err);
+        res.json(query)
+    })
+})
+
+
 
 module.exports = router;

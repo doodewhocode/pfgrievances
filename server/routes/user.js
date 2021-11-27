@@ -34,42 +34,9 @@ const storage = new GridFsStorage({
 });
 
 const upload = multer({ storage });
-//upload.fields([{ name: 'panImg', maxCount: 1 }, {  name: 'aadharImg', maxCount: 1}, { name: 'json', maxCount: 1 }]), 
-//POST /signin
+
 router.post('/employee_register',
   async function (req, res, next) {
-    //console.log("hehe", req.files);
-    // var img = fs.readFileSync(req.file.path);
-    // var encode_img = img.toString('base64');
-    // var final_img = {
-    //   contentType: req.file.mimetype,
-    //   image: new Buffer(encode_img, 'base64')
-    // };
-
-    /*gfs = Grid(conn.mongoose.connection.db, { bucketName: 'uploads' });
-    console.log(gfs)
-    console.log("hehe", req.files['json'][0].id)
-    var writeStream, readStream, buffer = "";
-    await gfs.files.findOne({ _id: mongodb.ObjectId(req.files['json'][0].id) }, (err, file) => {
-      // Check if file
-      if (!file || file.length === 0) {
-        console.log("not found")
-        return res.status(404).json({ err: 'No file exists' });
-      }
-      console.log("file", file)
-    })
-    writeStream = gfs.createWriteStream({_id:req.files['json'][0].id});
-    fs.createReadStream().pipe(writeStream);
-    writeStream.on("close", function(){
-      readStream = gfs.createReadStream({filename:req.files['json'][0].filename});
-      readStream.on("data", function(chunk){
-        buffer+=chunk;
-      })
-      readStream.on("end", function(){
-        console.log("contents", buffer);
-      })
-    })*/
-
     let obj = req.body
     req.checkBody('firstName', 'fullname is required').notEmpty();
     req.checkBody('pfNo', 'pfNo is required').notEmpty();
@@ -179,18 +146,11 @@ router.get('/files', (req, res) => {
   })
 })
 
-router.get('/file/:id', (req, res) => {
-
+router.get('/file/:id', async (req, res) => {
   var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
   gfs = Grid(db, mongoDriver);
   gfs.collection('uploads');
-  // let gfsChunks = Grid(db, mongoDriver);
-  //gfsChunks.collection('uploads.chunks');
-  //console.log("gfs", gfs)
-
-  gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) }, (err, file) => {
-    // Check if file
-    //console.log("file", file, err)
+  gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) }, async (err, file) => {
     if (!file || file.length === 0) {
       console.log("not found")
       return res.status(404).json({ err: 'No file exists' });
@@ -198,34 +158,54 @@ router.get('/file/:id', (req, res) => {
     if (err) {
       return res.status(404).json({ err: err })
     }
-
-    // gfsChunks.chunks.find({ files_id: file._id }, (err, chunks) => {
-    //   if (err) return res.status(404).json({ err: err })
-    //   if (!chunks || chunks.length === 0) res.status(404).json({ err: 'No file exists' });
-    //   let finalData = [];
-    //   console.log("chunks", chunks)
-
-    // })
-
-    var readStream = gfs.createReadStream({
+    var readStream = await gfs.createReadStream({
       filename: file.filename
     });
-
-    readStream.on('data', function (data) {
-      
+    let finalFile = ""
+    await readStream.on('data', function (data) {
       let bufData = data.toString('base64')
       //console.log("bufData", bufData);
-      let finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+      finalFile = 'data:' + file.contentType + ';base64,' + bufData;
       res.status(200).json(finalFile);
     })
-
-    //res.setHeader('Content-disposition','attachment; filename='+file.filename);
-    //res.setHeader('Content-type', file.contentType);
-    // readStream.pipe(res)
-    //console.log("file", file)
-    //return res.status(200).json(file)
   })
 })
+
+router.get('/download/:id', async (req, res) => {
+  var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+  gfs = Grid(db, mongoDriver);
+  gfs.collection('uploads');
+  gfs.files.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) }, async (err, file) => {
+    if (!file || file.length === 0) {
+      console.log("not found")
+      return res.status(404).json({ err: 'No file exists' });
+    }
+    if (err) {
+      return res.status(404).json({ err: err })
+    }
+    var readStream = await gfs.createReadStream({
+      filename: file.filename
+    });
+    let finalFile = ""
+    await readStream.on('data', function (data) {
+      let bufData = data.toString('base64')
+      finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+    })
+    res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
+    res.setHeader('Content-type', file.contentType);
+    readStream.pipe(res)
+  })
+})
+
+
+function getFile(readStream, callback) {
+  readStream.on('data', function (data) {
+    let bufData = data.toString('base64')
+    //let finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+    callback(bufData)
+  })
+}
+
 
 
 router.get('/file/:filename', (req, res) => {
@@ -334,11 +314,25 @@ router.get('/fetchuserbyid', function (req, res, next) {
   });
 })
 router.get('/fetchallusers', function (req, res, next) {
-   User.getAllUsers( function (err, user) {
+  User.getAllUsers(function (err, user) {
     console.log(user)
     if (err) return next(err);
     res.json(user)
   });
+})
+
+router.post('/userdoc', function (req, res, next) {
+
+})
+
+router.post('/updateuser', function (req, res, next) {
+  let obj = req.body
+  console.log("update query", obj)
+  User.updateUser(obj, function (err, user) {
+    console.log(user)
+    if (err) return next(err);
+    res.json(user)
+  })
 })
 
 module.exports = router;

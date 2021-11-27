@@ -25,6 +25,21 @@ function RegisterReducer(state = initialState, action) {
             return state.setIn(['employer_reg', 'data'], action.data)
                 .setIn(['employer_reg', 'loading'], action.loading)
                 .setIn(['employer_reg', 'error'], action.error)
+
+
+        case 'UPDATE_USER_LOADING':
+            return state.setIn(['update_user', 'loading'], action.loading)
+                .setIn(['update_user', 'error'], action.error)
+        case 'UPDATE_USER':
+            return state.setIn(['update_user', 'data'], action.data)
+                .setIn(['update_user', 'loading'], action.loading)
+                .setIn(['update_user', 'error'], action.error)
+        case 'UPDATE_USER_ERROR':
+            return state.setIn(['update_user', 'data'], action.data)
+                .setIn(['update_user', 'loading'], action.loading)
+                .setIn(['update_user', 'error'], action.error)
+
+
         default:
             return state
     }

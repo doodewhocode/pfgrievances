@@ -11,7 +11,7 @@ const grievanceSchema = new conn.mongoose.Schema({
     startDate: Date,
     lastModifiedBy: String,
     lastModifiedDate: Date,
-    endDate: Date,
+    endDate: String,
     previousStatus: String,
     note: String,
     comments: {
@@ -41,8 +41,9 @@ module.exports.saveQuery = function (newGrievance, callback) {
 
 module.exports.updateQuery = function (obj, callback) {
     let query = { _id: obj._id }
-    //var newvalues = { $set: { status: "", c 
-    PFGrievance.updateOne(query, obj, { upsert: true }, callback)
+    var newvalues = { $set: obj }
+    console.log(query, newvalues)
+    PFGrievance.findOneAndUpdate(query, newvalues, { new: true }, callback)
 }
 
 module.exports.getAllPFGrievance = function (callback) {
