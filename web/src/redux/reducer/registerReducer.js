@@ -39,6 +39,18 @@ function RegisterReducer(state = initialState, action) {
                 .setIn(['update_user', 'loading'], action.loading)
                 .setIn(['update_user', 'error'], action.error)
 
+        case 'UPLOAD_USER_DOC_LOADING':
+            return state.setIn(['upload_user_doc', 'loading'], action.loading)
+                .setIn(['upload_user_doc', 'error'], action.error)
+        case 'UPLOAD_USER_DOC':
+            return state.setIn(['upload_user_doc', 'data'], action.data)
+                .setIn(['upload_user_doc', 'loading'], action.loading)
+                .setIn(['upload_user_doc', 'error'], action.error)
+        case 'UPLOAD_USER_DOC_ERROR':
+            return state.setIn(['upload_user_doc', 'data'], action.data)
+                .setIn(['upload_user_doc', 'loading'], action.loading)
+                .setIn(['upload_user_doc', 'error'], action.error)
+
 
         default:
             return state

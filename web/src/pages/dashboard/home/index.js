@@ -22,8 +22,10 @@ function Summary(props) {
         inProgress: 0,
         completed: 0
     })
+    const [search, setSearch] = useState("")
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalDeleteFlg, setModalDeleteFlg] = useState(false)
+    const [tempData, setTempData] = useState([])
 
     let userId = null, employerName = null, userType = null
     let gridOptions = {
@@ -64,7 +66,11 @@ function Summary(props) {
             userId = await JSON.parse(localStorage.getItem('auth')).userId
             userType = await JSON.parse(localStorage.getItem('auth')).userType
             employerName = await JSON.parse(localStorage.getItem('auth')).employerName
-            props.fetchEmployeeReqs(userId)
+            if (userType == "employee") {
+                props.fetchEmployeeReqs(userId)
+            } else {
+                props.fetchEmployerReqs(employerName)
+            }
         }
         loadFirst()
     }, [])
@@ -74,6 +80,7 @@ function Summary(props) {
             if (!props.empl_reqs.toJS().error) {
                 console.log(props.empl_reqs.toJS())
                 setRowData(props.empl_reqs.toJS()['data'])
+                setTempData(props.empl_reqs.toJS()['data'])
                 let obj = calChartSummary(props.empl_reqs.toJS()['data'])
                 console.log("hehe", obj)
                 setStatus((prevState) => {
@@ -85,6 +92,26 @@ function Summary(props) {
             }
         }
     }, [props.empl_reqs_loading])
+
+    useEffect(() => {
+        if (!props.emplr_reqs_loading) {
+            if (!props.emplr_reqs.toJS().error) {
+                console.log(props.emplr_reqs.toJS())
+                setRowData(props.emplr_reqs.toJS()['data'])
+                setTempData(props.emplr_reqs.toJS()['data'])
+                let obj = calChartSummary(props.emplr_reqs.toJS()['data'])
+                console.log("hehe", obj)
+                setStatus((prevState) => {
+                    for (let key in obj) {
+                        prevState[key] = obj[key]
+                    }
+                    return ({ ...prevState })
+                })
+            }
+        }
+    }, [props.emplr_reqs_loading])
+
+
 
     const idClickHandler = (id) => {
         history.push('/app/track/' + id)
@@ -130,7 +157,7 @@ function Summary(props) {
             inReview: c,
             inProgress: d,
             completed: e,
-           // other: f
+            // other: f
         }
     }
 
@@ -143,6 +170,21 @@ function Summary(props) {
         }
 
         return arr
+    }
+    function filterByValue(array, string) {
+        return array.filter(o => Object.keys(o).some(k => {
+            if (k !== "trackStatus" && k !== "comments" && k !== "grivDoc1" && k !== "grivDoc2"
+                && k !== "grivDoc3" && k !== "proofDocZip" && k != "queryLevel" && k !== "__v") {                
+                return o[k].toLowerCase().includes(string.toLowerCase())
+            }
+        }));
+    }
+
+    function handleSearchInput(e) {
+        let value = e.target.value
+        setSearch(value)
+        let tempArr = filterByValue(rowData, value)
+        setTempData(tempArr)
     }
 
     return (
@@ -204,12 +246,14 @@ function Summary(props) {
                 <button className={'btn btn-sm btn-danger'} >All Requests</button>
                 <button className={'btn btn-sm btn-danger'}>My Requests</button>
             </div>}
-            <div class="row pt-5">
+            <br />
+            <div><input type="text" id={'search'} value={search} placeholder={'search'} onChange={handleSearchInput} /></div>
+            <div class="row ">
                 <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
                     <AgGridReact
                         modules={AllCommunityModules}
                         columnDefs={gridOptions.columnDefs}
-                        rowData={rowData}
+                        rowData={tempData}
                         onGridReady={onGridReady}
                         pagination={true}
                         context={gridOptions.context}
@@ -228,6 +272,9 @@ function Summary(props) {
 const mapStoreToProps = state => ({
     empl_reqs_loading: state.dashboardReducer.getIn(['empl_reqs', 'loading'], true),
     empl_reqs: state.dashboardReducer.getIn(['empl_reqs'], new Map()),
+
+    emplr_reqs_loading: state.dashboardReducer.getIn(['emplr_reqs', 'loading'], true),
+    emplr_reqs: state.dashboardReducer.getIn(['emplr_reqs'], new Map()),
 })
 const mapDispatchToProps = {
     fetchEmployeeReqs, fetchEmployerReqs, fetchAdminReqs

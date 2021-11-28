@@ -8,12 +8,14 @@ const grievanceSchema = new conn.mongoose.Schema({
     queryLevel: Number,
     status: String,
     employerId: String,
+    employerName:String,
     startDate: Date,
     lastModifiedBy: String,
     lastModifiedDate: Date,
     endDate: String,
     previousStatus: String,
     note: String,
+    trackStatus: Array,
     comments: {
         type: Array
     },

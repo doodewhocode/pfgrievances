@@ -321,13 +321,63 @@ router.get('/fetchallusers', function (req, res, next) {
   });
 })
 
-router.post('/userdoc', function (req, res, next) {
+router.post('/uploaduserdoc', upload.fields([{ name: 'panImg', maxCount: 1 },
+{ name: 'aadharImg', maxCount: 1 }, { name: 'tenThMarksheet', maxCount: 1 },
+{ name: 'birthCert', maxCount: 1 }, { name: 'affidivet', maxCount: 1 }]), function (req, res, next) {
+  let obj = req.body
+  if (req.files['panImg'] !== undefined) {
+    obj['panImg'] = {
+      originalname: req.files['panImg'][0].originalname,
+      id: req.files['panImg'][0].id,
+      fileName: req.files['panImg'][0].filename,
+      date: new Date()
+    }
+  }
+  if (req.files['aadharImg'] !== undefined) {
+    obj['aadharImg'] = {
+      originalname: req.files['aadharImg'][0].originalname,
+      id: req.files['aadharImg'][0].id,
+      fileName: req.files['aadharImg'][0].filename,
+      date: new Date()
+    }
+  }
+  if (req.files['tenThMarksheet'] !== undefined) {
+    obj.additionalDoc['tenThMarksheet'] = {
+      originalname: req.files['panImg'][0].originalname,
+      id: req.files['panImg'][0].id,
+      fileName: req.files['panImg'][0].filename,
+      date: new Date()
+    }
+  }
+  if (req.files['birthCert'] !== undefined) {
+    obj.additionalDoc['birthCert'] = {
+      originalname: req.files['birthCert'][0].originalname,
+      id: req.files['birthCert'][0].id,
+      fileName: req.files['birthCert'][0].filename,
+      date: new Date()
+    }
+  }
+  if (req.files['affidivet'] !== undefined) {
+    obj.additionalDoc['affidivet'] = {
+      originalname: req.files['affidivet'][0].originalname,
+      id: req.files['affidivet'][0].id,
+      fileName: req.files['affidivet'][0].filename,
+      date: new Date()
+    }
+  }
+  obj['lastModifiedDate'] = new Date()
+  User.updateUser(obj, function (err, user) {
+    console.log(user)
+    if (err) return next(err);
+    res.json(user)
+  })
 
 })
 
 router.post('/updateuser', function (req, res, next) {
   let obj = req.body
   console.log("update query", obj)
+  obj['lastModifiedDate'] = new Date()
   User.updateUser(obj, function (err, user) {
     console.log(user)
     if (err) return next(err);

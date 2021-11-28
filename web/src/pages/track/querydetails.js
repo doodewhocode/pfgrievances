@@ -5,7 +5,7 @@ import Confirmation from '../../components/confirmation'
 import { history } from '../../modules/helpers'
 
 let arr = [
-    { key: -2, value: 'Pending' },
+    // { key: -2, value: 'Pending' },
     { key: -1, value: 'New' },
     { key: 0, value: 'In-Review' },
     { key: 1, value: 'In-Progress' },
@@ -67,12 +67,31 @@ function QueryDetails(props) {
     function postComment() {
         if (query && comment) {
             setQuery(prevState => {
-                let commentsArr = (typeof prevState.comments !== 'number') ? prevState.comments : []
-                prevState.comments = commentsArr.push({
+                let commentsArr = (Array.isArray(prevState.comments)) ? prevState.comments : []
+                commentsArr.push({
                     user: (userType !== 'employer' && userType !== 'admin') ? userName : userType,
                     date: new Date(),
                     comment
                 })
+                prevState.comments = commentsArr
+                prevState['lastModifiedBy'] = userName
+                return ({ ...prevState })
+            })
+            props.updateQuery(query)
+        }
+    }
+
+    function updateStatus() {
+        if (query && query.queryLevel) {
+            setQuery(prevState => {
+                let arr = (Array.isArray(prevState['trackStatus'])) ? prevState.trackStatus : []
+                arr.push({
+                    name: userName,
+                    type: userType,
+                    date: new Date(),
+                    level: query.queryLevel
+                })
+                prevState.trackStatus = arr
                 prevState['lastModifiedBy'] = userName
                 return ({ ...prevState })
             })
@@ -107,60 +126,63 @@ function QueryDetails(props) {
     }
     return (
         <>
-            <br />
-            {confirmationFlg && <Confirmation
-                showModal={confirmationFlg}
-                handleClose={(e) => closeHandler()}
-                handleConfirmationMessage={(e) => confirmationHandler(e)}
-                title={'Confirmation'}
-            > <span>Are you sure you want to cancel the order</span>
+            <div>
+                <br />
+                {confirmationFlg && <Confirmation
+                    showModal={confirmationFlg}
+                    handleClose={(e) => closeHandler()}
+                    handleConfirmationMessage={(e) => confirmationHandler(e)}
+                    title={'Confirmation'}
+                > <span>Are you sure you want to cancel the order</span>
 
-            </Confirmation>}
+                </Confirmation>}
 
-            {(userType == 'employer' && userType == 'admin') &&
-                <div className={'row pull-right'}>
-                    <div className={'col-md-10'}> <select className={'form-control rounded-0'} id={'queryLevel'} value={query && query.queryLevel} onChange={(e) => onChangeHandler(e)}>
-                        <option value='' >Select</option>
-                        {arr.map(item => <option value={item.key}>{item.value}</option>)}
-                    </select></div> <div className={'col-md-2'}>
-                        <button className={'btn btn-danger btn-sm rounded-0'} onClick={() => updateOrderStatus()}>Save</button></div>
-                </div>
-            }
-            <div className="row">
-                <div className="col-md-6">
-                    <h4>Request Information</h4><hr />
-                    <ul className="tracklist">
-                        <li><strong>User ID: </strong>{query && query.userId}</li>
-                        <li><strong>Grievance ID: </strong> {query && query.grivId}</li>
-                        <li><strong>Grievance Type: </strong>{query && query.grivType}</li>
-                        <li><strong>Note: </strong>{query && query.note}  </li>
-                        <li><strong>Status: </strong>{query && query.status}</li>
-                        <li><strong>Doc: </strong>{(query && query.grivDoc1) && query.grivDoc1.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
-                        )}</li>
-                        <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
-                        )}</li>
-                        <li><strong>Start Date :</strong>{query && query.startDate}</li>
-                        <li><strong>User ID :</strong>{query && query.userId}</li>
-                        <li><strong>Status :</strong>{query && query.status}</li>
-                        <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
-                        <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
-                        <li><strong>Paid :</strong>{query && query.paidAmount}</li>
-                    </ul>
-                    <div className={'row '}>
-                        <div className={'col-6 '}>
-                            <textarea className={'form-control rounded-0'} value={comment} onChange={(e) => setComment(e.target.value)} />
-                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => postComment()}>Post</button>
-                        </div>
-                        <div className="col-6 pull-right">
-                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
-                        </div>
-                        <div className="col-6 pull-right">
-                            <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
+                {(userType == 'employer' || userType == 'admin') &&
+                    <div className={'row pull-right'}>
+                        <div className={'col-md-10'}> <select className={'form-control rounded-0'} id={'queryLevel'} value={query && query.queryLevel} onChange={(e) => onChangeHandler(e)}>
+                            <option value='' >Select</option>
+                            {arr.map(item => <option value={item.key}>{item.value}</option>)}
+                        </select></div> <div className={'col-md-2'}>
+                            <button className={'btn btn-danger btn-sm rounded-0'} onClick={() => updateStatus()}>Save</button></div>
+                    </div>
+                }
+                <br />
+                <div className="row">
+                    <div className="col-md-6">
+                        <h4>Request Information</h4><hr />
+                        <ul className="tracklist">
+                            <li><strong>User ID: </strong>{query && query.userId}</li>
+                            <li><strong>Grievance ID: </strong> {query && query.grivId}</li>
+                            <li><strong>Grievance Type: </strong>{query && query.grivType}</li>
+                            <li><strong>Note: </strong>{query && query.note}  </li>
+                            <li><strong>Status: </strong>{query && query.status}</li>
+                            <li><strong>Doc: </strong>{(query && query.grivDoc1) && query.grivDoc1.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
+                            )}</li>
+                            <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
+                            )}</li>
+                            <li><strong>Start Date :</strong>{query && query.startDate}</li>
+                            <li><strong>User ID :</strong>{query && query.userId}</li>
+                            <li><strong>Status :</strong>{query && query.status}</li>
+                            <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
+                            <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
+                            <li><strong>Paid :</strong>{query && query.paidAmount}</li>
+                        </ul>
+                        <div className={'row '}>
+                            <div className={'col-6 '}>
+                                <textarea className={'form-control rounded-0'} value={comment} onChange={(e) => setComment(e.target.value)} />
+                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => postComment()}>Post</button>
+                            </div>
+                            <div className="col-6 pull-right">
+                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
+                            </div>
+                            <div className="col-6 pull-right">
+                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-md-6">
-                    <iframe src="" />
+                    <div className="col-md-6">
+                        <iframe src="" />
+                    </div>
                 </div>
             </div>
         </>

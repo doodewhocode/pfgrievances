@@ -9,6 +9,7 @@ const userSchema = new conn.mongoose.Schema({
     lastLoggedIn: Date,
     activeUser: String,
     dateDeactivated: Date,
+    lastModifiedDate: Date,
     userType: String,
     employerId: Number,
     alertPreference: String,
@@ -24,7 +25,7 @@ const userSchema = new conn.mongoose.Schema({
     panImg: Object,
     aadharNo: Number,
     aadharImg: Object,
-    hrMobileNo: Number,
+    hrMobileNo: String,
     hrEmailId: String,
     setRegNo: String,
     pfRegNo: String,
@@ -33,6 +34,11 @@ const userSchema = new conn.mongoose.Schema({
     esicOfficeAddr: String,
     employerAddr: String,
     employerCity: String,
+    additionalDoc: {
+        tenThMarksheet: Object,
+        birthCert: Object,
+        affidivet: Object
+    },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: String },
     otp: { type: Number }

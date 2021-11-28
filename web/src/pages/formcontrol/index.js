@@ -8,7 +8,7 @@ let initialObj = {
     additionalDesc: "",
     price: "",
     docs: [],
-    createdBy: JSON.parse(localStorage.getItem('auth'))['userName']
+    createdBy: localStorage.getItem('auth') != null ? JSON.parse(localStorage.getItem('auth'))['userName'] : ""
 }
 
 let validationList = ['queryName', 'queryDesc', 'price']

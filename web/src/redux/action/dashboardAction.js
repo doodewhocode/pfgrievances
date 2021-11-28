@@ -31,13 +31,12 @@ export const getEmployeeChart = (payload) => {
 
 
 
-export const fetchEmployerReqs = (payload) => {
+export const fetchEmployerReqs = (id) => {
     return dispatch => {
         dispatch({ type: 'GET_EMPLOYER_REQS_LOADING', loading: true, error: false })
         return serverCall({
-            method: 'post',
-            url: '/getemployerreq',
-            data: payload
+            method: 'GET',
+            url: '/getemployerreq?id=' + id,
         }).then(res => {
             return dispatch({ type: 'GET_EMPLOYER_REQS', loading: false, data: res.data, error: false })
         }).catch(err => {

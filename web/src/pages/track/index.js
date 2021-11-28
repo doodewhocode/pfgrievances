@@ -32,7 +32,7 @@ function Track(props) {
     }, [props.griv_by_id_loading])
     return (
         <>
-            <Timeline />
+            <Timeline data={rowData} />
             <div class="card mt-3 tab-card">
                 <div class="card-header tab-card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
@@ -60,13 +60,13 @@ function Track(props) {
                             <th>Date</th>
                             <th>Comment</th>
                             <tbody>
-                                {/* {(rowData !== {}) && rowData.comments.map((obj, key) => {
-                                    <tr>
+                                {(Object.keys(rowData).length > 0) && rowData.comments.map((obj, key) => {
+                                    return(<tr>
                                         <td>{obj.user}</td>
                                         <td>{obj.date}</td>
                                         <td>{obj.comment}</td>
-                                    </tr>
-                                })} */}
+                                    </tr>)
+                                })}
                             </tbody>
                         </table>
                     </div>
