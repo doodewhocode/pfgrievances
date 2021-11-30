@@ -1,6 +1,9 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { registerEmployer } from '../../redux/action/registerAction'
+import Confirmation from '../../components/confirmation'
+import Toast from '../../components/toast'
+
 import Header from '../header'
 let validationList = ['firstName', 'emailId', 'phNo', 'userType', 'password', 'confirmPassword']
 let initializeObj = {
@@ -15,6 +18,40 @@ let initializeObj = {
 
 function AdminSignUp(props) {
     const [form, setForm] = useState(initializeObj)
+    const [showModal, setShowModal] = useState(false)
+    const [toast, setToast] = useState({
+        type: '',
+        message: '',
+        visible: false
+    })
+
+    useEffect(() => {
+        if (!props.employee_reg_loading) {
+            if (!props.employee_reg.toJS().error) {
+                onClear();
+                setToast(prevState => {
+                    prevState.message = "Registration is completed"
+                    prevState.type = "success"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Registration is failed, Please try again."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.employee_reg_loading])
+
     function validateEmail(email) { //Validates the email address
         var emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return emailRegex.test(email);
@@ -57,15 +94,56 @@ function AdminSignUp(props) {
     function onSubmit() {
         let isValid = isValidForm(form)
         if (isValid) {
-            props.registerEmployer(form)
+            setShowModal(true)
+
         } else {
             console.log("Please provide the mandatory information")
+            setToast(prevState => {
+                prevState.message = "Please fill the * mandatory fields"
+                prevState.type = "info"
+                prevState.visible = true
+                return ({ ...prevState })
+            })
+
+            setTimeout(() => {
+                setToast(prevState => {
+                    prevState.visible = false
+                    return ({ ...prevState })
+                })
+            }, 2000)
         }
 
     }
+
+    function onClear() {
+
+        setForm(prevState => {
+            for (let key in initializeObj) {
+                prevState[key] = initializeObj[key]
+            }
+            return ({ ...prevState })
+        })
+    }
+
+    function handleConfirmation(value) {
+        if (value === 'yes') {
+            props.registerEmployer(form)
+        } else {
+            setShowModal(false)
+        }
+    }
+    function handleClose() {
+        setShowModal(false)
+    }
+
+
     return (
         <>
             <Header />
+            <Toast message={toast.message} type={toast.type} visible={toast.visible} />
+            <Confirmation showModal={showModal} handleClose={handleClose} title={'Confirmation'} handleConfirmationMessage={handleConfirmation} >
+                Are you sure you want to register with ComplyHR ?
+            </Confirmation>
             <section class="pf-signup pt-5" id="particles-js">
                 <div class="container">
                     <div class="row">
@@ -84,7 +162,7 @@ function AdminSignUp(props) {
                                 </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
-                                        <label>Registered Email ID </label>
+                                        <label>Registered Email ID <span class="mandatory">*</span></label>
                                         <input type="email" id="emailId" class="form-control" placeholder="Enter Registered Email ID" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
@@ -94,17 +172,15 @@ function AdminSignUp(props) {
                                 </div>
                                 <div class="input-group mb-3 flex-nowrap">
                                     <div class="form-group w-100">
-                                        <label>Password </label>
+                                        <label>Password <span class="mandatory">*</span></label>
                                         <input id={'password'} type="password" class="form-control" placeholder="Password" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                     <div class="form-group w-100 ml-3">
-                                        <label>Confirm Password </label>
+                                        <label>Confirm Password <span class="mandatory">*</span></label>
                                         <input id={'confirmPassword'} type="password" class="form-control" placeholder="Password" onChange={(e) => onChangeHandler(e)} />
                                     </div>
                                 </div>
                                 <div class="d-flex  align-items-center justify-content-end pb-2">
-                                    <button type="button" class="btn-sm btn-secondary">Save</button>
-                                    <button type="button" class="btn-sm btn-secondary ml-2">Edit</button>
                                     <button type="button" class="btn-sm btn-common ml-2" onClick={onSubmit}>Submit</button>
                                 </div>
                             </div>
@@ -117,7 +193,8 @@ function AdminSignUp(props) {
 }
 
 const mapStoreToProps = state => ({
-    employee_reg: state.employee_reg
+    employee_reg_loading: state.registerReducer.getIn(['employee_reg', 'loading'], true),
+    employee_reg: state.registerReducer.getIn(['employee_reg'], new Map())
 })
 const mapDispatchToProps = {
     registerEmployer

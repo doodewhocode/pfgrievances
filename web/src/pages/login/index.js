@@ -8,6 +8,7 @@ import business from '../../assets/business-png-9395.png'
 import PngItem from '../../assets/PngItem_1542519.png'
 import { history } from '../../modules/helpers'
 import { postToken } from '../../redux/action/tokenAction'
+import Toast from '../../components/toast'
 
 let validationList = ['emailId', 'password', 'phNo', 'otp']
 
@@ -20,6 +21,11 @@ let initializeObj = {
 
 function Login(props) {
     const [form, setForm] = useState(initializeObj)
+    const [toast, setToast] = useState({
+        type: '',
+        message: '',
+        visible: false
+    })
     function signUp(type) {
         if (type === 'employee') {
             history.push('/employee')
@@ -64,6 +70,16 @@ function Login(props) {
         if (!props.login['loading']) {
             if (!props.login['error']) {
                 history.push('/app/')
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Login is failed, Please try again."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
             }
         }
     }, [props.login])
@@ -71,10 +87,11 @@ function Login(props) {
 
     return (
         <>
+        <Toast message={toast.message} type={toast.type} visible={toast.visible} />
             <Header />
             <header class="pf-banner" id="home">
                 <div class="pf-background"></div>
-                <div id="myCarousel" class="pf-banner carousel slide" style={{paddingTop:'100px'}} data-ride="carousel">
+                <div id="myCarousel" class="pf-banner carousel slide" style={{ paddingTop: '100px' }} data-ride="carousel">
                     <ol class="carousel-indicators">
                         <li data-target="#myCarousel" data-slide-to="0" class=""></li>
                         <li data-target="#myCarousel" data-slide-to="1" class=""></li>

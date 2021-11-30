@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Map } from 'immutable'
 import Auth from '../../modules/Auth'
 import logo from '../../assets/logo.png'
+let user = JSON.parse(localStorage.getItem('auth'))
 function Header(props) {
 
     function handleToggle() {
@@ -24,8 +25,8 @@ function Header(props) {
                         <h6 className="dropdown-header d-flex align-items-center">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <div className="dropdown-user-details">
-                                <div className="dropdown-user-details-name">{props.login['data'].userName}</div>
-                                <div className="dropdown-user-details-email">{props.login['data'].emailId}</div>
+                                <div className="dropdown-user-details-name">{user['firstName']}</div>
+                                <div className="dropdown-user-details-email">{user['email']}</div>
                             </div>
                         </h6>
                         <div className="dropdown-divider"></div>

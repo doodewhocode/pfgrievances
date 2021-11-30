@@ -29,9 +29,7 @@ function Toast({ message, timer, type, visible }) {
     var defaultTimer = 1000
     useEffect(() => {
         setShowToast(visible);
-        /* setTimeout(()=>{
-            setShowToast(false)
-        }, defaultTimer) */
+      
     }, [visible])
     return (
         showToast && <div style={{ display: 'flex', flexDirection: 'column', position: 'fixed', top: '120px', right: '10px', zIndex: '1' }}>

@@ -25,13 +25,14 @@ function Users(props) {
     let gridOptions = {
         modules: AllCommunityModules,
         columnDefs: [
-            { headerName: 'User ID', field: '_id', width: 150, filter: false },
+            /*   { headerName: 'User ID', field: '_id', width: 150, filter: false }, */
             { headerName: "First Name", field: "firstName", width: 120 },
             { headerName: "Last Name", field: "lastName", width: 100, filter: false },
-            { headerName: "Email Id", field: "emailId", width: 75 },
+            { headerName: "Email Id", field: "emailId", width: 150 },
             { headerName: "Phone No", field: "phNo", width: 100 },
-            { headerName: "Active", field: "active", width: 70 },
-            { headerName: "Created Date", field: "createDate", width: 75 },
+            { headerName: "Active", field: "active", width: 100 },
+            { headerName: "Created Date", field: "createDate", width: 120 },
+            { headerName: "User Type", field: "userType", width: 100 },
             { headerName: "view", filter: false, width: 50, cellRendererFramework: clickableField },
         ],
         rowSelection: 'single',

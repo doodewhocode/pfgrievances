@@ -7,8 +7,10 @@ import Track from '../track'
 import Form from '../form'
 import Summary from './home'
 import FormControl from '../formcontrol'
+import Online  from '../online';
 import Users from '../users'
 
+let user = JSON.parse(localStorage.getItem('auth'))
 function SideNavbar(props) {
     console.log(props)
     return (
@@ -32,7 +34,8 @@ function SideNavbar(props) {
 
                             <div className="collapse" id="pfGrievances" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                                    <Link className="nav-link" to="/app/form"> Form </Link>
+                                    <Link className="nav-link" to="/app/online"> online </Link>
+                                    <Link className="nav-link" to="/app/form"> offline </Link>
                                     <div style={{ display: 'none' }}>
                                         <Link className="nav-link" target={'_blank'} to="/app/docsbytymtbl">List Documents</Link>
                                     </div>
@@ -41,13 +44,13 @@ function SideNavbar(props) {
 
                             <div className="sidenav-menu-heading">Administrative</div>
                             {/* {(props.login['data'].userType === 'employee') && */}
-                                <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
-                                    data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Admin
-                                    <div className="sidenav-collapse-arrow">
-                                        <i className="fa fa-angle-down"></i>
-                                    </div>
-                                </a>
+                            <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
+                                data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Admin
+                                <div className="sidenav-collapse-arrow">
+                                    <i className="fa fa-angle-down"></i>
+                                </div>
+                            </a>
                             <div className="collapse" id="collapseLayouts" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                                     <Link className="nav-link" to="/app/usercontrol"> User Control</Link>
@@ -61,7 +64,7 @@ function SideNavbar(props) {
                     <div className="sidenav-footer">
                         <div className="sidenav-footer-content">
                             <div className="sidenav-footer-subtitle">Logged in as: </div>
-                            <div className="sidenav-footer-title">{props.login['data'].firstName + ", " + props.login['data'].lastName}</div>
+                            <div className="sidenav-footer-title">{user['firstName'] +", "+user['lastName']}</div>
                         </div>
                     </div>
                 </nav>
@@ -73,8 +76,9 @@ function SideNavbar(props) {
                         <Route path="/app/profile" component={Profile} />
                         <Route path="/app/form" component={Form} />
                         <Route path="/app/track" component={Track} />
-                        <Route path="/app/usercontrol" component={Users } />
-                        <Route path="/app/formcontrol" component={FormControl } />
+                        <Route path="/app/usercontrol" component={Users} />
+                        <Route path="/app/formcontrol" component={FormControl} />
+                        <Route Path="/app/online" component={Online} />
                         <Redirect from="/" to="/app/home" />
                     </Switch>
                 </div>

@@ -315,14 +315,16 @@ function Form(props) {
                                                 }
                                             }
                                         })}
-                                        {/* <a href=""></a> */}
+                                        {/* <a href=""></a> */}<br />
                                         {(selectedForm !== {}) && <div>
-                                            <label for="note">Note (Optional):</label>
-                                            <textarea id={'note'} value={state.note} style={{
-                                                height: '65px',
-                                                width: '400px'
-                                            }} onChange={onChangeHandler}></textarea>
-                                            <br />
+                                            <div class="form-group w-100">
+                                                <label for="note">Note (Optional):</label>
+                                                <textarea id={'note'} class="form-control" value={state.note} style={{
+                                                    height: '65px',
+                                                    width: '400px'
+                                                }} onChange={onChangeHandler}></textarea>
+                                            </div>
+                                            
                                             <label for="note">Processing Fee:</label>
                                             <span>200</span>
                                         </div>}
@@ -331,7 +333,7 @@ function Form(props) {
                                             <button type="button" class="btn btn-secondary">Cancel</button>
                                             <button type="button" class="btn btn-secondary ml-2" onClick={onClickSave}>Save</button>
                                             {update && <button type="button" class="btn btn-secondary ml-2" onClick={onClickUpdate}>{(update && rowData['queryLevel'] === -2 ? "Submit" : "Update")}</button>}
-                                            <button type="button" class="btn btn-common ml-2" onClick={onClickSubmit}>Submit</button>
+                                            {!update && <button type="button" class="btn btn-common ml-2" onClick={onClickSubmit}>Submit</button>}
                                         </div>
                                     </div>
                                 </div>

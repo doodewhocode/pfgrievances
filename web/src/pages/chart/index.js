@@ -30,6 +30,7 @@ let data = {
 function PieChart(props) {
   const [state, setState] = useState(data)
   useEffect(() => {
+    
     setState((prevState) => {
       prevState.datasets[0]['data'] = props.data
       prevState.labels = props.labels

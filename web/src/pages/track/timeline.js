@@ -23,7 +23,7 @@ function Timeline(props) {
         <>
             <div className="row tracker">
                 <ul className="timeline" id="timeline">
-                    <li className={'li ' + (props.data['queryLevel'] > -1 ? "complete" : "")}>
+                    <li className={'li ' + (props.data['queryLevel'] >= -1 ? "complete" : "")}>
                         <div className="timestamp">
                             <span className="author">Employee</span>
                             <span className="date"><i className="fa fa-clocks"></i>{props.data['startDate']}</span>

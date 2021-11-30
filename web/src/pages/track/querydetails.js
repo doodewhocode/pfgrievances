@@ -161,8 +161,6 @@ function QueryDetails(props) {
                             <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
                             )}</li>
                             <li><strong>Start Date :</strong>{query && query.startDate}</li>
-                            <li><strong>User ID :</strong>{query && query.userId}</li>
-                            <li><strong>Status :</strong>{query && query.status}</li>
                             <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
                             <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
                             <li><strong>Paid :</strong>{query && query.paidAmount}</li>

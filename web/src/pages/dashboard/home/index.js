@@ -32,7 +32,7 @@ function Summary(props) {
         modules: AllCommunityModules,
         columnDefs: [
             {
-                headerName: 'Query ID', field: '_id', width: 150, filter: false, cellRenderer: (params) => {
+                headerName: 'Query ID', field: '_id', width: 180, filter: false, cellRenderer: (params) => {
                     var link = document.createElement('a');
                     link.href = '#';
                     link.innerHTML = params.value;
@@ -43,12 +43,12 @@ function Summary(props) {
                     return link
                 }
             },
-            { headerName: "Query Name", field: "grivType", width: 120 },
-            { headerName: "Note", field: "note", width: 100, filter: false },
-            { headerName: "Created Date", field: "createDate", width: 75 },
+            { headerName: "Query Name", field: "grivType", width: 170 },
+            // { headerName: "Note", field: "note", width: 100, filter: false },
+            { headerName: "Created Date", field: "startDate", width: 120 },
             { headerName: "Status", field: "status", width: 75 },
             { headerName: "End Date", field: "endDate", width: 100 },
-            { headerName: "Payment", field: "paymentStatus", width: 70 },
+            { headerName: "Payment", field: "paymentStatus", width: 90 },
             { headerName: "view", filter: false, width: 50, cellRendererFramework: clickableField },
         ],
         rowSelection: 'single',
@@ -174,7 +174,8 @@ function Summary(props) {
     function filterByValue(array, string) {
         return array.filter(o => Object.keys(o).some(k => {
             if (k !== "trackStatus" && k !== "comments" && k !== "grivDoc1" && k !== "grivDoc2"
-                && k !== "grivDoc3" && k !== "proofDocZip" && k != "queryLevel" && k !== "__v") {                
+                && k !== "grivDoc3" && k !== "proofDocZip" && k != "queryLevel" && k !== "__v" && k!=="endDate") {
+                console.log("key", k)
                 return o[k].toLowerCase().includes(string.toLowerCase())
             }
         }));
