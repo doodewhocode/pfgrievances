@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { submitQuery } from '../../redux/action/formAction'
 import pdf from "../../assets/form/New-Joint-Declaration-Form.pdf"
 import { PDFDocument } from 'pdf-lib'
-import { fetchGrivById, updateQuery, fetchFileById, fetchFileByName, updateFileQuery } from '../../redux/action/trackAction'
+import { Document } from 'react-pdf'
+import { fetchGrivById, updateQuery, fetchFileById, fetchFileByName, updateFileQuery, downloadFileById } from '../../redux/action/trackAction'
 
 let reqList = [
     { id: "1", value: "Name Change Correction" },
@@ -73,11 +74,29 @@ function Form(props) {
     useEffect(async () => {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
-                let pdfWindow = window.open("")
-                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                
+                //let pdfWindow = window.open("")
+                //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                setCurrentPdf(props.file_by_id.toJS().data)
             }
         }
     }, [props.file_by_id_loading])
+    useEffect(async () => {
+        if (!props.download_by_id_loading) {
+            if (!props.download_by_id.toJS().error) {
+                let blob = new Blob([props.download_by_id.toJS().data])
+                let pdfWindow = window.open("")
+                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.download_by_id.toJS().data}'></iframe>`)
+                var fileURL = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = fileURL;
+                link.setAttribute('download', "doc1.pdf"); //or any other extension
+                document.body.appendChild(link);
+                link.click()
+
+            }
+        }
+    }, [props.download_by_id_loading])
 
     function existFormDecl(obj) {
         //let obj = props.griv_by_id.toJS()['data']
@@ -105,8 +124,10 @@ function Form(props) {
         setSelectedForm(obj)
     }
     function onSelectPDF(value) {
-        setSelectedPDF(value)
-        loadPDF("../.." + value)
+        props.fetchFileById("61a1678edb4bc3ec4d20590b")
+         
+        // setSelectedPDF(value)
+        // loadPDF("../.." + value)
     }
     function onClickDownloadPDF(value) {
         //var fileURL = URL.createObjectURL(blob);
@@ -177,6 +198,10 @@ function Form(props) {
 
     function getFile(id) {
         props.fetchFileById(id)
+    }
+
+    function downloadFile(id) {
+        props.downloadFileById(id)
     }
 
     function onClickSave() {
@@ -267,7 +292,18 @@ function Form(props) {
         return tempArr.map((obj, key) => {
             if (formId == obj.formId)
                 return (
-                    <div> <a onClick={() => getFile(obj.id)}>{obj.id} </a> , <span>{obj.date}</span></div>
+                    <div>&nbsp;&nbsp;{key + 1} . <span >{obj.id} </span> , <span>{obj.date}</span>&nbsp;
+                        <a style={{
+                            cursor: 'pointer',
+                            color: '#007bff',
+                            textDecoration: 'underline'
+                        }} onClick={() => getFile(obj.id)}>view</a>&nbsp;
+                        <a style={{
+                            cursor: 'pointer',
+                            color: '#007bff',
+                            textDecoration: 'underline'
+                        }} onClick={() => downloadFile(obj.id)}>download</a>
+                    </div >
                 )
         })
     }
@@ -302,13 +338,13 @@ function Form(props) {
                                                 if (e.id == selectedForm.id) {
                                                     return e.form.map((e, key) => {
                                                         return (<div key={key}>
-                                                            <label>{(key + 1) + ". " + e.value}</label>
-                                                            <button className="btn btn-secondary btn-sm" onClick={() => { onSelectPDF(e.loc) }}>View</button>
-                                                            <button className="btn btn-secondary btn-sm" onClick={() => onClickDownloadPDF(e.loc)}>Download</button>
-                                                            <div><input type="file" id={e.id} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
-                                                                <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
-                                                                <br /><span>{printFileName(e.id)}</span>
-                                                            </div>
+                                                            <label>{(key + 1) + ". " + e.value}</label>&nbsp;&nbsp;
+                                                            <button className="btn btn-secondary btn-sm" onClick={() => { onSelectPDF(e.loc) }}>View</button>&nbsp;
+                                                            <button className="btn btn-secondary btn-sm" onClick={() => onClickDownloadPDF(e.loc)}>Download</button>&nbsp;
+                                                            <input type="file" id={e.id} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
+                                                            <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
+                                                            <br /><span>{printFileName(e.id)}</span>
+
                                                             {update && existingDoc(e.id)}
                                                         </div>)
                                                     })
@@ -324,7 +360,7 @@ function Form(props) {
                                                     width: '400px'
                                                 }} onChange={onChangeHandler}></textarea>
                                             </div>
-                                            
+
                                             <label for="note">Processing Fee:</label>
                                             <span>200</span>
                                         </div>}
@@ -374,7 +410,8 @@ function Form(props) {
                             </div>
                         </div>
                         <div>
-                            {currentPdf !== "" && <iframe src={pdfDoc} width="800" height="600"></iframe>}
+                            {currentPdf !== "" && <iframe src={pdfDoc} width="100%" height="100%"></iframe>}
+                            <Document file={currentPdf} />
                         </div>
                     </div>
                 </div>
@@ -395,7 +432,11 @@ const mapStoreToProps = state => ({
     update_query: state.trackReducer.getIn(['update_query'], new Map()),
 
     file_by_id_loading: state.trackReducer.getIn(['file_by_id', 'loading'], true),
-    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map())
+    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map()),
+
+    download_by_id_loading: state.trackReducer.getIn(['download_by_id', 'loading'], true),
+    download_by_id: state.trackReducer.getIn(['download_by_id'], new Map())
+
 
 })
 const mapDispatchToProps = {
@@ -404,7 +445,8 @@ const mapDispatchToProps = {
     updateQuery,
     fetchFileById,
     fetchFileByName,
-    updateFileQuery
+    updateFileQuery,
+    downloadFileById
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Form)

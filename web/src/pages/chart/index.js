@@ -44,7 +44,7 @@ function PieChart(props) {
       <div className=''>
         <h4 className='title'>Summary</h4>
       </div>
-      <Pie data={state} />
+      <Pie data={state} redraw={true}/>
     </>
   )
 };

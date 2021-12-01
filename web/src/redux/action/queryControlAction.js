@@ -35,7 +35,7 @@ export const deleteQuery = (id) => {
     return dispatch => {
         dispatch({ type: 'DELETE_QUERY_CTL_LOADING', loading: true, error: false })
         return serverCall({
-            method: 'post',
+            method: 'GET',
             url: '/deletequeryctl?id=' + id
         }).then(res => {
             return dispatch({ type: 'DELETE_QUERY_CTL', loading: false, data: res.data, error: false })

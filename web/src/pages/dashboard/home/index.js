@@ -265,7 +265,7 @@ function Summary(props) {
                     >
                     </AgGridReact>
                 </div>
-                <div className={'col-md-3'}><PieChart labels={labels} data={arrChartData()} /></div>
+                <div className={'col-md-3'}><PieChart labels={labels} dataObj={status} data={arrChartData()} /></div>
             </div>
         </>
     )

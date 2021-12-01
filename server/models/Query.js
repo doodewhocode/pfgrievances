@@ -1,5 +1,8 @@
 const conn = require('./init')
 const passportLocalMongoose = require('passport-local-mongoose')
+const Grid = require('gridfs-stream');
+const mongoose = require('mongoose')
+
 
 let counter = 1;
 let counterId = { type: Number, default: () => counter++ };
@@ -41,7 +44,53 @@ module.exports.updateQuery = function (obj, callback) {
 }
 
 module.exports.deleteQuery = function (id, callback) {
+    var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+    const gfs = Grid(db, mongoDriver, { bucketName: 'uploads' });
     let query = { _id: id }
-    //var newvalues = { $set: { status: "", c 
-    Query.deleteOne(query, callback)
+    Query.findOne(query, function (err, res) {
+        if (err) callback(true, err)
+        console.log(res)
+        if (res.docs.length > 0) {
+            if (res.docs.id !== undefined) {
+                for (var i = 0; i < res.docs.length; i++) {
+                    gfs.remove({ _id: new mongoose.Types.ObjectId(res.docs[i]), root: 'uploads' }, (err, res) => {
+                        //check if file is deleted
+                        if (err) {
+                            callback(true, err)
+                        }
+                        console.log(res)
+                    })
+                }
+            }
+        }
+        Query.deleteOne(query, callback)
+    })
+}
+
+module.exports.deleteQueryDoc = function (req, callback) {
+    var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+    const gfs = Grid(db, mongoDriver, { bucketName: 'uploads' });
+    let query = { _id: req.body.id }
+    Query.find(query, function (err, res) {
+        if (err) callback(true, err)
+        console.log(res)
+        if (res.docs.length > 0) {
+            if (res.docs.id !== undefined) {
+                var tempArr = res.docs.map((obj, key) => {
+                    if (obj.id !== req.body.docId) {
+                        return obj
+                    }
+                })
+                gfs.remove({ _id: new mongoose.Types.ObjectId(req.body.docId), root: 'uploads' }, (err, res) => {
+                    //check if file is deleted
+                    if (err) {
+                        callback(true, err)
+                    }
+                    console.log(res)
+                    var newvalues = { $set: { docs: tempArr } }
+                    Query.updateOne(query, newvalues, callback)
+                })
+            }
+        }
+    })
 }

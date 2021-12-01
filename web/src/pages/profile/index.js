@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux'
-import { fetchUserById } from '../../redux/action/trackAction'
+import { fetchUserById, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
 import { updateUser, uploadDoc } from '../../redux/action/registerAction'
 import Confirmation from '../../components/confirmation'
+
 
 let initializeObj = {
     "firstName": "",
@@ -140,12 +141,13 @@ function Profile(props) {
     function uploadDoc(type) {
         let formData = new FormData()
         //if (Object.keys(doc[type]).length > 0) {
+
         formData.set(type, doc[type])
         let isValid = isValidForm(user)
         if (isValid) {
-            let obj = user
             for (let key in user) {
-                formData.set(key, user[key])
+                if (key !== "panImg" && key !== "aadharImg")
+                    formData.set(key, user[key])
             }
             props.uploadDoc(formData)
         }
@@ -177,6 +179,44 @@ function Profile(props) {
     function handleClose() {
         setShowModal(false)
     }
+
+    useEffect(() => {
+        if (!props.file_by_id_loading) {
+            if (!props.file_by_id.toJS().error) {
+
+                //console.log(props.file_by_id.toJS().data)
+                const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
+                //let blob = new Blob([props.file_by_id.toJS().data])
+                let pdfWindow = window.open("")
+                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                // var fileURL = URL.createObjectURL(blob);
+                // const link = document.createElement('a');
+                // link.href = fileURL;
+                // link.setAttribute('download', "doc1.pdf"); //or any other extension
+                // document.body.appendChild(link);
+                // link.click()
+            }
+        }
+    }, [props.file_by_id_loading])
+
+    function getFile(id) {
+        props.fetchFileById(id)
+    }
+
+    function returnDocObj(user, type) {
+        if (Object.keys(user).length > 0) {
+            if (user[type] !== undefined) {
+                if (Object.keys(user[type]).length > 0) {
+                    return (<> <span > {user[type].id} , {user[type].date}</span> &nbsp; <a style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline'
+                    }} onClick={() => getFile(user[type].id)}>view</a></>)
+                }
+            }
+        }
+    }
+
     return (
         <>
             <div class="header-body ">
@@ -229,12 +269,14 @@ function Profile(props) {
                                         <div className={'col-md-8'}> <input class="w-100" type="file" id={'panImg'} name="file" onChange={onFileChange} /><button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("panImg")}>upload</button></div>
                                         <br />
                                         {Object.keys(user['panImg']).length > 0 && <span>* Pan Card Uploaded </span>}
+                                        <br /> {returnDocObj(user, "panImg")}
                                     </div>
                                     <div class="form-group w-100 ml-3">
                                         <label>Aadhaar Card* </label>
                                         <div className={'col-md-8'}>  <input class="w-100" type="file" id={'aadharImg'} name="file" onChange={onFileChange} /> <button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("aadharImg")}> upload</button></div>
                                         <br />
                                         {Object.keys(user['aadharImg']).length > 0 && <span>* Aadhaar Card Uploaded </span>}
+                                        <br /> {returnDocObj(user, "aadharImg")}
                                     </div>
                                 </div>
                                 <hr />
@@ -291,12 +333,16 @@ const mapStoreToProps = state => ({
     update_user: state.registerReducer.getIn(['update_user'], new Map()),
 
     upload_user_doc_loading: state.registerReducer.getIn(['upload_user_doc', 'loading'], true),
-    upload_user_doc: state.registerReducer.getIn(['upload_user_doc'], new Map())
+    upload_user_doc: state.registerReducer.getIn(['upload_user_doc'], new Map()),
+
+    file_by_id_loading: state.trackReducer.getIn(['file_by_id', 'loading'], true),
+    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map())
 })
 const mapDispatchToProps = {
     fetchUserById,
     updateUser,
-    uploadDoc
+    uploadDoc,
+    fetchFileById, fetchFileByName
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Profile)

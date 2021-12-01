@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { updateQuery, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
 import { history } from '../../modules/helpers'
+import { PDFDocument } from 'pdf-lib'
 
 let arr = [
     // { key: -2, value: 'Pending' },
@@ -15,6 +16,7 @@ function QueryDetails(props) {
     const [query, setQuery] = useState(props.data)
     const [comment, setComment] = useState('')
     const [confirmationFlg, setConfirmationFlg] = useState(false)
+    const [currentPdf, setCurrentPdf] = useState("")
     let userId = JSON.parse(localStorage.getItem('auth'))['userId']
     let userName = JSON.parse(localStorage.getItem('auth'))['userName']
     let userType = JSON.parse(localStorage.getItem('auth'))['userType']
@@ -25,16 +27,20 @@ function QueryDetails(props) {
             return ({ ...prevState })
         })
     }, [props.data])
-
-    useEffect(() => {
+    let pdfDoc = null
+    useEffect(async () => {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
 
-                //console.log(props.file_by_id.toJS().data)
-                const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
+                console.log(props.file_by_id.toJS().data)
+                //const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
+                //var bytes =new  Uint8Array(props.file_by_id.toJS().data)
+                //pdfDoc = await PDFDocument.load(props.file_by_id.toJS().data);
+                //console.log(pdfDoc.saveAsBase64({ dataUri: true }));
+                setCurrentPdf(props.file_by_id.toJS().data)
                 //let blob = new Blob([props.file_by_id.toJS().data])
-                let pdfWindow = window.open("")
-                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                //let pdfWindow = window.open("")
+                //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
                 // var fileURL = URL.createObjectURL(blob);
                 // const link = document.createElement('a');
                 // link.href = fileURL;
@@ -156,10 +162,18 @@ function QueryDetails(props) {
                             <li><strong>Grievance Type: </strong>{query && query.grivType}</li>
                             <li><strong>Note: </strong>{query && query.note}  </li>
                             <li><strong>Status: </strong>{query && query.status}</li>
-                            <li><strong>Doc: </strong>{(query && query.grivDoc1) && query.grivDoc1.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
-                            )}</li>
-                            <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <a onClick={() => getFile(obj.id)}>{obj.id} </a>
-                            )}</li>
+                            <li><strong>Doc 1: </strong>{(query && query.grivDoc1) && query.grivDoc1.map((obj, key) => <><br /> {(key + 1) + ". "} <span > {obj.id} , {obj.date}</span> &nbsp; <a style={{
+                                cursor: 'pointer',
+                                color: '#007bff',
+                                textDecoration: 'underline'
+                            }} onClick={() => getFile(obj.id)}>view</a></>
+                            )}</li><br />
+                            <li><strong>Doc 2: </strong>{(query && query.grivDoc2) && query.grivDoc2.map((obj, key) => <><br />  {(key + 1) + ". "} <span > {obj.id} , {obj.date}</span> &nbsp; <a style={{
+                                cursor: 'pointer',
+                                color: '#007bff',
+                                textDecoration: 'underline'
+                            }} onClick={() => getFile(obj.id)}>view</a></>
+                            )}</li><br />
                             <li><strong>Start Date :</strong>{query && query.startDate}</li>
                             <li><strong>Payment Status</strong>{query && query.paymentStatus}</li>
                             <li><strong>Payment Method :</strong>{query && query.paymentMethod}</li>
@@ -172,14 +186,14 @@ function QueryDetails(props) {
                             </div>
                             <div className="col-6 pull-right">
                                 <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
-                            </div>
+                            </div><br />
                             <div className="col-6 pull-right">
                                 <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <iframe src="" />
+                        <iframe src={currentPdf} type="application/pdf" height="100%" width="100%" />
                     </div>
                 </div>
             </div>

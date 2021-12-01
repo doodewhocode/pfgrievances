@@ -52,24 +52,28 @@ router.post('/createquery', upload.fields([{ name: 'file1', maxCount: 1 }, { nam
     console.log("req.files['file1']", req.files['file1'])
     //obj['docs'] = []
     console.log("req.files['file2'][0]", req.files['file2'])
-    for (var i = 0; i < obj.docs.length; i++) {
-        if (obj.docs[i].docId === req.files['file1'][0].originalname) {
-            obj.docs[i]['fileId'] = req.files['file1'][0].id;
-            obj.docs[i]['fileName'] = req.files['file1'][0].filename;
-            obj.docs[i]['date'] = new Date()
+
+    var tempArr = JSON.parse(obj['docs'])
+    console.log("tempArr", tempArr)
+
+    for (var i = 0; i < tempArr.length; i++) {
+        if (tempArr[i].docId === req.files['file1'][0].originalname) {
+            tempArr[i]['fileId'] = req.files['file1'][0].id;
+            tempArr[i]['fileName'] = req.files['file1'][0].filename;
+            tempArr[i]['date'] = new Date()
         }
         if (req.files['file2'] !== undefined) {
-            if (obj.docs[i].docId === req.files['file2'][0].originalname) {
-                obj.docs[i]['fileId'] = req.files['file2'][0].id;
-                obj.docs[i]['fileName'] = req.files['file2'][0].filename;
-                obj.docs[i]['date'] = new Date()
+            if (tempArr[i].docId === req.files['file2'][0].originalname) {
+                tempArr[i]['fileId'] = req.files['file2'][0].id;
+                tempArr[i]['fileName'] = req.files['file2'][0].filename;
+                tempArr[i]['date'] = new Date()
             }
         }
     }
-
+    obj['docs'] = tempArr
     obj['createDate'] = new Date()
     console.log("hehe", obj)
-    
+
     Query.saveQuery(obj, function (err, query) {
         console.log(query)
         if (err) return next(err);

@@ -1,5 +1,7 @@
 const conn = require('./init')
 const passportLocalMongoose = require('passport-local-mongoose')
+const Grid = require('gridfs-stream');
+const mongoose = require('mongoose')
 
 const userSchema = new conn.mongoose.Schema({
     userId: Number,
@@ -191,6 +193,32 @@ module.exports.updateUser = function (obj, callback) {
     User.findOneAndUpdate(query, newvalues, { new: true }, callback)
 }
 
+module.exports.viewFile = function (id, callback) {
+    var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+    gfs = Grid(db, mongoDriver);
+    gfs.collection('uploads');
+    gfs.files.findOne({ _id: new mongoose.Types.ObjectId(id) }, async (err, file) => {
+        if (!file || file.length === 0) {
+            console.log("not found")
+            callback(true, { err: 'No file exists' })
+            //return res.status(404).json({ err: 'No file exists' });
+        }
+        if (err) {
+            callback(true, { err: err })
+            //return res.status(404).json({ err: err })
+        }
+        var readStream = await gfs.createReadStream({
+            filename: file.filename
+        });
+        let finalFile = ""
 
-
+        await readStream.on('data', function (data) {
+            let bufData = data.toString('base64')
+            finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+        })
+        readStream.on('end', function () {
+            callback(false, finalFile)
+        })
+    })
+}
 

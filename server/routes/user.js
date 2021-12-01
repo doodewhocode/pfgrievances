@@ -198,6 +198,17 @@ router.get('/download/:id', async (req, res) => {
 })
 
 
+
+router.get('/view/:id', async (req, res) => {
+  User.viewFile(req.params.id, function (err, data) {    
+    if (err) {
+      return res.status(404).json({ err: data })
+    }    
+    return res.status(200).json(data)
+  })
+})
+
+
 function getFile(readStream, callback) {
   readStream.on('data', function (data) {
     let bufData = data.toString('base64')
@@ -226,7 +237,10 @@ router.get('/file/:filename', (req, res) => {
   })
 })
 
-router.get('/delete/:filename', (req, res) => {
+router.get('/delete/:id', (req, res) => {
+  var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
+  console.log(db)
+  const gfs = Grid(db, mongoDriver, { bucketName: 'uploads' });
   gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, res) => {
     //check if file is deleted
     if (err) {
@@ -325,6 +339,7 @@ router.post('/uploaduserdoc', upload.fields([{ name: 'panImg', maxCount: 1 },
 { name: 'aadharImg', maxCount: 1 }, { name: 'tenThMarksheet', maxCount: 1 },
 { name: 'birthCert', maxCount: 1 }, { name: 'affidivet', maxCount: 1 }]), function (req, res, next) {
   let obj = req.body
+  console.log(req.files)
   if (req.files['panImg'] !== undefined) {
     obj['panImg'] = {
       originalname: req.files['panImg'][0].originalname,

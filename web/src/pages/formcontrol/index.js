@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { createQuery, updateQuery, deleteQuery, fetchAllQuery } from '../../redux/action/queryControlAction'
+import Confirmation from '../../components/confirmation'
+import Toast from '../../components/toast'
 
 let initialObj = {
     queryName: "",
@@ -19,7 +21,15 @@ function FormControl(props) {
     const [selectedType, setSelectType] = useState(true)
     const fileInputRef = useRef([]);
     const docInputRef = useRef([]);
-
+    const [showModal, setShowModal] = useState({
+        message: "",
+        visible: false
+    })
+    const [toast, setToast] = useState({
+        type: '',
+        message: '',
+        visible: false
+    })
 
     useEffect(() => {
         props.fetchAllQuery()
@@ -61,8 +71,91 @@ function FormControl(props) {
             })
         }
 
-
     }, [selectedForm])
+
+    useEffect(() => {
+        if (!props.create_query_loading) {
+            if (!props.create_query.toJS().error) {
+                //onClear();
+                setToast(prevState => {
+                    prevState.message = "New Query is Created Successfully"
+                    prevState.type = "success"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Failed to create new query, Please try again or contact support team."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.create_query_loading])
+
+
+
+    useEffect(() => {
+        if (!props.update_query_ctl_loading) {
+            if (!props.update_query_ctl.toJS().error) {
+                //onClear();
+                setToast(prevState => {
+                    prevState.message = "Successfully updated"
+                    prevState.type = "success"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Update Failed, Please try again or contact support team."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.update_query_ctl_loading])
+
+
+    useEffect(() => {
+        if (!props.delete_query_ctl_loading) {
+            if (!props.delete_query_ctl.toJS().error) {
+                //onClear();
+                setToast(prevState => {
+                    prevState.message = "Query Deleted Successfully"
+                    prevState.type = "success"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Failed to delete the query , Please try again or contact support team."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.delete_query_ctl_loading])
 
     function onClickAdd() {
         if (state.docs.length < 3) {
@@ -143,7 +236,7 @@ function FormControl(props) {
                     }
                 })
                 console.log(arr);
-                formData.append('docs', arr)
+                formData.append('docs', JSON.stringify(arr))
             }
             for (var i = 0; i < state.docs.length; i++) {
                 console.log(state.docs[i].docId)
@@ -151,6 +244,17 @@ function FormControl(props) {
             }
             console.log("state", formData)
             props.createQuery(formData)
+        }else{
+            setToast(prevState => {
+                prevState.message = "Please fill the * mandatory fields"
+                prevState.type = "info"
+                prevState.visible = true
+                return ({ ...prevState })
+            })
+
+            setTimeout(() => {
+                setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+            }, 2000)
         }
     }
 
@@ -173,8 +277,47 @@ function FormControl(props) {
         })
     }
 
+    function onClickDelete() {
+        setShowModal(prevState => {
+            prevState.message = "Are you sure you want delete the query ?"
+            prevState.visible = true
+            return ({ ...prevState })
+        })
+    }
+
+    function onClear() {
+        console.log("asdfasd")
+        setState((prevState) => {
+            for (var key in initialObj) {
+                prevState[key] = initialObj[key]
+            }
+            return ({ ...prevState })
+        })
+        console.log(state)
+
+    }
+
+    function handleConfirmation(value) {
+        if (value === 'yes') {
+            if (Object.keys(selectedForm).length > 0) {
+                if (selectedForm.queryId) {
+                    props.deleteQuery(selectedForm._id)
+                }
+            }
+        } else {
+            setShowModal(prev => { prev.visible = false; return ({ ...prev }) })
+        }
+    }
+    function handleClose() {
+        setShowModal(prev => { prev.visible = false; return ({ ...prev }) })
+    }
+
     return (
         <>
+            <Toast message={toast.message} type={toast.type} visible={toast.visible} />
+            <Confirmation showModal={showModal.visible} handleClose={handleClose} title={'Confirmation'} handleConfirmationMessage={handleConfirmation} >
+                {showModal.message}
+            </Confirmation>
             <div class="profile-wrapper mt-5">
                 <div class="profile-head d-flex align-items-center pl-4">
                     Query Control
@@ -251,8 +394,8 @@ function FormControl(props) {
 
                     })}
                     <div class="d-flex  align-items-center justify-content-end pb-2">
-                        <button type="button" class="btn-sm btn-secondary">Clear</button>
-                        {!selectedType && <button type="button" class="btn-sm btn-secondary">Delete</button>}
+                        <button type="button" class="btn-sm btn-secondary" onClick={onClear}>Clear</button>
+                        {!selectedType && <button type="button" class="btn-sm btn-secondary" onClick={onClickDelete}>Delete</button>}
                         <button type="button" class="btn-sm btn-common ml-2" onClick={onClickSubmit}>Save</button>
                     </div>
                 </div>

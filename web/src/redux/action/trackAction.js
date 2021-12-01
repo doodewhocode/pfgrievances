@@ -48,7 +48,7 @@ export const fetchFileById = (id) => {
         dispatch({ type: 'FILE_BY_ID_LOADING', loading: true, error: false })
         return serverCall({
             method: 'GET',
-            url: '/file/' + id,
+            url: '/view/' + id,
         }).then(res => {
             return dispatch({ type: 'FILE_BY_ID', loading: false, data: res.data, error: false })
         }).catch(err => {

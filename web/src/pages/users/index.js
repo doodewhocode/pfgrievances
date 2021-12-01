@@ -98,8 +98,8 @@ function Users(props) {
         for (var i = 0; i < data.length; i++) {
             console.log(data[i].status)
             if (data[i].userType === 'employee') { a++; }
-            else if (data[i].status === 'employer') b++;
-            else if (data[i].status === 'admin') c++;
+            else if (data[i].userType === 'employer') b++;
+            else if (data[i].userType === 'admin') c++;
             else if (data[i].active === false) d++;
         }
         return {
