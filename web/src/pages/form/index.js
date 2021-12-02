@@ -4,7 +4,11 @@ import { submitQuery } from '../../redux/action/formAction'
 import pdf from "../../assets/form/New-Joint-Declaration-Form.pdf"
 import { PDFDocument } from 'pdf-lib'
 import { Document } from 'react-pdf'
-import { fetchGrivById, updateQuery, fetchFileById, fetchFileByName, updateFileQuery, downloadFileById } from '../../redux/action/trackAction'
+import { initiatePayment } from '../../redux/action/paymentAction'
+import {
+    fetchGrivById, updateQuery, fetchFileById, fetchFileByName,
+    updateFileQuery, downloadFileById
+} from '../../redux/action/trackAction'
 
 let reqList = [
     { id: "1", value: "Name Change Correction" },
@@ -74,7 +78,7 @@ function Form(props) {
     useEffect(async () => {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
-                
+
                 //let pdfWindow = window.open("")
                 //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
                 setCurrentPdf(props.file_by_id.toJS().data)
@@ -125,7 +129,7 @@ function Form(props) {
     }
     function onSelectPDF(value) {
         props.fetchFileById("61a1678edb4bc3ec4d20590b")
-         
+
         // setSelectedPDF(value)
         // loadPDF("../.." + value)
     }
@@ -308,6 +312,28 @@ function Form(props) {
         })
     }
 
+    useEffect(() => {
+        if (!props.init_payment_loading) {
+            if (!props.init_payment.toJS().error) {
+                console.log(props.init_payment.toJS().data)
+            }
+        }
+    }, [props.init_payment_loading])
+
+    function handlePayment() {
+        let obj = {
+            txnid: "abcd1",
+            amount: "100.00",
+            name: "vivek",
+            email: "vvkslv3@gmail.com",
+            phone: "9876543210",
+            productinfo: "Name Change Correction",
+            surl: "http://localhost:7000/response",
+            furl: "http://localhost:7000/response"
+        }
+        props.initiatePayment(obj)
+    }
+
     return (
         <>
             <div class="section-gap"><br />
@@ -410,6 +436,7 @@ function Form(props) {
                             </div>
                         </div>
                         <div>
+                            <button onClick={handlePayment}> Pay</button>
                             {currentPdf !== "" && <iframe src={pdfDoc} width="100%" height="100%"></iframe>}
                             <Document file={currentPdf} />
                         </div>
@@ -435,7 +462,11 @@ const mapStoreToProps = state => ({
     file_by_id: state.trackReducer.getIn(['file_by_id'], new Map()),
 
     download_by_id_loading: state.trackReducer.getIn(['download_by_id', 'loading'], true),
-    download_by_id: state.trackReducer.getIn(['download_by_id'], new Map())
+    download_by_id: state.trackReducer.getIn(['download_by_id'], new Map()),
+
+    init_payment_loading: state.paymentReducer.getIn(['init_payment', 'loading'], true),
+    init_payment: state.paymentReducer.getIn(['init_payment'], new Map())
+
 
 
 })
@@ -446,7 +477,8 @@ const mapDispatchToProps = {
     fetchFileById,
     fetchFileByName,
     updateFileQuery,
-    downloadFileById
+    downloadFileById,
+    initiatePayment
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Form)

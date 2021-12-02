@@ -13,6 +13,12 @@
 # production
 /build
 
+/server/package-lock.json
+/web/package-lock.json
+
+server/package-lock.json
+web/package-lock.json
+
 # misc
 .DS_Store
 /server/.env

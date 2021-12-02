@@ -6,6 +6,7 @@ import FormReducer from './formReducer'
 import DashboardReducer from './dashboardReducer'
 import TrackReducer from './trackReducer'
 import QueryControlReducer from './queryControlReducer'
+import PaymentReducer from './paymentReducer'
 
 export default combineReducers({
   registerReducer: RegisterReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
   dashboardReducer: DashboardReducer,
   trackReducer: TrackReducer,
   queryControlReducer: QueryControlReducer,
+  paymentReducer:PaymentReducer,
   signin
 })

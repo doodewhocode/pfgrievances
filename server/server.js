@@ -16,8 +16,12 @@ const Grid = require('gridfs-stream');
 //let conn = conn.mongoose.createConnection(process.env.MONGO_URI)
 
 
-
+var path = require("path");
 const server = express()
+server.use('/static', express.static(path.join(__dirname, 'assets')))
+server.use('/view', express.static(path.join(__dirname, 'views')))
+server.engine('html', require('ejs').renderFile);
+
 server.set("view engine", "ejs");
 server.use(methodOverride('_method'));
 // Middleware
@@ -53,6 +57,7 @@ server.use(expressValidator({
 // Routes
 server.use([require('./routes/grievance'), require('./routes/query')])
 server.use([require('./routes/auth'), require('./routes/user')])
+server.use([require('./routes/payment')])
 
 // Error handling
 server.use((error, req, res, next) => {
