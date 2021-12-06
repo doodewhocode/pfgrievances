@@ -22,8 +22,11 @@ router.post('/response', function (req, res) {
             return false;
     }
     if (checkReverseHash(req.body)) {
-        res.send(req.body);
+        console.log(req)
+        res.redirect("http://localhost:3000/app/payment?txnid=" + req.body['txnid'] + "&status=" + req.body['status'])
+        //res.send(req.body);
     }
+
     res.send('false, check the hash value ');
 });
 

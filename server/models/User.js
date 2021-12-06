@@ -214,11 +214,23 @@ module.exports.viewFile = function (id, callback) {
 
         await readStream.on('data', function (data) {
             let bufData = data.toString('base64')
+            let ab= toArrayBuffer(data)
             finalFile = 'data:' + file.contentType + ';base64,' + bufData;
+            //console.log(ab);
+            //finalFile = data;
         })
         readStream.on('end', function () {
             callback(false, finalFile)
         })
     })
+}
+
+function toArrayBuffer(buf) {
+    const ab = new ArrayBuffer(buf.length);
+    const view = new Uint8Array(ab);
+    for (let i = 0; i < buf.length; ++i) {
+        view[i] = buf[i]
+    }
+    return ab;
 }
 

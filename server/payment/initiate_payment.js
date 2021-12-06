@@ -56,6 +56,7 @@ let initiate_payment = function (data, config, res) {
   }
 
   function geturl(env) {
+    console.log(env)
     if (env == 'test') {
       url_link = "https://testpay.easebuzz.in/";
 
@@ -113,6 +114,7 @@ let initiate_payment = function (data, config, res) {
   // main calling part is below
 
   checkArgumentValidation(data, config);
+  console.log(data, config)
   var hash_key = generateHash();
   payment_url = geturl(config.env);
   call_url = payment_url + 'payment/initiateLink';
@@ -122,16 +124,21 @@ let initiate_payment = function (data, config, res) {
 
 
   function pay(access_key, url_main) {
-    
-    if (config.enable_iframe==0) {
+
+    if (config.enable_iframe == 0) {
       var url = url_main + 'pay/' + access_key;
-      return res.redirect(url);
+      return res.send(url);
+      //res.redirect(url);
     } else {
       console.log(res)
-      res.render("enable_iframe.html", {
+      // res.render("enable_iframe.html", {
+      //   'key': config.key,
+      //   'access_key': access_key
+      // });
+      res.json({
         'key': config.key,
         'access_key': access_key
-      });
+      })
 
     }
   }

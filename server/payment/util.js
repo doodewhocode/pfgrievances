@@ -1,5 +1,5 @@
 let curl_call = function (url, data, method = 'POST') {
-
+console.log(url,data)
   var request = require('request');
   var options = {
     'method': method,
@@ -12,6 +12,8 @@ let curl_call = function (url, data, method = 'POST') {
   };
   return new Promise(function (resolve, reject) {
     request(options, function (error, response) {
+      console.log("response", response)
+      console.log("error", error)
       if (response) {
         var data = JSON.parse(response.body)
         return resolve(data);

@@ -9,6 +9,7 @@ import {
     fetchGrivById, updateQuery, fetchFileById, fetchFileByName,
     updateFileQuery, downloadFileById
 } from '../../redux/action/trackAction'
+import { history } from '../../modules/helpers'
 
 let reqList = [
     { id: "1", value: "Name Change Correction" },
@@ -166,7 +167,7 @@ function Form(props) {
         url = 'https://pdf-lib.js.org/assests/dod_character.pdf'
         const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
         pdfDoc = await PDFDocument.load(arrayBuffer);
-        //console.log(pdfDoc.saveAsBase64({ dataUri: true }));
+        console.log(await pdfDoc.saveAsBase64({ dataUri: true }));
         setCurrentPdf(await pdfDoc.saveAsBase64({ dataUri: true }))
     }
 
@@ -316,17 +317,32 @@ function Form(props) {
         if (!props.init_payment_loading) {
             if (!props.init_payment.toJS().error) {
                 console.log(props.init_payment.toJS().data)
+                window.open(props.init_payment.toJS().data)
+                // history.push('/app/enableiframe', {
+                //     key: props.init_payment.toJS().data['key'],
+                //     access_key: props.init_payment.toJS().data['access_key'],
+                // })
             }
         }
     }, [props.init_payment_loading])
 
     function handlePayment() {
         let obj = {
-            txnid: "abcd1",
+            txnid: "IMBAD16",
             amount: "100.00",
             name: "vivek",
-            email: "vvkslv3@gmail.com",
+            email: "initiate.payment@easebuzz.in",
             phone: "9876543210",
+            'udf1': "",
+            'udf2': "",
+            'udf3': "",
+            'udf4': "",
+            'udf5': "",
+            'udf6': "",
+            'udf7': "",
+            'udf8': "",
+            'udf9': "",
+            'udf10': "",
             productinfo: "Name Change Correction",
             surl: "http://localhost:7000/response",
             furl: "http://localhost:7000/response"
@@ -437,7 +453,7 @@ function Form(props) {
                         </div>
                         <div>
                             <button onClick={handlePayment}> Pay</button>
-                            {currentPdf !== "" && <iframe src={pdfDoc} width="100%" height="100%"></iframe>}
+                            {currentPdf !== "" && <iframe src={currentPdf} width="100%" height="100%"></iframe>}
                             <Document file={currentPdf} />
                         </div>
                     </div>

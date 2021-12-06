@@ -7,8 +7,10 @@ import Track from '../track'
 import Form from '../form'
 import Summary from './home'
 import FormControl from '../formcontrol'
-import Online  from '../online';
+import Online from '../online';
 import Users from '../users'
+import EnableIframe from '../payment/enableIframe'
+import PaymentStatus from '../payment/paymentstatus';
 
 let user = JSON.parse(localStorage.getItem('auth'))
 function SideNavbar(props) {
@@ -64,7 +66,7 @@ function SideNavbar(props) {
                     <div className="sidenav-footer">
                         <div className="sidenav-footer-content">
                             <div className="sidenav-footer-subtitle">Logged in as: </div>
-                            <div className="sidenav-footer-title">{user['firstName'] +", "+user['lastName']}</div>
+                            <div className="sidenav-footer-title">{user['firstName'] + ", " + user['lastName']}</div>
                         </div>
                     </div>
                 </nav>
@@ -78,7 +80,9 @@ function SideNavbar(props) {
                         <Route path="/app/track" component={Track} />
                         <Route path="/app/usercontrol" component={Users} />
                         <Route path="/app/formcontrol" component={FormControl} />
-                        <Route Path="/app/online" component={Online} />
+                        {/* <Route Path="/app/online" component={Online} /> */}
+                        <Route path="/app/enableiframe" component={EnableIframe} />
+                        <Route path="/app/payment" component={PaymentStatus} />
                         <Redirect from="/" to="/app/home" />
                     </Switch>
                 </div>

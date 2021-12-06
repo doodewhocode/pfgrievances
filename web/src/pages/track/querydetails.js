@@ -34,8 +34,10 @@ function QueryDetails(props) {
 
                 console.log(props.file_by_id.toJS().data)
                 //const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
-                //var bytes =new  Uint8Array(props.file_by_id.toJS().data)
-                //pdfDoc = await PDFDocument.load(props.file_by_id.toJS().data);
+                // const ab = toArrayBuffer(props.file_by_id.toJS().data['data'])
+                // var bytes =new  Uint8Array(ab)
+                // console.log(bytes)
+                // pdfDoc = await PDFDocument.load(ab);
                 //console.log(pdfDoc.saveAsBase64({ dataUri: true }));
                 setCurrentPdf(props.file_by_id.toJS().data)
                 //let blob = new Blob([props.file_by_id.toJS().data])
@@ -50,6 +52,15 @@ function QueryDetails(props) {
             }
         }
     }, [props.file_by_id_loading])
+
+    function toArrayBuffer(buf) {
+        const ab = new ArrayBuffer(buf.length);
+        const view = new Uint8Array(ab);
+        for (let i = 0; i < buf.length; ++i) {
+            view[i] = buf[i]
+        }
+        return ab;
+    }
     const onChangeHandler = (e) => {
         let id = e.target.id, value = e.target.value
         if (value) {
