@@ -2,6 +2,7 @@ const conn = require('./init')
 const passportLocalMongoose = require('passport-local-mongoose')
 const Grid = require('gridfs-stream');
 const mongoose = require('mongoose')
+const Mail =  require('../middleware/Mail')
 
 const userSchema = new conn.mongoose.Schema({
     userId: Number,
@@ -98,7 +99,7 @@ module.exports.forgotpasswordResponse = function (req, callback) {
         var token = buf.toString('hex');
         console.log(token);
         var val = Math.floor(1000 + Math.random() * 9000);
-        var query = { email: req.body.email };
+        var query = { emailId: req.body.email };
         console.log('asdfadf', req.body.email)
         User.findOne(query, function (err, result) {
             if (err) throw err;
@@ -106,16 +107,16 @@ module.exports.forgotpasswordResponse = function (req, callback) {
             if (result.length == 0) {
                 req.flash('error', 'No account with that email address exists.');
             }
-            var myquery = { email: req.body.email };
+            var myquery = { emailId: req.body.email };
             var newvalues = { $set: { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000, otp: val } };
             User.updateOne(myquery, newvalues, function (err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
-                var emailVal = myquery.email;
+                var emailVal = myquery.emailId;
                 console.log(emailVal);
                 const mailOptions = {
                     to: emailVal,
-                    from: '',
+                    from: 'info@complyhrm.com',
                     subject: 'Node.js Password Reset',
                     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -214,10 +215,10 @@ module.exports.viewFile = function (id, callback) {
 
         await readStream.on('data', function (data) {
             let bufData = data.toString('base64')
-            let ab= toArrayBuffer(data)
+            //let ab= toArrayBuffer(data)
             finalFile = 'data:' + file.contentType + ';base64,' + bufData;
             //console.log(ab);
-            //finalFile = data;
+            finalFile = data;
         })
         readStream.on('end', function () {
             callback(false, finalFile)

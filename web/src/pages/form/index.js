@@ -10,6 +10,9 @@ import {
     updateFileQuery, downloadFileById
 } from '../../redux/action/trackAction'
 import { history } from '../../modules/helpers'
+import { Viewer,Worker } from '@react-pdf-viewer/core'
+
+
 
 let reqList = [
     { id: "1", value: "Name Change Correction" },
@@ -42,7 +45,7 @@ function Form(props) {
         note: ""
     })
     const fileInputRef = useRef([]);
-
+    let pdfDoc = null
     useEffect(() => {
         formList.map((e, key) => {
             if (selectedForm !== {}) {
@@ -79,13 +82,31 @@ function Form(props) {
     useEffect(async () => {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
+                //let arrBuf = await toArrayBuffer(props.file_by_id.toJS().data['data'])
+                // console.log(arrBuf)
+                // var bytes = new Uint8Array(arrBuf);
+                // console.log(bytes)
+                // pdfDoc = await PDFDocument.load(bytes);
+                //console.log(await pdfDoc.saveAsBase64({ dataUri: true }));
 
                 //let pdfWindow = window.open("")
                 //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
-                setCurrentPdf(props.file_by_id.toJS().data)
+                const view = new Uint8Array(props.file_by_id.toJS().data['data']);
+                setCurrentPdf(view)
             }
         }
     }, [props.file_by_id_loading])
+
+    function toArrayBuffer(buf) {
+        const ab = new ArrayBuffer(buf.length);
+        const view = new Uint8Array(ab);
+        for (let i = 0; i < buf.length; ++i) {
+            view[i] = buf[i]
+        }
+        return ab;
+    }
+
+
     useEffect(async () => {
         if (!props.download_by_id_loading) {
             if (!props.download_by_id.toJS().error) {
@@ -129,10 +150,10 @@ function Form(props) {
         setSelectedForm(obj)
     }
     function onSelectPDF(value) {
-        props.fetchFileById("61a1678edb4bc3ec4d20590b")
+        //props.fetchFileById("61a1678edb4bc3ec4d20590b")
 
         // setSelectedPDF(value)
-        // loadPDF("../.." + value)
+        loadPDF("../.." + value)
     }
     function onClickDownloadPDF(value) {
         //var fileURL = URL.createObjectURL(blob);
@@ -162,10 +183,15 @@ function Form(props) {
         })
         return list
     }
-    let pdfDoc = null
+
     async function loadPDF(url) {
-        url = 'https://pdf-lib.js.org/assests/dod_character.pdf'
-        const arrayBuffer = await fetch(url).then(res => res.arrayBuffer())
+        url = '../../assets/form/New-Joint-Declaration-Form.pdf'
+        let ur = "https://pdf-lib.js.org/assets/dod_character.pdf"
+        const arrayBuffer = await fetch(ur).then(res => {
+            console.log("res", res);
+            return res.arrayBuffer()
+        })
+        console.log("arrayBuffer", arrayBuffer)
         pdfDoc = await PDFDocument.load(arrayBuffer);
         console.log(await pdfDoc.saveAsBase64({ dataUri: true }));
         setCurrentPdf(await pdfDoc.saveAsBase64({ dataUri: true }))
@@ -453,8 +479,11 @@ function Form(props) {
                         </div>
                         <div>
                             <button onClick={handlePayment}> Pay</button>
-                            {currentPdf !== "" && <iframe src={currentPdf} width="100%" height="100%"></iframe>}
-                            <Document file={currentPdf} />
+                            {currentPdf !== "" && <iframe src={currentPdf} type="application/pdf" width="100%" height="100%"></iframe>}
+                            {/* <Document file={currentPdf} /> */}
+                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
+                                <Viewer fileUrl={currentPdf} />
+                            </Worker>
                         </div>
                     </div>
                 </div>

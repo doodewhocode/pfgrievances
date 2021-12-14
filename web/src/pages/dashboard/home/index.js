@@ -28,17 +28,21 @@ function Summary(props) {
     const [tempData, setTempData] = useState([])
 
     let userId = null, employerName = null, userType = null
+    userId = JSON.parse(localStorage.getItem('auth')).userId
+    userType = JSON.parse(localStorage.getItem('auth')).userType
+    employerName = JSON.parse(localStorage.getItem('auth')).employerName
     let gridOptions = {
         modules: AllCommunityModules,
         columnDefs: [
             {
                 headerName: 'Query ID', field: '_id', width: 180, filter: false, cellRenderer: (params) => {
+                    console.log("params", params)
                     var link = document.createElement('a');
                     link.href = '#';
                     link.innerHTML = params.value;
                     link.addEventListener('click', (e) => {
                         e.preventDefault()
-                        idClickHandler(params.value)
+                        idClickHandler(params.value, params['data'].status)
                     })
                     return link
                 }
@@ -63,9 +67,7 @@ function Summary(props) {
 
     useEffect(() => {
         async function loadFirst() {
-            userId = await JSON.parse(localStorage.getItem('auth')).userId
-            userType = await JSON.parse(localStorage.getItem('auth')).userType
-            employerName = await JSON.parse(localStorage.getItem('auth')).employerName
+
             if (userType == "employee") {
                 props.fetchEmployeeReqs(userId)
             } else {
@@ -113,8 +115,11 @@ function Summary(props) {
 
 
 
-    const idClickHandler = (id) => {
-        history.push('/app/track/' + id)
+    const idClickHandler = (id, status) => {
+        if (status === "Pending")
+            history.push('/app/form/' + id)
+        else
+            history.push('/app/track/' + id)
     }
     const viewClickHandler = (data) => {
         history.push('/app/track/' + data._id)
@@ -174,7 +179,7 @@ function Summary(props) {
     function filterByValue(array, string) {
         return array.filter(o => Object.keys(o).some(k => {
             if (k !== "trackStatus" && k !== "comments" && k !== "grivDoc1" && k !== "grivDoc2"
-                && k !== "grivDoc3" && k !== "proofDocZip" && k != "queryLevel" && k !== "__v" && k!=="endDate") {
+                && k !== "grivDoc3" && k !== "proofDocZip" && k != "queryLevel" && k !== "__v" && k !== "endDate") {
                 console.log("key", k)
                 return o[k].toLowerCase().includes(string.toLowerCase())
             }
@@ -243,13 +248,17 @@ function Summary(props) {
                     </div>
                 </div>
             </div>
-            {((userType !== null || userType !== undefined) && userType === 'employer') && <div>
+            
+            <br />
+       
+            
+            <div class="row ">
+            <div><input type="text" id={'search'} value={search} placeholder={'search'} onChange={handleSearchInput} />
+            {((userType !== null || userType !== undefined) && userType === 'employer') && <div className={'pull-right'}>
                 <button className={'btn btn-sm btn-danger'} >All Requests</button>
                 <button className={'btn btn-sm btn-danger'}>My Requests</button>
             </div>}
-            <br />
-            <div><input type="text" id={'search'} value={search} placeholder={'search'} onChange={handleSearchInput} /></div>
-            <div class="row ">
+            </div>
                 <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
                     <AgGridReact
                         modules={AllCommunityModules}

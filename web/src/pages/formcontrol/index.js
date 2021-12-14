@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { createQuery, updateQuery, deleteQuery, fetchAllQuery } from '../../redux/action/queryControlAction'
+import { fetchFileById, fetchFileByName, downloadFileById } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
 import Toast from '../../components/toast'
 
@@ -56,7 +57,7 @@ function FormControl(props) {
     }
 
     function onChangeDropdown(e) {
-        let obj = queryList.find((obj) => obj.queryId == e.target.value)
+        let obj = queryList.find((obj) => obj._id == e.target.value)
         setSelectedForm(obj)
     }
 
@@ -157,6 +158,19 @@ function FormControl(props) {
         }
     }, [props.delete_query_ctl_loading])
 
+
+    useEffect(async () => {
+        if (!props.file_by_id_loading) {
+            if (!props.file_by_id.toJS().error) {
+                let pdfWindow = window.open("")
+                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                //setCurrentPdf(props.file_by_id.toJS().data)
+            }
+        }
+    }, [props.file_by_id_loading])
+
+   
+
     function onClickAdd() {
         if (state.docs.length < 3) {
             let arr = state.docs
@@ -244,7 +258,7 @@ function FormControl(props) {
             }
             console.log("state", formData)
             props.createQuery(formData)
-        }else{
+        } else {
             setToast(prevState => {
                 prevState.message = "Please fill the * mandatory fields"
                 prevState.type = "info"
@@ -312,6 +326,14 @@ function FormControl(props) {
         setShowModal(prev => { prev.visible = false; return ({ ...prev }) })
     }
 
+    function getFile(id) {
+        props.fetchFileById(id)
+    }
+
+    function downloadFile(id) {
+        props.downloadFileById(id)
+    }
+
     return (
         <>
             <Toast message={toast.message} type={toast.type} visible={toast.visible} />
@@ -332,12 +354,11 @@ function FormControl(props) {
                 </div>
                 <br />
                 {!selectedType && <div class="form-group ">
-                    <label for="queryName" class="col-sm-6 col-form-label">Query Type*:</label>
+                    <label for="queryName" class="col-sm-6 col-form-label">Select Query Type*:</label>
                     <div class="col-sm-6">
-                        <select className='form-control rounded-0' value={(selectedForm !== {}) ? selectedForm.queryId : ""} onChange={(e) => onChangeDropdown(e)}>
-                            <option>Select Query Type</option>
+                        <select className='form-control rounded-0' value={(selectedForm !== {}) ? selectedForm._id : ""} onChange={(e) => onChangeDropdown(e)}>
                             {queryList.map((e, key) => {
-                                return <option key={key} value={e.queryId}>{e.queryName}</option>
+                                return <option key={key} value={e._id}>{e.queryName}</option>
                             })
                             }
                         </select>
@@ -388,7 +409,18 @@ function FormControl(props) {
                             </div>)
                         } else {
                             return (
-                                <><span>{key + 1}. Document Name*:</span>{state.docs[key].docName}</>
+                                <div>&nbsp;&nbsp;{key + 1} . Document Name*: <span >{state.docs[key].docName} </span> , <span>{state.docs[key].date}</span>&nbsp;
+                                    <a style={{
+                                        cursor: 'pointer',
+                                        color: '#007bff',
+                                        textDecoration: 'underline'
+                                    }} onClick={() => getFile(state.docs[key].fileId)}>view</a>&nbsp;
+                                    <a style={{
+                                        cursor: 'pointer',
+                                        color: '#007bff',
+                                        textDecoration: 'underline'
+                                    }} onClick={() => downloadFile(state.docs[key].fileId)}>download</a>
+                                </div >
                             )
                         }
 
@@ -414,13 +446,21 @@ const mapStoreToProps = state => ({
     //delete
     delete_query_ctl_loading: state.queryControlReducer.getIn(['delete_query_ctl', 'loading'], true),
     delete_query_ctl: state.queryControlReducer.getIn(['delete_query_ctl'], new Map()),
+    //file
+    file_by_id_loading: state.trackReducer.getIn(['file_by_id', 'loading'], true),
+    file_by_id: state.trackReducer.getIn(['file_by_id'], new Map()),
+
+    download_by_id_loading: state.trackReducer.getIn(['download_by_id', 'loading'], true),
+    download_by_id: state.trackReducer.getIn(['download_by_id'], new Map()),
+
     //fetch
     query_list_loading: state.queryControlReducer.getIn(['query_list', 'loading'], true),
     query_list: state.queryControlReducer.getIn(['query_list'], new Map())
 
 })
 const mapDispatchToProps = {
-    createQuery, updateQuery, deleteQuery, fetchAllQuery
+    createQuery, updateQuery, deleteQuery, fetchAllQuery, fetchFileById,
+    fetchFileByName, downloadFileById
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(FormControl)

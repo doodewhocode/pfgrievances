@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import token from './tokenReducer'
-import signin from './signinReducer'
+import SignInReducer from './signinReducer'
 import RegisterReducer from './registerReducer'
 import FormReducer from './formReducer'
 import DashboardReducer from './dashboardReducer'
@@ -15,6 +15,6 @@ export default combineReducers({
   dashboardReducer: DashboardReducer,
   trackReducer: TrackReducer,
   queryControlReducer: QueryControlReducer,
-  paymentReducer:PaymentReducer,
-  signin
+  paymentReducer: PaymentReducer,
+  signInReducer: SignInReducer
 })
