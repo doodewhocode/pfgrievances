@@ -9,7 +9,7 @@ const oauth2Client = new OAuth2(
 );
 
 oauth2Client.setCredentials({
-    refresh_token: "1//04AUnJxv2A1gzCgYIARAAGAQSNwF-L9Ir2NN0mCHREjtJr8_fyNlT0Og36MX-71IRhjtm_QfHoLOMNM6B5fFbB20Tpd537tdvy64"
+    refresh_token: "1//04DUipLpJTTSzCgYIARAAGAQSNwF-L9IrmONMGPIA-rxUYamMlxV-yHXTL0XBQkKBqfWbFWb2piE5XSMVT3BrAJ0_sI5X-vpLA9Q"
 });
 
 module.exports.sendMail = async function (mailOptions, callback) {
@@ -21,7 +21,7 @@ module.exports.sendMail = async function (mailOptions, callback) {
             user: "info@complyhrm.com",
             clientId: "92257743746-1u04edf97ha6vr4o9kvuet39feif35ol.apps.googleusercontent.com",
             clientSecret: "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",
-            refreshToken: "1//04AUnJxv2A1gzCgYIARAAGAQSNwF-L9Ir2NN0mCHREjtJr8_fyNlT0Og36MX-71IRhjtm_QfHoLOMNM6B5fFbB20Tpd537tdvy64",
+            refreshToken: "1//04DUipLpJTTSzCgYIARAAGAQSNwF-L9IrmONMGPIA-rxUYamMlxV-yHXTL0XBQkKBqfWbFWb2piE5XSMVT3BrAJ0_sI5X-vpLA9Q",
             accessToken: accessToken
         },
         tls: {
