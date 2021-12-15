@@ -10,7 +10,7 @@ import {
     updateFileQuery, downloadFileById
 } from '../../redux/action/trackAction'
 import { history } from '../../modules/helpers'
-import { Viewer,Worker } from '@react-pdf-viewer/core'
+
 
 
 
@@ -481,9 +481,9 @@ function Form(props) {
                             <button onClick={handlePayment}> Pay</button>
                             {currentPdf !== "" && <iframe src={currentPdf} type="application/pdf" width="100%" height="100%"></iframe>}
                             {/* <Document file={currentPdf} /> */}
-                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
+                            {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
                                 <Viewer fileUrl={currentPdf} />
-                            </Worker>
+                            </Worker> */}
                         </div>
                     </div>
                 </div>

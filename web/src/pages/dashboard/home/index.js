@@ -248,17 +248,16 @@ function Summary(props) {
                     </div>
                 </div>
             </div>
-            
             <br />
-       
-            
-            <div class="row ">
+
             <div><input type="text" id={'search'} value={search} placeholder={'search'} onChange={handleSearchInput} />
-            {((userType !== null || userType !== undefined) && userType === 'employer') && <div className={'pull-right'}>
-                <button className={'btn btn-sm btn-danger'} >All Requests</button>
-                <button className={'btn btn-sm btn-danger'}>My Requests</button>
-            </div>}
+                {((userType !== null || userType !== undefined) && userType === 'employer') && <div className={'pull-right'}>
+                    <button className={'btn btn-sm btn-danger'} >All Requests</button>
+                    <button className={'btn btn-sm btn-danger'}>My Requests</button>
+                </div>}
             </div>
+            <div class="row ">
+
                 <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
                     <AgGridReact
                         modules={AllCommunityModules}
