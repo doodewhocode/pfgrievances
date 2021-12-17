@@ -1,3 +1,5 @@
+@import "../../assets/styles/global/_global-dir";
+
 .navbar {
   background: #ffffff;
   height: 3.75rem;
@@ -8,8 +10,8 @@
       .nav-link {
         position: relative;
         color: #3eadcf;
-        font-size: 1.2rem;
-        font-weight: 500;
+        font-size: 1rem;
+        font-family: $medium;
         min-height: 30px;
         margin-left: 30px;
 
@@ -43,8 +45,6 @@
         }
       }
     }
-
-
   }
 
   &.scrolled {

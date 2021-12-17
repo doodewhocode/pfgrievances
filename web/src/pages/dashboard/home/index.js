@@ -28,15 +28,14 @@ function Summary(props) {
     const [tempData, setTempData] = useState([])
 
     let userId = null, employerName = null, userType = null
-    userId = JSON.parse(localStorage.getItem('auth')).userId
-    userType = JSON.parse(localStorage.getItem('auth')).userType
-    employerName = JSON.parse(localStorage.getItem('auth')).employerName
+    userId = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth')).userId : ""
+    userType = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth')).userType : ""
+    employerName = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth')).employerName : ""
     let gridOptions = {
         modules: AllCommunityModules,
         columnDefs: [
             {
                 headerName: 'Query ID', field: '_id', width: 180, filter: false, cellRenderer: (params) => {
-                    console.log("params", params)
                     var link = document.createElement('a');
                     link.href = '#';
                     link.innerHTML = params.value;
@@ -195,7 +194,7 @@ function Summary(props) {
 
     return (
         <>
-            <div class="row pt-5">
+            <div class="row">
                 <div class="col-xl-4 col-md-6">
                     <div class="card card-stats bg-green">
                         <div class="card-body ">
@@ -250,28 +249,31 @@ function Summary(props) {
             </div>
             <br />
 
-            <div><input type="text" id={'search'} value={search} placeholder={'search'} onChange={handleSearchInput} />
-                {((userType !== null || userType !== undefined) && userType === 'employer') && <div className={'pull-right'}>
-                    <button className={'btn btn-sm btn-danger'} >All Requests</button>
-                    <button className={'btn btn-sm btn-danger'}>My Requests</button>
-                </div>}
-            </div>
             <div class="row ">
-
-                <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
-                    <AgGridReact
-                        modules={AllCommunityModules}
-                        columnDefs={gridOptions.columnDefs}
-                        rowData={tempData}
-                        onGridReady={onGridReady}
-                        pagination={true}
-                        context={gridOptions.context}
-                        defaultColDef={gridOptions.defaultColDef}
-                        gridOptions={gridOptions}
-                        rowSelection={gridOptions.rowSelection}
-                        floatingFilter={true}
-                    >
-                    </AgGridReact>
+                <div className={'col-md-9'}>
+                    <div>
+                        <input type="text" id={'search'} value={search} placeholder={'Search Query'} onChange={handleSearchInput} />
+                        {((userType !== null || userType !== undefined) && userType === 'employer') && <div className={'pull-right'}>
+                            <button className={'btn-sm btn-danger'} >All Requests</button>
+                            <button className={'btn-sm btn-danger'}>My Requests</button>
+                        </div>}
+                    </div>
+                    <br/>
+                    <div className="ag-theme-balham" style={{ height: '450px', width: '55vw' }}>
+                        <AgGridReact
+                            modules={AllCommunityModules}
+                            columnDefs={gridOptions.columnDefs}
+                            rowData={tempData}
+                            onGridReady={onGridReady}
+                            pagination={true}
+                            context={gridOptions.context}
+                            defaultColDef={gridOptions.defaultColDef}
+                            gridOptions={gridOptions}
+                            rowSelection={gridOptions.rowSelection}
+                            floatingFilter={true}
+                        >
+                        </AgGridReact>
+                    </div>
                 </div>
                 <div className={'col-md-3'}><PieChart labels={labels} dataObj={status} data={arrChartData()} /></div>
             </div>

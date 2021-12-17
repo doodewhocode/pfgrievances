@@ -218,7 +218,7 @@ module.exports.viewFile = function (id, callback) {
             //let ab= toArrayBuffer(data)
             finalFile = 'data:' + file.contentType + ';base64,' + bufData;
             //console.log(ab);
-            finalFile = data;
+            //finalFile = data;
         })
         readStream.on('end', function () {
             callback(false, finalFile)

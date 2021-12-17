@@ -5,6 +5,8 @@ import Confirmation from '../../components/confirmation'
 import { history } from '../../modules/helpers'
 import { PDFDocument } from 'pdf-lib'
 
+import "./track.scss"
+
 let arr = [
     // { key: -2, value: 'Pending' },
     { key: -1, value: 'New' },
@@ -144,7 +146,6 @@ function QueryDetails(props) {
     return (
         <>
             <div>
-                <br />
                 {confirmationFlg && <Confirmation
                     showModal={confirmationFlg}
                     handleClose={(e) => closeHandler()}
@@ -154,15 +155,7 @@ function QueryDetails(props) {
 
                 </Confirmation>}
 
-                {(userType == 'employer' || userType == 'admin') &&
-                    <div className={'row pull-right'}>
-                        <div className={'col-md-10'}> <select className={'form-control rounded-0'} id={'queryLevel'} value={query && query.queryLevel} onChange={(e) => onChangeHandler(e)}>
-                            <option value='' >Select</option>
-                            {arr.map(item => <option value={item.key}>{item.value}</option>)}
-                        </select></div> <div className={'col-md-2'}>
-                            <button className={'btn btn-danger btn-sm rounded-0'} onClick={() => updateStatus()}>Save</button></div>
-                    </div>
-                }
+
                 <br />
                 <div className="row">
                     <div className="col-md-6">
@@ -193,17 +186,25 @@ function QueryDetails(props) {
                         <div className={'row '}>
                             <div className={'col-6 '}>
                                 <textarea className={'form-control rounded-0'} value={comment} onChange={(e) => setComment(e.target.value)} />
-                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => postComment()}>Post</button>
                             </div>
-                            <div className="col-6 pull-right">
-                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => cancelOrder()}>Cancel Request</button>
-                            </div><br />
-                            <div className="col-6 pull-right">
-                                <button className={'btn btn-danger rounded-0 btn-sm'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
+                            <div className="col-12 mt-5 post-btn">
+                                <button className={'btn-sm btn-secondary'} onClick={() => cancelOrder()}>Cancel Request</button>
+                                <button className={'btn-sm btn-common'} onClick={() => reUploadDoc()}>Re-Submit Document</button>
+                                <button className={'btn-sm btn-common'} onClick={() => postComment()}>Post</button>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-6">
+                        {(userType == 'employer' || userType == 'admin') &&
+                            <div className={'row '}>
+                                <div className={'col-md-6 pull-right'}> <select className={'form-control rounded-0'} id={'queryLevel'} value={query && query.queryLevel} onChange={(e) => onChangeHandler(e)}>
+                                    <option value='' >Select</option>
+                                    {arr.map(item => <option value={item.key}>{item.value}</option>)}
+                                </select></div> <div className={'col-md-2'}>
+                                    <button className={'btn-danger btn-sm rounded-0'} onClick={() => updateStatus()}>Save</button></div>
+                            </div>
+                        }
+                        <br/>
                         <iframe src={currentPdf} type="application/pdf" height="100%" width="100%" />
                     </div>
                 </div>

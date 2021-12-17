@@ -12,28 +12,30 @@ import Users from '../users'
 import EnableIframe from '../payment/enableIframe'
 import PaymentStatus from '../payment/paymentstatus';
 
-let user = JSON.parse(localStorage.getItem('auth'))
+import "../header/sidenav.scss"
+import "./dashboard.scss"
+
+
 function SideNavbar(props) {
+    let user = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth')) : {}
     console.log(props)
     return (
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav className="sidenav shadow-right sidenav-light">
+        <>
+            <div id="layoutSidenav">
+                <nav id="layoutSidenav_nav" className="sidenav shadow-right sidenav-light">
                     <div className="sidenav-menu">
                         <div className="nav accordion" id="accordionSidenav">
-                            <div className="sidenav-menu-heading">Core</div>
-                            <a className="nav-link" href="/app/home">
+                            <div className="sidenav-menu-heading">Core</div>                            
+                            <Link className="nav-link" to="/app/home">
                                 <div className="nav-link-icon"><i className={'fa fa-columns'}></i></div>Dashboards
-                            </a>
+                            </Link>
                             <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
                                 data-target="#pfGrievances" aria-expanded="false" aria-controls="pfGrievances">
-                                <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> PF Grievances
+                                <div className="nav-link-icon"><i className="fa fa-file"></i></div> PF Grievances
                                 <div className="sidenav-collapse-arrow">
                                     <i className="fa fa-angle-down"></i>
                                 </div>
                             </a>
-
-
                             <div className="collapse" id="pfGrievances" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                                     <Link className="nav-link" to="/app/online"> online </Link>
@@ -43,7 +45,6 @@ function SideNavbar(props) {
                                     </div>
                                 </nav>
                             </div>
-
                             <div className="sidenav-menu-heading">Administrative</div>
                             {/* {(props.login['data'].userType === 'employee') && */}
                             <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
@@ -55,12 +56,10 @@ function SideNavbar(props) {
                             </a>
                             <div className="collapse" id="collapseLayouts" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                                    <Link className="nav-link" to="/app/usercontrol"> User Control</Link>
-                                    <Link className="nav-link" to="/app/formcontrol">Form Control</Link>
-
+                                    <Link className="nav-link" to="/app/usercontrol"> User Check</Link>
+                                    <Link className="nav-link" to="/app/formcontrol">Query Control</Link>
                                 </nav>
                             </div>
-
                         </div>
                     </div>
                     <div className="sidenav-footer">
@@ -70,35 +69,35 @@ function SideNavbar(props) {
                         </div>
                     </div>
                 </nav>
-            </div>
-            <div id="layoutSidenav_content">
-                <div className='container'>
-                    <Switch>
-                        <Route path="/app/home" component={Summary} />
-                        <Route path="/app/profile" component={Profile} />
-                        <Route path="/app/form" component={Form} />
-                        <Route path="/app/track" component={Track} />
-                        <Route path="/app/usercontrol" component={Users} />
-                        <Route path="/app/formcontrol" component={FormControl} />
-                        {/* <Route Path="/app/online" component={Online} /> */}
-                        <Route path="/app/enableiframe" component={EnableIframe} />
-                        <Route path="/app/payment" component={PaymentStatus} />
-                        <Redirect from="/" to="/app/home" />
-                    </Switch>
-                </div>
-                <footer className="footer mt-auto footer-light">
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-md-6 small">Copyright © Cloud99 Solution 2021</div>
-                            <div className="col-md-6 text-md-right small">
-                                <a href="#!">Privacy Policy</a>                                ·
-                                <a href="#!">Terms &amp; Conditions</a>
+                <div id="layoutSidenav_content">
+                    <div className='container-fluid'>
+                        <Switch>
+                            <Route path="/app/home" component={Summary} />
+                            <Route path="/app/profile" component={Profile} />
+                            <Route path="/app/form" component={Form} />
+                            <Route path="/app/track" component={Track} />
+                            <Route path="/app/usercontrol" component={Users} />
+                            <Route path="/app/formcontrol" component={FormControl} />
+                            {/* <Route Path="/app/online" component={Online} /> */}
+                            <Route path="/app/enableiframe" component={EnableIframe} />
+                            <Route path="/app/payment" component={PaymentStatus} />
+                            <Redirect from="/" to="/app/home" />
+                        </Switch>
+                    </div>
+                    <footer className="footer mt-auto footer-light">
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-md-6 small">Copyright © Cloud99 Solution 2021</div>
+                                <div className="col-md-6 text-md-right small">
+                                    <a href="#!">Privacy Policy</a>                                ·
+                                    <a href="#!">Terms &amp; Conditions</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </footer>
+                    </footer>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 function mapStateToProps(state) {

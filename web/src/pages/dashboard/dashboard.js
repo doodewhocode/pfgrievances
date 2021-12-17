@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from 'react-redux'
-import logo from '../../assets/logo.png'
+import logo from '../../assets/images/logo.png'
 import Profile from '../profile'
 import Track from '../track'
 import Form from '../form'

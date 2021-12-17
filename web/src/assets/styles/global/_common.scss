@@ -1,29 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
-// @import "./pages/header/navbar.scss";
-// @import "./pages/header/sidenav.scss";
-// @import "./pages/banner.scss";
-// @import "./pages/details.scss";
-// @import "./pages/login/login.scss";
-// @import "./pages/footer/footer.scss";
-// @import "./pages/dashboard/dashboard.scss";
-// @import "./pages/query.scss";
-// @import "./pages/signup/signup.scss";
-// @import "./pages/profile/profile.scss";
-// @import "./pages/grievance.scss";
-// @import "./pages/aboutus/aboutus.scss";
-// @import "./pages/contact/contact.scss";
-// @import "./pages/form//online.scss";
-
-
 body,
 html {
-  font-family: "Poppins", sans-serif;
+  font-family: $regular;
   font-size: 16px;
   background-color: #FAFAFA;
 }
 
 @media screen and (max-width: 992px) {
-
   body,
   html {
     font-size: 16px;
@@ -31,7 +13,6 @@ html {
 }
 
 @media screen and (max-width: 768px) {
-
   body,
   html {
     font-size: 18px;
@@ -39,7 +20,6 @@ html {
 }
 
 @media screen and (max-width: 576px) {
-
   body,
   html {
     font-size: 17px;
@@ -77,7 +57,7 @@ a {
 }
 
 b {
-  font-weight: 700;
+  font-family: $bold;
 }
 
 [role="presentation"] {
@@ -134,7 +114,7 @@ i {
   padding: 10px 15px;
   border-radius: 5px;
   letter-spacing: 3px;
-  font-weight: 500;
+  font-family: $medium;
   color: #ffffff;
   cursor: pointer;
   text-transform: uppercase;
@@ -142,7 +122,6 @@ i {
   -moz-transition: all 0.3s ease-in-out;
   -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
-
 
   &:focus {
     box-shadow: none;
@@ -170,6 +149,70 @@ i {
     transform: translateY(-2px);
   }
 }
+//
+.tracker {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-family: "verdana" !important;
+  color: #758d96;
+}
+
+.timeline {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.timestamp {
+  margin-bottom: 20px;
+  padding: 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #4F7B9A;
+  font-size: 12px !important;
+}
+span.date {
+  margin-bottom: 13px;
+}
+.li.complete .status {
+  border-top: 2px solid #51B05A;
+}
+
+.status:before {
+  content: "";
+  width: 25px;
+  height: 25px;
+  background-color: white;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  position: absolute;
+  top: -15px;
+  left: 42%;
+  transition: all 200ms ease-in;
+}
+.li.complete .status:before {
+  background-color: #51B05A;
+  border: none;
+  transition: all 200ms ease-in;
+}
+.status h5 {
+  margin-top: 20px !important;
+  font-weight: 600 !important;
+  color: #4F7B9A !important;
+  font-size: 14px;
+}
+
+.status {
+  padding: 0px 40px;
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid #D6DCE0;
+  position: relative;
+  transition: all 200ms ease-in;
+}
+//
 
 .btn-secondary {
   background-color: #fafafa;
@@ -234,9 +277,9 @@ i {
 
 .header {
   min-height: 3.125rem;
-  border-bottom: 1px solid #ACA9A9;
+  border-bottom: 1px solid #aca9a9;
   font-size: 1rem;
-  font-weight: 500;
+  font-family: $medium;
   color: #3eadcf;
   text-transform: uppercase;
 }
@@ -244,7 +287,7 @@ i {
 .banner-content {
   .title {
     font-size: 2.5rem;
-    font-weight: Bold;
+    font-family: $bold;
     line-height: 60px;
     margin-bottom: 20px;
   }
@@ -283,7 +326,6 @@ i {
   position: absolute;
   top: 0;
   pointer-events: none;
-
 }
 
 #login {
@@ -314,12 +356,13 @@ i {
   }
 }
 
-@media (min-width: 768px) {}
+@media (min-width: 768px) {
+}
 
-@media (min-width: 992px) {}
+@media (min-width: 992px) {
+}
 
 @media (min-width: 1200px) {
-
   .container,
   .container-lg,
   .container-md,
@@ -330,7 +373,6 @@ i {
 }
 
 @media (min-width: 1600px) {
-
   .container,
   .container-lg,
   .container-md,

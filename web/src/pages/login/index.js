@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import businessPeople from '../../assets/business-people-png-13458.png';
+import businessPeople from '../../assets/images/business-people-png-13458.png';
 import Footer from '../footer/footer'
 import Header from '../header'
-import ofc from '../../assets/261-2614319_office-team-business-people-white-background.png'
-import business from '../../assets/business-png-9395.png'
-import PngItem from '../../assets/PngItem_1542519.png'
+import ofc from '../../assets/images/261-2614319_office-team-business-people-white-background.png'
+import business from '../../assets/images/business-png-9395.png'
+import PngItem from '../../assets/images/PngItem_1542519.png'
+import Slider from "react-slick";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
 import { history } from '../../modules/helpers'
 import { postToken } from '../../redux/action/tokenAction'
 import Toast from '../../components/toast'
+import "./login.scss"
+
+
+
 
 let validationList = ['emailId', 'password', 'phNo', 'otp']
 
@@ -69,7 +79,7 @@ function Login(props) {
     useEffect(() => {
         if (!props.login['loading']) {
             if (!props.login['error']) {
-                history.push('/app/')
+                history.push('/app/home')
             } else {
                 setToast(prevState => {
                     prevState.message = "Login is failed, Please try again."
@@ -84,56 +94,61 @@ function Login(props) {
         }
     }, [props.login])
     console.log(props)
-
+    const settings = {
+        dots: true,
+        arrows: false,
+        infinite: true,
+        fade: true,
+        autoplay: true
+    };
     return (
         <>
         <Toast message={toast.message} type={toast.type} visible={toast.visible} />
             <Header />
             <header class="pf-banner" id="home">
                 <div class="pf-background"></div>
-                <div id="myCarousel" class="pf-banner carousel slide" style={{ paddingTop: '100px' }} data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#myCarousel" data-slide-to="0" class=""></li>
-                        <li data-target="#myCarousel" data-slide-to="1" class=""></li>
-                        <li data-target="#myCarousel" data-slide-to="2" class="active"></li>
-                    </ol>
-                    <div class="carousel-inner">
-                        <div class="carousel-item">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12 col-xs-12">
-                                    <div class="banner-content">
-                                        <h2 class="title">Comply HR is a one stop shop for all your PF Grievances.</h2>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12 col-xs-12 p-0">
-                                    <div class="banner-img" style={{ width: "650px" }}>
-                                        <img src={ofc} alt="Banner-Image" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item active carousel-item-left">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12 col-xs-12">
-                                    <div class="banner-content">
-                                        <h2 class="title pb-5" style={{ paddingBottom: "50px" }}>PF Query process made simple
-                                            with our solution</h2>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12 col-xs-12 pt-5">
-                                    <div class="banner-img m-auto">
-                                        <img src={business} alt="Banner-Image" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item carousel-item-next carousel-item-left">
+                <div class="pf-carousel">
+                    <Slider {...settings}>
+                        <div class="carousel-slide">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 col-xs-12">
                                         <div class="banner-content">
-                                            <h2 class="title" style={{ paddingBottom: "50px" }}>Get your PF Grievances solved with
-                                                our Expert Team </h2>
+                                            <h2 class="title">ComplyHR is an one stop shop for all your PF Grievances</h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 col-xs-12 p-0">
+                                        <div class="banner-img" style={{ width: "650px" }}>
+                                            <img src={ofc} alt="Banner-Image" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12 col-xs-12">
+                                        <div class="banner-content">
+                                            <h2 class="title pb-5" style={{ paddingBottom: "50px" }}>Are you looking for Easy ,
+                                                efficient, enactment on your PF Query resolutions ? Here we are.</h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 col-xs-12 pt-5">
+                                        <div class="banner-img m-auto">
+                                            <img src={business} alt="Banner-Image" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12 col-xs-12">
+                                        <div class="banner-content">
+                                            <h2 class="title" style={{ paddingBottom: "50px" }}>Keep your easy step with our solutions
+                                                driven team</h2>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12 col-xs-12 p-0">
@@ -144,16 +159,9 @@ function Login(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    </Slider>
                 </div>
+
             </header>
             <section class="pf-section">
                 <div class="container">
@@ -165,18 +173,27 @@ function Login(props) {
                         </div>
                         <div class="col-lg-6 col-md-12 pl-5 align-self-center">
                             <div class="banner-content ">
-                                <h2 class="title">Description-4</h2>
-                                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                    Consequatur repellendus quaerat optio, quo distinctio ipsam tempora, officia eaque
-                                    asperiores architecto odio nobis saepe! Eos rem inventore cupiditate cum, labore saepe.
-                                    asperiores architecto odio nobis saepe! Eos rem inventore cupiditate cum, labore saepe.</p>
+                                <p class="description text-justify">PF Query is the vital task for all the industries for the
+                                    mitigation,
+                                    Grievances handled
+                                    through software gives the
+                                    smoother coordination and helps
+                                    in effective resolutions across the
+                                    boundaries , ultimate tracking , time tackling with cost effective
+                                    <br />
+                                    <br />
+                                    PF members get the procedure knowledge and their timely updates with anticipation of quick
+                                    resolutions with less
+                                    dependency
+                                </p>
                             </div>
                         </div>
 
                     </div>
                 </div>
             </section>
-            <section id="particles-js" class="login-section pt-5 pb-5">
+
+            <section class="login-section pt-5 pb-5">
                 <div class="container" id="login">
                     <div class="row">
                         <div class="col-lg-6 col-md-12">

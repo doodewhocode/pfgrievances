@@ -1,0 +1,50 @@
+@import "../../assets/styles/global/_global-dir";
+
+.tracker {
+  .timeline {
+    list-style-type: none;
+    li {
+      .timestamp {
+        .author,
+        .icon-time {
+          padding-right: 0.625rem;
+        }
+        .status {
+          font-family: $medium;
+        }
+      }
+    }
+  }
+}
+
+.tab-card {
+  color: #111111 !important;
+  .tab-card-header {
+    .nav-link {
+      font-family: $medium;
+    }
+  }
+  .tab-content {
+    .tab-pane {
+      .tracklist {
+        list-style: none;
+        li {
+          margin-bottom: 0.3125rem;
+        }
+      }
+    }
+  }
+}
+
+.post-btn {
+  .btn-sm {
+    margin-right: 0.625rem;
+  }
+}
+
+
+table{
+    th,td{
+        padding: 0.625rem 1.25rem;
+    }
+}

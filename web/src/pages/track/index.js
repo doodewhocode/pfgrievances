@@ -5,7 +5,7 @@ import QueryDetails from './querydetails'
 import UserDetails from './userdetails'
 import { fetchGrivById } from '../../redux/action/trackAction'
 
-
+import "./track.scss"
 function Track(props) {
     const [checkOutLevel, setCheckOutLevel] = useState({
         current: 1
@@ -61,7 +61,7 @@ function Track(props) {
                             <th>Comment</th>
                             <tbody>
                                 {(Object.keys(rowData).length > 0) && rowData.comments.map((obj, key) => {
-                                    return(<tr>
+                                    return (<tr>
                                         <td>{obj.user}</td>
                                         <td>{obj.date}</td>
                                         <td>{obj.comment}</td>

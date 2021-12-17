@@ -5,6 +5,7 @@ import { registerEmployee } from '../../redux/action/registerAction'
 import Confirmation from '../../components/confirmation'
 import Toast from '../../components/toast'
 
+import "./signup.scss"
 
 let validationList = ['firstName', 'dob', 'pfNo', 'uanNo', 'emailId', 'phNo', 'userType', 'password', 'confirmPassword']
 

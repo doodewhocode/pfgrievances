@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
-import banner from '../../assets/banner-img2.png'
+import banner from '../../assets/images/banner-img2.png'
 import Header from '../header'
 import Footer from '../footer/footer'
+
+import "./contact.scss"
 function Contact() {
     return (
         <>

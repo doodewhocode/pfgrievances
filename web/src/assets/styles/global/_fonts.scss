@@ -1,0 +1,30 @@
+$fontPath: '../../fonts';
+$fontpathname: (Poppins-Black),
+(Poppins-BlackItalic),
+(Poppins-Bold),
+(Poppins-BoldItalic),
+(Poppins-Italic),
+(Poppins-Light),
+(Poppins-LightItalic),
+(Poppins-Medium),
+(Poppins-MediumItalic),
+(Poppins-Regular),
+(Poppins-Thin),
+(Poppins-ThinItalic);
+
+@each $fontname in $fontpathname {
+    @include font-face("#{$fontPath}", "#{$fontname}");
+}
+
+$black: 'Poppins-Black';
+$blackItalic: 'Poppins-BlackItalic';
+$bold: 'Poppins-Bold';
+$boldItalic: 'Poppins-BoldItalic';
+$italic: 'Poppins-Italic';
+$light: 'Poppins-Light';
+$lightItalic: 'Poppins-LightItalic';
+$medium: 'Poppins-Medium';
+$mediumItalic: 'Poppins-MediumItalic';
+$regular: 'Poppins-Regular';
+$thin: 'Poppins-Thin';
+$thinItalic: 'Poppins-ThinItalic';

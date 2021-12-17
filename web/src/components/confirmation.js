@@ -32,7 +32,7 @@ function Confirmation(props) {
                 style={style}>
                 <div className='text-left' style={{ marginBottom: 5 }}  >
                     <div className='btn btn-sm btn-danger pull-right' style={{ cursor: 'pointer', 'color': '#FFF' }} onClick={()=>{props.handleClose()}}>
-                        <i className={'fa fa-close'}></i>
+                        <i className={'icon-close'}></i>
                     </div>
                     <div style={{ fontWeight: 'bold', margin: '0px 0px 10px 10px', borderBottom: '2px solid grey' }}>
                     <h5> {props.title}</h5> 

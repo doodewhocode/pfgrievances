@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
-import logo from '../../assets/logo.png'
+import logo from '../../assets/images/logo.png'
 
 import { Link } from "react-router-dom";
+import "./navbar.scss"
+import "./sidenav.scss"
 
 function Header(props) {
     return (
@@ -17,7 +19,7 @@ function Header(props) {
                                 <Link class="nav-link p-0" to="/home">Home</Link>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <Link class="nav-link p-0" to="/aboutus">About</Link>
+                                <Link class="nav-link p-0" to="/aboutus">About Us</Link>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <Link class="nav-link p-0" to="/contact">Contact Us</Link>

@@ -5,16 +5,14 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'jquery/dist/jquery.slim'
 import 'popper.js'
 import 'bootstrap/dist/js/bootstrap.min'
-import './style.css';
-import './slick.css';
 import './assets/css/sb-admin-2.min.css'
-import './index.css';
+import './index.scss';
 
 import App from './App';
 import { Router } from "react-router-dom";
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 import store from './redux/store'
-import  * as helpers from './modules/helpers'
+import * as helpers from './modules/helpers'
 import reportWebVitals from './reportWebVitals';
 
 

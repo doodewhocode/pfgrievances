@@ -58,6 +58,7 @@ function UserDetails(props) {
     }
     return (
         <>
+            <br />
             <div className="row">
                 <div className="col-md-6">
                     <h4>User Information</h4><hr />

@@ -5,17 +5,17 @@ import { fetchFileById, fetchFileByName, downloadFileById } from '../../redux/ac
 import Confirmation from '../../components/confirmation'
 import Toast from '../../components/toast'
 
-let initialObj = {
-    queryName: "",
-    queryDesc: "",
-    additionalDesc: "",
-    price: "",
-    docs: [],
-    createdBy: localStorage.getItem('auth') != null ? JSON.parse(localStorage.getItem('auth'))['userName'] : ""
-}
 
 let validationList = ['queryName', 'queryDesc', 'price']
 function FormControl(props) {
+    let initialObj = {
+        queryName: "",
+        queryDesc: "",
+        additionalDesc: "",
+        price: "",
+        docs: [],
+        createdBy: (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth'))['userName'] : ""
+    }
     const [state, setState] = useState(initialObj)
     const [queryList, setQueryList] = useState([])
     const [selectedForm, setSelectedForm] = useState({})
@@ -340,9 +340,9 @@ function FormControl(props) {
             <Confirmation showModal={showModal.visible} handleClose={handleClose} title={'Confirmation'} handleConfirmationMessage={handleConfirmation} >
                 {showModal.message}
             </Confirmation>
-            <div class="profile-wrapper mt-5">
-                <div class="profile-head d-flex align-items-center pl-4">
-                    Query Control
+            <div class="profile-wrapper">
+                <div class="profile-head d-flex align-items-center justify-content-between pl-4">
+                    <div> Query Control</div>
                     <ul class="nav nav-pills pull-right">
                         <li class="nav-item">
                             <a className={"nav-link " + (selectedType ? "active" : "")} href="#" onClick={() => { onToggle(true) }}>Create</a>
@@ -389,8 +389,10 @@ function FormControl(props) {
                             <input type="text" class="form-control" id="price" value={state.price} onChange={onChangeHandler} />
                         </div>
                     </div>
-                    <div> <h6 >Define Documents</h6>
-                        <button className="btn btn-danger btn-sm" onClick={() => onClickAdd()}> Add </button></div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 >Define Documents</h6>
+                        <button className="btn-primary btn-sm" onClick={() => onClickAdd()}> Add </button>
+                    </div>
 
                     {state.docs.map((obj, key) => {
                         if (selectedType) {
@@ -402,7 +404,7 @@ function FormControl(props) {
                                 <label for="staticEmail" class="col-sm-2 col-form-label">Upload Document*:</label>
                                 <div class="col-sm-4">
                                     <input type="file" id={obj.docId} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
-                                    <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
+                                    <button className="btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
                                     <br /><span>{printFileName(obj.docId)}</span>
 
                                 </div>

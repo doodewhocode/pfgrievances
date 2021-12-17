@@ -1,16 +1,16 @@
+@import "../../assets/styles/global/_global-dir";
 .profile-wrapper {
   height: 100%;
   background-color: #ffffff;
   color: #111111;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  font-size: 14px;
-  font-weight: 500;
-
+  font-size: 12px;
+  font-family: $medium;
   .profile-head {
     min-height: 50px;
     border-bottom: 1px solid #aca9a9;
-    font-size: 18px;
+    font-size: 16px;
     text-transform: uppercase;
   }
   form {
@@ -19,10 +19,10 @@
 }
 .profile-header {
   color: #ffffff;
-  font-weight: 500;
+  font-family: $medium;
   font-size: 30px;
   .desp {
     font-size: 14px;
-    font-weight: 400;
+    font-family: $medium;
   }
 }

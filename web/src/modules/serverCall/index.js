@@ -28,7 +28,7 @@ const serverCall = (config) => {
           status: 500
         }
       }
-      if(error.response.status===401){
+      if (error.response.status === 401) {
         Auth.logout()
         jumpTo('/login')
         throw error
@@ -41,8 +41,7 @@ const serverCall = (config) => {
 export default serverCall
 
 export const login = (email, password) => {
-  const body =
-  {
+  const body = {
     "credential": {
       "email": email,
       "password": password
@@ -52,11 +51,10 @@ export const login = (email, password) => {
     method: 'POST',
     url: '/login',
     data: body
+  }).then(res => {
+    Auth.setUserToken(res.data.user_token)
+    return res
   })
-    .then(res => {
-      Auth.setUserToken(res.data.user_token)
-      return res
-    })
 }
 
 export const getPaypalToken = () => {

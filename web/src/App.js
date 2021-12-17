@@ -14,8 +14,7 @@ import AdminSignUp from './pages/signup/adminSignup'
 import Reset from './pages/forgotpassword/reset'
 import ForgotPassword from './pages/forgotpassword'
 import { history } from './modules/helpers'
-
-import './App.css';
+import './App.scss';
 
 function App(props) {
   useEffect(() => {

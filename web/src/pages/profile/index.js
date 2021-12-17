@@ -4,6 +4,7 @@ import { fetchUserById, fetchFileById, fetchFileByName } from '../../redux/actio
 import { updateUser, uploadDoc } from '../../redux/action/registerAction'
 import Confirmation from '../../components/confirmation'
 
+import "./profile.scss"
 
 let initializeObj = {
     "firstName": "",
@@ -225,7 +226,7 @@ function Profile(props) {
                 </Confirmation>
                 <div class="row">
                     <div class="col-xl-12 m-auto">
-                        <div class="profile-wrapper mt-5">
+                        <div class="profile-wrapper">
                             <div class="profile-head d-flex align-items-center pl-4"> Profile </div>
                             <div className="col-md-12">
                                 <div class="input-group mb-3 flex-nowrap mt-4">
@@ -265,15 +266,29 @@ function Profile(props) {
                                 </div>
                                 <div class="input-group flex-nowrap ">
                                     <div class="form-group w-100">
-                                        <label>Pan Card* </label>
-                                        <div className={'col-md-8'}> <input class="w-100" type="file" id={'panImg'} name="file" onChange={onFileChange} /><button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("panImg")}>upload</button></div>
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <label>Pan Card* </label>
+                                                <input class="w-100" type="file" id={'panImg'} name="file" onChange={onFileChange} />
+                                            </div>
+                                            <div>
+                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("panImg")}>upload</button>
+                                            </div>
+                                        </div>
                                         <br />
                                         {Object.keys(user['panImg']).length > 0 && <span>* Pan Card Uploaded </span>}
                                         <br /> {returnDocObj(user, "panImg")}
                                     </div>
                                     <div class="form-group w-100 ml-3">
-                                        <label>Aadhaar Card* </label>
-                                        <div className={'col-md-8'}>  <input class="w-100" type="file" id={'aadharImg'} name="file" onChange={onFileChange} /> <button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("aadharImg")}> upload</button></div>
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <label>Aadhaar Card* </label>
+                                                <input class="w-100" type="file" id={'aadharImg'} name="file" onChange={onFileChange} />
+                                            </div>
+                                            <div>
+                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("aadharImg")}> upload</button>
+                                            </div>
+                                        </div>
                                         <br />
                                         {Object.keys(user['aadharImg']).length > 0 && <span>* Aadhaar Card Uploaded </span>}
                                         <br /> {returnDocObj(user, "aadharImg")}
@@ -283,18 +298,36 @@ function Profile(props) {
                                 <div class="pb-3">Additional Documents</div>
                                 <div class="input-group flex-nowrap ">
                                     <div class="form-group w-100">
-                                        <label>Affidivet </label>
-                                        <div className={'col-md-8'}>   <input class="w-100" type="file" id={'tenThMarksheet'} name="file" onChange={onFileChange} /><button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("tenThMarksheet")}> upload</button></div>
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <label>Affidivet </label>
+                                                <input class="w-100" type="file" id={'tenThMarksheet'} name="file" onChange={onFileChange} />                                            </div>
+                                            <div>
+                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("tenThMarksheet")}> upload</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group w-100 ml-3">
-                                        <label>Birth ceritificate </label>
-                                        <div className={'col-md-8'}>   <input class="w-100" type="file" id={'birthCert'} name="file" onChange={onFileChange} /><button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("birthCert")}> upload</button></div>
+                                        <div className="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <label>Birth ceritificate </label>
+                                                <input class="w-100" type="file" id={'birthCert'} name="file" onChange={onFileChange} />
+                                            </div>
+                                            <div>
+                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("birthCert")}> upload</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="input-group flex-nowrap ">
-                                    <div class="form-group w-100">
-                                        <label>10th Marksheet </label>
-                                        <div className={'col-md-8'}>    <input class="w-100" type="file" id={'affidivet'} name="file" onChange={onFileChange} /><button className={'btn btn-secondary btn-sm'} onClick={() => uploadDoc("affidivet")}> upload</button></div>
+                                <div class="form-group w-50 ">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <label>10th Marksheet </label>
+                                            <input class="w-100" type="file" id={'affidivet'} name="file" onChange={onFileChange} />
+                                        </div>
+                                        <div>
+                                            <button className={'btn-sm btn-common mr-2'} onClick={() => uploadDoc("affidivet")}> upload</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="pb-3">HR Contact Details</div>
