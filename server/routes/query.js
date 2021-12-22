@@ -77,7 +77,7 @@ router.post('/createquery', upload.fields([{ name: 'file1', maxCount: 1 }, { nam
     Query.saveQuery(obj, function (err, query) {
         console.log(query)
         if (err) return next(err);
-        res.json({ message: 'Query created' })
+        res.json({ message: 'Query created', data: query })
     });
 
 })

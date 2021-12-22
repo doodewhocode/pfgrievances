@@ -13,6 +13,7 @@ import { history } from '../../modules/helpers'
 // import { Viewer, Worker } from '@react-pdf-viewer/core'
 
 import "./offline.scss"
+import Toast from '../../components/toast'
 
 let reqList = [
     { id: "1", value: "Name Change Correction" },
@@ -40,6 +41,11 @@ function Form(props) {
     const [currentPdf, setCurrentPdf] = useState("")
     const [rowData, setRowData] = useState({})
     const [update, setUpdate] = useState(false)
+    const [toast, setToast] = useState({
+        type: '',
+        message: '',
+        visible: false
+    })
     const [state, setState] = useState({
         forms: [],
         note: ""
@@ -83,7 +89,7 @@ function Form(props) {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
                 //let arrBuf = await toArrayBuffer(props.file_by_id.toJS().data['data'])
-                // console.log(arrBuf)
+                console.log(props.file_by_id.toJS().data)
                 // var bytes = new Uint8Array(arrBuf);
                 // console.log(bytes)
                 // pdfDoc = await PDFDocument.load(bytes);
@@ -91,8 +97,8 @@ function Form(props) {
 
                 //let pdfWindow = window.open("")
                 //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
-                const view = new Uint8Array(props.file_by_id.toJS().data['data']);
-                setCurrentPdf(view)
+                //const view = new Uint8Array(props.file_by_id.toJS().data['data']);
+                setCurrentPdf(props.file_by_id.toJS().data)
             }
         }
     }, [props.file_by_id_loading])
@@ -352,6 +358,24 @@ function Form(props) {
         }
     }, [props.init_payment_loading])
 
+    useEffect(() => {
+        if (!props.sub_query_loading) {
+            if (!props.sub_query.toJS().error) {
+                console.log("submitted query resp", props.sub_query.toJS().data)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Error while saving the requested query. please try again or contact admin"
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.sub_query_loading])
+
     function handlePayment() {
         let obj = {
             txnid: "IMBAD16",
@@ -378,12 +402,13 @@ function Form(props) {
 
     return (
         <>
+            <Toast message={toast.message} type={toast.type} visible={toast.visible} />
             <div class="grievance-section">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-7">
                             <select placeholder="Select Query Type" className='form-control rounded-0' value={(Object.keys(selectedForm).length > 0 && selectedForm !== undefined && selectedForm !== null) ? selectedForm.id : ""} onChange={(e) => onChangeDropdown(e)}>
-                               {reqList.map((e, key) => {
+                                {reqList.map((e, key) => {
                                     return <option key={key} value={e.id}>{e.value}</option>;
                                 })
                                 }
@@ -403,7 +428,7 @@ function Form(props) {
                                                 return e.form.map((e, key) => {
                                                     return (<div key={key}>
                                                         <label>{(key + 1) + ". " + e.value}</label>&nbsp;&nbsp;
-                                                        <button className="btn-sm btn-common" onClick={() => { onSelectPDF(e.loc) }}>View</button>&nbsp;
+                                                        {/* <button className="btn-sm btn-common" onClick={() => { onSelectPDF(e.loc) }}>View</button>&nbsp; */}
                                                         <button className="btn-sm btn-common" onClick={() => onClickDownloadPDF(e.loc)}>Download</button>&nbsp;
                                                         <input type="file" id={e.id} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
                                                         <button className="btn-sm btn-common" onClick={() => fileInputRef.current[key].click()}>Upload</button>
@@ -433,12 +458,12 @@ function Form(props) {
                                         <button type="button" class="btn-sm btn-secondary">Cancel</button>
                                         <button type="button" class="btn-sm btn-secondary ml-2" onClick={onClickSave}>Save</button>
                                         {update && <button type="button" class="btn-sm btn-secondary ml-2" onClick={onClickUpdate}>{(update && rowData['queryLevel'] === -2 ? "Submit" : "Update")}</button>}
-                                        {!update && <button type="button" class="btn-sm btn-common ml-2" onClick={onClickSubmit}>Submit</button>}
+                                        {!update && <button type="button" class="btn-sm btn-common ml-2" onClick={onClickSubmit}>Submit & Pay</button>}
                                     </div>
                                     <div class="d-flex align-items-center mt-5">
                                         <button class="btn-sm btn-common mr-2" onClick={handlePayment}> Pay</button>
                                         {currentPdf !== "" && <iframe src={currentPdf} width="100%" height="100%"></iframe>}
-                                        <Document file={currentPdf} />
+
                                     </div>
                                 </div>
                             </div>
@@ -478,14 +503,7 @@ function Form(props) {
                             </div>
                         </div>
                     </div>
-                    <div>
-                        {/* <button onClick={handlePayment}> Pay</button>
-                        {currentPdf !== "" && <iframe src={currentPdf} type="application/pdf" width="100%" height="100%"></iframe>} */}
-                        {/* <Document file={currentPdf} /> */}
-                        {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
-                            <Viewer fileUrl={currentPdf} />
-                        </Worker> */}
-                    </div>
+
                 </div>
             </div>
         </>

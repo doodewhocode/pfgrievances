@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { Map } from 'immutable'
 import Auth from '../../modules/Auth'
 import logo from '../../assets/images/logo.png'
+import { logoutHandle } from '../../redux/action/tokenAction'
 
 function Header(props) {
-    let user = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth'))  : {}
+    let user = (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth')) : {}
 
     function handleToggle() {
         props.handleToggleSideBar()
@@ -34,7 +35,7 @@ function Header(props) {
                             <div className="dropdown-divider"></div>
                             <Link className="dropdown-item" to="/app/profile">
                                 <div className="dropdown-item-icon"></div>Account</Link>
-                            <a className="dropdown-item" onClick={() => Auth.logout()}>
+                            <a className="dropdown-item" onClick={() => { props.logoutHandle(); Auth.logout() }}>
                                 <div className="dropdown-item-icon"></div>Logout
                             </a>
                         </div>
@@ -52,4 +53,4 @@ function mapStateToProps(state) {
         login: state.loginReducer['login']
     }
 }
-export default connect(mapStateToProps, {})(Header)
+export default connect(mapStateToProps, { logoutHandle })(Header)

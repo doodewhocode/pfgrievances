@@ -24,7 +24,7 @@ function ForgotPassword(props) {
             <div className="row justify-content-center">
                 <div className="col-lg-5">
                     <div className="card shadow-lg border-0 rounded-lg mt-5">
-                        <div className="card-header"><h3 className="text-center font-weight-light my-4">Password Recovery</h3></div>
+                        <div className="card-header"><h3 className="text-center font-weight-light my-4" style={{ color: 'black' }}>Password Recovery</h3></div>
                         <div className="card-body">
                             <div className="small mb-3 text-muted">Enter your email address and we will send you a link to reset your password.</div>
 

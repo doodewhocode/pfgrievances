@@ -22,12 +22,12 @@ function App(props) {
   }, [])
 
   useEffect(() => {
-    if (!props.login['loading']) {
-      if (!props.login['error']) {
-        history.push('/app/')
+    if (!props.insert_token_loading) {
+      if (!props.insert_token.toJS().error) {
+        history.push('/app/home')
       }
     }
-  }, [props.login])
+  }, [props.insert_token_loading])
   return (
     <div>
 
@@ -54,7 +54,8 @@ function App(props) {
 }
 
 const mapStoreToProps = state => ({
-  login: state.loginReducer['login']
+  insert_token_loading: state.loginReducer.getIn(['insert_token', 'loading'], true),
+  insert_token: state.loginReducer.getIn(['insert_token'], new Map())
 })
 const mapDispatchToProps = {
   insertToken

@@ -74,11 +74,21 @@ function Login(props) {
         let isValid = isValidForm(form)
         if (isValid) {
             props.postToken(form.emailId, form.password)
+        } else {
+            setToast(prevState => {
+                prevState.message = "Please check the login details and try again."
+                prevState.type = "error"
+                prevState.visible = true
+                return ({ ...prevState })
+            })
+            setTimeout(() => {
+                setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+            }, 2000)
         }
     }
     useEffect(() => {
-        if (!props.login['loading']) {
-            if (!props.login['error']) {
+        if (!props.post_token_loading) {
+            if (!props.post_token.toJS().error) {
                 history.push('/app/home')
             } else {
                 setToast(prevState => {
@@ -92,7 +102,7 @@ function Login(props) {
                 }, 2000)
             }
         }
-    }, [props.login])
+    }, [props.post_token_loading])
     console.log(props)
     const settings = {
         dots: true,
@@ -103,7 +113,7 @@ function Login(props) {
     };
     return (
         <>
-        <Toast message={toast.message} type={toast.type} visible={toast.visible} />
+            <Toast message={toast.message} type={toast.type} visible={toast.visible} />
             <Header />
             <header class="pf-banner" id="home">
                 <div class="pf-background"></div>
@@ -220,7 +230,7 @@ function Login(props) {
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">OTP</label>
-                                        <input type="password" class="form-control" placeholder="Enter the OTP" />
+                                        <input type="text" class="form-control" placeholder="Enter the OTP" />
                                     </div>
                                     <div class="d-flex align-self-center justify-content-between mb-4">
                                         <div class="form-check">
@@ -247,20 +257,25 @@ function Login(props) {
                                 <form>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Enter Email-Id</label>
-                                        <input type="email" class="form-control" placeholder="Enter Email-Id" />
+                                        <input type="email" id="emailId" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter Email-Id" />
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Password</label>
-                                        <input type="password" class="form-control" placeholder="Enter your Password" />
+                                        <input type="password" id="password" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter your Password" />
                                     </div>
                                     <div class="d-flex justify-content-center pb-2"> (OR) </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Enter your Phone Number</label>
-                                        <input type="text" class="form-control" placeholder="Enter your Phone Number" />
+                                        <div class="input-group mb-3">
+                                            <input type="text" id="phNo" onChange={(e) => onChangeHandler(e)} class="form-control" placeholder="Enter your Phone Number" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text btn-primary" style={{ padding: "0 0" }} id="basic-addon2">Get  OTP</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">OTP</label>
-                                        <input type="password" class="form-control" placeholder="Enter the OTP" />
+                                        <input type="text" class="form-control" placeholder="Enter the OTP" />
                                     </div>
                                     <div class="d-flex align-self-center justify-content-between mb-4">
                                         <div class="form-check">
@@ -290,7 +305,8 @@ function Login(props) {
 }
 
 const mapStoreToProps = state => ({
-    login: state.loginReducer['login']
+    post_token_loading: state.loginReducer.getIn(['post_token', 'loading'], true),
+    post_token: state.loginReducer.getIn(['post_token'], new Map())
 })
 const mapDispatchToProps = {
     postToken

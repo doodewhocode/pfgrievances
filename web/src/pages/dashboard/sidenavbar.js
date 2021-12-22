@@ -38,7 +38,7 @@ function SideNavbar(props) {
                             </a>
                             <div className="collapse" id="pfGrievances" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
-                                    <Link className="nav-link" to="/app/online"> online </Link>
+                                    <Link className="nav-link" to="/app/external"> online </Link>
                                     <Link className="nav-link" to="/app/form"> offline </Link>
                                     <div style={{ display: 'none' }}>
                                         <Link className="nav-link" target={'_blank'} to="/app/docsbytymtbl">List Documents</Link>
@@ -78,7 +78,7 @@ function SideNavbar(props) {
                             <Route path="/app/track" component={Track} />
                             <Route path="/app/usercontrol" component={Users} />
                             <Route path="/app/formcontrol" component={FormControl} />
-                            {/* <Route Path="/app/online" component={Online} /> */}
+                           <Route Path="/app/external" component={Online} /> 
                             <Route path="/app/enableiframe" component={EnableIframe} />
                             <Route path="/app/payment" component={PaymentStatus} />
                             <Redirect from="/" to="/app/home" />

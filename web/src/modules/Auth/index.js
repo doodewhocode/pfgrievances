@@ -1,4 +1,5 @@
 import { history } from '../../modules/helpers'
+
 class Auth {
   constructor() {
     this.user_token = (localStorage.getItem('auth') !== 'undefined') ? JSON.parse(localStorage.getItem('auth')) : {}
@@ -14,6 +15,7 @@ class Auth {
     localStorage.setItem('auth', JSON.stringify(new_token))
   }
   logout() {
+   
     localStorage.removeItem('auth')
     history.push('/login')
   }
