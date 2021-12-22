@@ -1,7 +1,8 @@
 import serverCall from '../../modules/serverCall'
 import axios from 'axios'
-let BASE_URL = 'http://localhost:7000'
-//https://complyhrapi.herokuapp.com
+//let BASE_URL = 'http://localhost:7000'
+//let BASE_URL = 'https://complyhrapi.herokuapp.com'
+let BASE_URL = 'http://103.235.105.221:7000'
 export const registerEmployee = (payload) => {
     return dispatch => {
         dispatch({ type: 'EMPLOYEE_REG_LOADING', loading: true, error: false })
