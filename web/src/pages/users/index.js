@@ -10,10 +10,16 @@ import Modal from '../../components/modal'
 import Confirmation from '../../components/confirmation'
 import PieChart from "../chart";
 import { fetchAllUsers } from '../../redux/action/dashboardAction'
+import Select from 'react-select'
 
 function Users(props) {
     const [gridApi, setGridApi] = useState(null)
     const [rowData, setRowData] = useState(null)
+    const [state, setState] = useState({
+        company: { label: "", value: "" }
+    })
+    const [tempData, setTempData] = useState([])
+    const [options, setOptions] = useState([])
     const [status, setStatus] = useState({
         employee: 0,
         employer: 0,
@@ -54,6 +60,9 @@ function Users(props) {
             if (!props.all_users.toJS().error) {
                 console.log(props.all_users.toJS())
                 setRowData(props.all_users.toJS()['data'])
+                setTempData(props.all_users.toJS()['data'])
+                setOptions([...new Set(props.all_users.toJS()['data'].map(item => { return { label: item.employerName, value: item.employerName } }))])
+                console.log("options", options)
                 let obj = calChartSummary(props.all_users.toJS()['data'])
                 console.log("hehe", obj)
                 setStatus((prevState) => {
@@ -121,14 +130,46 @@ function Users(props) {
         return arr
     }
 
+    function handleChange(value) {
+        setState(prevState => {
+            prevState.company = value
+            return ({ ...prevState })
+        })
+    }
+
+    function filterByValue(array, string) {
+        return array.filter(o => o.employerName === string);
+    }
+
+    function onClickSearch(type) {
+        if (type === "search" && state.company.value !== "") {
+            let tempArr = filterByValue(rowData, state.company.value)
+            setTempData(tempArr)
+        } else {
+            setTempData(rowData)
+        }
+    }
+
     return (
         <>
+            <div>
+                <div className="col-md-5">
+                    <Select
+                        options={options}
+                        value={state.company}
+                        onChange={value => handleChange(value)}
+                        defaultValue={{ label: "", value: "" }}
+                    />
+                </div>
+                <button className="btn-sm btn-danger" onClick={()=>onClickSearch("search")}>Search</button>
+                <button className="btn-sm btn-secondary" onClick={()=>onClickSearch("reset")}>Reset</button>
+            </div>
             <div class="row pt-5">
                 <div className="ag-theme-balham" style={{ height: '450px', width: '790px' }}>
                     <AgGridReact
                         modules={AllCommunityModules}
                         columnDefs={gridOptions.columnDefs}
-                        rowData={rowData}
+                        rowData={tempData}
                         onGridReady={onGridReady}
                         pagination={true}
                         context={gridOptions.context}

@@ -104,6 +104,17 @@ function Login(props) {
         }
     }, [props.post_token_loading])
     console.log(props)
+    function onClear() {
+        console.log("asdfasd")
+        setForm((prevState) => {
+            for (var key in initializeObj) {
+                prevState[key] = initializeObj[key]
+            }
+            return ({ ...prevState })
+        })
+        console.log(form)
+
+    }
     const settings = {
         dots: true,
         arrows: false,
@@ -244,7 +255,7 @@ function Login(props) {
                                         <button type="button" class="btn btn-common ml-2"><a
                                             onClick={() => signUp('employee')}>Register</a></button>
                                         <div class="d-flex  align-items-center">
-                                            <button type="button" class="btn btn-secondary">Cancel</button>
+                                            <button type="button" class="btn btn-secondary"  onClick={onClear}>Reset</button>
                                             <button type="button" class="btn btn-common ml-2" onClick={() => loginSubmit()} >Login</button>
                                         </div>
                                     </div>
@@ -289,7 +300,7 @@ function Login(props) {
                                         <button type="button" class="btn btn-common ml-2"><a
                                             onClick={() => signUp('employer')}>Register</a></button>
                                         <div class="d-flex  align-items-center">
-                                            <button type="button" class="btn btn-secondary">Cancel</button>
+                                            <button type="button" class="btn btn-secondary" onClick={onClear}>Reset</button>
                                             <button type="button" class="btn btn-common ml-2" onClick={() => loginSubmit()}>Login</button>
                                         </div>
                                     </div>

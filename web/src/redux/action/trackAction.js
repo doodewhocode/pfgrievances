@@ -99,3 +99,9 @@ export const updateFileQuery = (payload) => {
         })
     }
 }
+
+export const clearFileLoadOnSwitch = () => dispatch => {
+    dispatch({ type: 'FILE_BY_ID_LOADING', loading: true, error: false })
+    dispatch({ type: 'FILE_BY_NAME_LOADING', loading: true, error: false })
+    dispatch({ type: 'DOWNLOAD_BY_ID_LOADING', loading: true, error: false })
+}

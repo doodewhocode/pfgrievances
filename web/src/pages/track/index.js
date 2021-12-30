@@ -55,7 +55,7 @@ function Track(props) {
                         <UserDetails userId={(rowData !== {}) ? rowData.userId : ""} />
                     </div>
                     <div className={"tab-pane fade p-3 " + (checkOutLevel.current === 3 ? 'active show' : '')} id="three" role="tabpanel" aria-labelledby="three-tab" >
-                        <table>
+                        <table border="1">
                             <th>User</th>
                             <th>Date</th>
                             <th>Comment</th>

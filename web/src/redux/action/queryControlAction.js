@@ -58,3 +58,17 @@ export const fetchAllQuery = () => {
         })
     }
 }
+
+export const deleteFilebyId = (queryId, fileId) => {
+    return dispatch => {
+        dispatch({ type: 'DELETE_FILE_BY_ID_LOADING', loading: true, error: false })
+        return serverCall({
+            method: 'GET',
+            url: '/deletefilebyid?type=query&typeid=' + queryId + '&fileid=' + fileId
+        }).then(res => {
+            return dispatch({ type: 'DELETE_FILE_BY_ID', loading: false, data: res.data, error: false })
+        }).catch(err => {
+            dispatch({ type: 'DELETE_FILE_BY_ID_ERROR', loading: false, data: err, error: true })
+        })
+    }
+}

@@ -17,8 +17,10 @@ let reqList = [
 function Online(props) {
     const [selectedForm, setSelectedForm] = useState({})
     function onChangeDropdown(e) {
-        let obj = reqList.find((obj) => obj.id == e.target.value)
-        setSelectedForm(obj)
+        if (e.target.value !== "") {
+            let obj = reqList.find((obj) => obj.id == e.target.value)
+            setSelectedForm(obj)
+        }
     }
     return (
         <>
@@ -29,7 +31,7 @@ function Online(props) {
                             <div class="col-7">
                                 <div className={'col-md-12'}>
                                     <select className='form-control rounded-0' value={(Object.keys(selectedForm).length > 0 && selectedForm !== undefined && selectedForm !== null) ? selectedForm.id : ""} onChange={(e) => onChangeDropdown(e)}>
-                                        <option>Select Type of Query</option>
+                                        <option value={''}>Select Type of Query</option>
                                         {reqList.map((e, key) => {
                                             return <option key={key} value={e.id}>{e.value}</option>;
                                         })

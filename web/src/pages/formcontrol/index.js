@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { createQuery, updateQuery, deleteQuery, fetchAllQuery } from '../../redux/action/queryControlAction'
-import { fetchFileById, fetchFileByName, downloadFileById } from '../../redux/action/trackAction'
+import { createQuery, updateQuery, deleteQuery, fetchAllQuery, deleteFilebyId } from '../../redux/action/queryControlAction'
+import { fetchFileById, fetchFileByName, downloadFileById, clearFileLoadOnSwitch } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
 import Toast from '../../components/toast'
-
 
 let validationList = ['queryName', 'queryDesc', 'price']
 function FormControl(props) {
@@ -17,14 +16,17 @@ function FormControl(props) {
         createdBy: (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth'))['userName'] : ""
     }
     const [state, setState] = useState(initialObj)
+    const [deleteFile, setDeleteFile] = useState("")
     const [queryList, setQueryList] = useState([])
     const [selectedForm, setSelectedForm] = useState({})
     const [selectedType, setSelectType] = useState(true)
     const fileInputRef = useRef([]);
     const docInputRef = useRef([]);
+    const [editFlg, setEditFlg] = useState(false)
     const [showModal, setShowModal] = useState({
         message: "",
-        visible: false
+        visible: false,
+        type: ""
     })
     const [toast, setToast] = useState({
         type: '',
@@ -135,6 +137,11 @@ function FormControl(props) {
         if (!props.delete_query_ctl_loading) {
             if (!props.delete_query_ctl.toJS().error) {
                 //onClear();
+                setShowModal((prev) => {
+                    prev.visible = false
+                    return ({ ...prev })
+                })
+
                 setToast(prevState => {
                     prevState.message = "Query Deleted Successfully"
                     prevState.type = "success"
@@ -144,6 +151,7 @@ function FormControl(props) {
                 setTimeout(() => {
                     setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
                 }, 2000)
+
             } else {
                 setToast(prevState => {
                     prevState.message = "Failed to delete the query , Please try again or contact support team."
@@ -158,20 +166,52 @@ function FormControl(props) {
         }
     }, [props.delete_query_ctl_loading])
 
+    useEffect(() => {
+        if (!props.delete_file_by_id_loading) {
+            if (!props.delete_file_by_id.toJS().error) {
+                //onClear();
+                setShowModal((prev) => {
+                    prev.visible = false
+                    return ({ ...prev })
+                })
+                setToast(prevState => {
+                    prevState.message = "Query Document Deleted Successfully"
+                    prevState.type = "success"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            } else {
+                setToast(prevState => {
+                    prevState.message = "Failed to delete the query document , Please try again or contact support team."
+                    prevState.type = "error"
+                    prevState.visible = true
+                    return ({ ...prevState })
+                })
+                setTimeout(() => {
+                    setToast(prevState => { prevState.visible = false; return ({ ...prevState }) })
+                }, 2000)
+            }
+        }
+    }, [props.delete_file_by_id_loading])
+
 
     useEffect(async () => {
         if (!props.file_by_id_loading) {
             if (!props.file_by_id.toJS().error) {
                 let pdfWindow = window.open("")
-                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                pdfWindow.document.write(`<object data='${props.file_by_id.toJS().data}' > <embed width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></embed></object>`)
                 //setCurrentPdf(props.file_by_id.toJS().data)
             }
         }
     }, [props.file_by_id_loading])
 
-   
+
 
     function onClickAdd() {
+        setEditFlg(true);
         if (state.docs.length < 3) {
             let arr = state.docs
             setState((prevState => {
@@ -308,14 +348,16 @@ function FormControl(props) {
             return ({ ...prevState })
         })
         console.log(state)
-
     }
 
     function handleConfirmation(value) {
         if (value === 'yes') {
             if (Object.keys(selectedForm).length > 0) {
                 if (selectedForm.queryId) {
-                    props.deleteQuery(selectedForm._id)
+                    if (showModal.type !== "" && showModal.type === "doc") {
+                        props.deleteFilebyId(selectedForm._id, deleteFile)
+                    } else
+                        props.deleteQuery(selectedForm._id)
                 }
             }
         } else {
@@ -333,6 +375,70 @@ function FormControl(props) {
     function downloadFile(id) {
         props.downloadFileById(id)
     }
+
+    function deleteDoc(id) {
+        setDeleteFile(id)
+        setShowModal((prevState) => {
+            prevState.message = "Are you sure, You want to delete the document ?"
+            prevState.visible = true
+            prevState.type = "doc"
+            return ({ ...prevState })
+        })
+    }
+    function comparer(otherArray) {
+        return function (current) {
+            return otherArray.filter(function (other) {
+                return other.fileId != current.fileId
+            }).length == 0;
+        }
+    }
+    function loadQuery() {
+        let temp = []
+        
+        if (Object.keys(selectedForm).length > 0) {
+            selectedForm.docs.map((obj, key) => {
+                temp.push(<div>&nbsp;&nbsp;{key + 1} . Document Name*: <span >{obj[key].docName} </span> , <span>{obj[key].date}</span>&nbsp;
+                    <a style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline'
+                    }} onClick={() => getFile(obj[key].fileId)}>view</a>&nbsp;
+                    <a style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline'
+                    }} onClick={() => downloadFile(obj[key].fileId)}>download</a>&nbsp;
+                    <a style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline'
+                    }} onClick={() => deleteDoc(obj[key].fileId)}>delete</a>
+                </div >)
+            })
+        }
+        var onlyLeft = state.docs.filter(comparer(selectedForm.docs))
+        onlyLeft.map((obj, key) => {
+            temp.push(<div class="form-group row" key={key}>
+                <label for="staticEmail" class="col-sm-2 col-form-label">{key + 1}. Document Name*:</label>
+                <div class="col-sm-4">
+                    <input type="text" id={obj.docId} class="form-control" ref={el => fileInputRef.current[key] = el} value={state.docs[key].docName} onChange={(e) => onChangeDocName(e)} />
+                </div>
+                <label for="staticEmail" class="col-sm-2 col-form-label">Upload Document*:</label>
+                <div class="col-sm-4">
+                    <input type="file" id={obj.docId} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
+                    <button className="btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
+                    {/* <br /><span>{printFileName(obj.docId)}</span> */}
+                </div>
+            </div>)
+        })
+        return temp
+    }
+
+    useEffect(()=>{
+        return()=>{
+            props.clearFileLoadOnSwitch()
+        }
+    },[])
 
     return (
         <>
@@ -394,8 +500,9 @@ function FormControl(props) {
                         <button className="btn-primary btn-sm" onClick={() => onClickAdd()}> Add </button>
                     </div>
 
-                    {state.docs.map((obj, key) => {
-                        if (selectedType) {
+
+                    {selectedType &&
+                        state.docs.map((obj, key) => {
                             return (<div class="form-group row" key={key}>
                                 <label for="staticEmail" class="col-sm-2 col-form-label">{key + 1}. Document Name*:</label>
                                 <div class="col-sm-4">
@@ -406,27 +513,14 @@ function FormControl(props) {
                                     <input type="file" id={obj.docId} hidden ref={el => fileInputRef.current[key] = el} onChange={fileUploadChange} />
                                     <button className="btn-secondary btn-sm" onClick={() => fileInputRef.current[key].click()}>Upload</button>
                                     <br /><span>{printFileName(obj.docId)}</span>
-
                                 </div>
                             </div>)
-                        } else {
-                            return (
-                                <div>&nbsp;&nbsp;{key + 1} . Document Name*: <span >{state.docs[key].docName} </span> , <span>{state.docs[key].date}</span>&nbsp;
-                                    <a style={{
-                                        cursor: 'pointer',
-                                        color: '#007bff',
-                                        textDecoration: 'underline'
-                                    }} onClick={() => getFile(state.docs[key].fileId)}>view</a>&nbsp;
-                                    <a style={{
-                                        cursor: 'pointer',
-                                        color: '#007bff',
-                                        textDecoration: 'underline'
-                                    }} onClick={() => downloadFile(state.docs[key].fileId)}>download</a>
-                                </div >
-                            )
-                        }
 
-                    })}
+
+                        })
+                    }
+                    {!selectedType && loadQuery()}
+
                     <div class="d-flex  align-items-center justify-content-end pb-2">
                         <button type="button" class="btn-sm btn-secondary" onClick={onClear}>Clear</button>
                         {!selectedType && <button type="button" class="btn-sm btn-secondary" onClick={onClickDelete}>Delete</button>}
@@ -457,12 +551,15 @@ const mapStoreToProps = state => ({
 
     //fetch
     query_list_loading: state.queryControlReducer.getIn(['query_list', 'loading'], true),
-    query_list: state.queryControlReducer.getIn(['query_list'], new Map())
+    query_list: state.queryControlReducer.getIn(['query_list'], new Map()),
 
+    //delete_file_by_id
+    delete_file_by_id_loading: state.queryControlReducer.getIn(['delete_file_by_id', 'loading'], true),
+    delete_file_by_id: state.queryControlReducer.getIn(['delete_file_by_id'], new Map()),
 })
 const mapDispatchToProps = {
     createQuery, updateQuery, deleteQuery, fetchAllQuery, fetchFileById,
-    fetchFileByName, downloadFileById
+    fetchFileByName, downloadFileById, deleteFilebyId, clearFileLoadOnSwitch
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(FormControl)

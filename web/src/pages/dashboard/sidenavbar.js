@@ -46,14 +46,14 @@ function SideNavbar(props) {
                                 </nav>
                             </div>
                             <div className="sidenav-menu-heading">Administrative</div>
-                            {/* {(props.login['data'].userType === 'employee') && */}
-                            <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
+                          
+                            {(user['userType'] === 'admin') && <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
                                 data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Admin
                                 <div className="sidenav-collapse-arrow">
                                     <i className="fa fa-angle-down"></i>
                                 </div>
-                            </a>
+                            </a>}
                             <div className="collapse" id="collapseLayouts" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                                     <Link className="nav-link" to="/app/usercontrol"> User Check</Link>

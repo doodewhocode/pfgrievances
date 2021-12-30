@@ -9,6 +9,8 @@ import {
     fetchGrivById, updateQuery, fetchFileById, fetchFileByName,
     updateFileQuery, downloadFileById
 } from '../../redux/action/trackAction'
+
+import { fetchAllQuery } from '../../redux/action/queryControlAction'
 import { history } from '../../modules/helpers'
 // import { Viewer, Worker } from '@react-pdf-viewer/core'
 
@@ -64,7 +66,8 @@ function Form(props) {
 
 
     var pathParam = props.location.pathname.replace("/app/form", "")
-    useEffect(() => {
+    useEffect(async () => {
+        await props.fetchAllQuery();
         if (pathParam !== "") {
             props.fetchGrivById(props.location.pathname.replace("/app/form/", ""))
             setUpdate(true)
@@ -94,7 +97,6 @@ function Form(props) {
                 // console.log(bytes)
                 // pdfDoc = await PDFDocument.load(bytes);
                 //console.log(await pdfDoc.saveAsBase64({ dataUri: true }));
-
                 //let pdfWindow = window.open("")
                 //pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
                 //const view = new Uint8Array(props.file_by_id.toJS().data['data']);
@@ -152,8 +154,10 @@ function Form(props) {
 
     }
     function onChangeDropdown(e) {
-        let obj = reqList.find((obj) => obj.id == e.target.value)
-        setSelectedForm(obj)
+        if (e.target.value !== "") {
+            let obj = reqList.find((obj) => obj.id == e.target.value)
+            setSelectedForm(obj)
+        }
     }
     function onSelectPDF(value) {
         //props.fetchFileById("61a1678edb4bc3ec4d20590b")
@@ -408,6 +412,7 @@ function Form(props) {
                     <div class="row">
                         <div class="col-7">
                             <select placeholder="Select Query Type" className='form-control rounded-0' value={(Object.keys(selectedForm).length > 0 && selectedForm !== undefined && selectedForm !== null) ? selectedForm.id : ""} onChange={(e) => onChangeDropdown(e)}>
+                                <option value=""> Select </option>
                                 {reqList.map((e, key) => {
                                     return <option key={key} value={e.id}>{e.value}</option>;
                                 })
@@ -528,11 +533,14 @@ const mapStoreToProps = state => ({
     download_by_id: state.trackReducer.getIn(['download_by_id'], new Map()),
 
     init_payment_loading: state.paymentReducer.getIn(['init_payment', 'loading'], true),
-    init_payment: state.paymentReducer.getIn(['init_payment'], new Map())
+    init_payment: state.paymentReducer.getIn(['init_payment'], new Map()),
 
-
+    //fetch
+    query_list_loading: state.queryControlReducer.getIn(['query_list', 'loading'], true),
+    query_list: state.queryControlReducer.getIn(['query_list'], new Map())
 
 })
+
 const mapDispatchToProps = {
     submitQuery,
     fetchGrivById,
@@ -541,7 +549,8 @@ const mapDispatchToProps = {
     fetchFileByName,
     updateFileQuery,
     downloadFileById,
-    initiatePayment
+    initiatePayment,
+    fetchAllQuery
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Form)

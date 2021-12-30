@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { fetchUserById } from '../../redux/action/trackAction'
-import { fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
+import { fetchUserById, fetchFileById, fetchFileByName, clearFileLoadOnSwitch } from '../../redux/action/trackAction'
 
 function UserDetails(props) {
     const [user, serUser] = useState({})
@@ -56,6 +55,12 @@ function UserDetails(props) {
             }
         }
     }
+
+    useEffect(()=>{
+        return()=>{
+            props.clearFileLoadOnSwitch()
+        }
+    },[])
     return (
         <>
             <br />
@@ -95,7 +100,7 @@ const mapStoreToProps = state => ({
     file_by_id: state.trackReducer.getIn(['file_by_id'], new Map())
 })
 const mapDispatchToProps = {
-    fetchUserById, fetchFileById, fetchFileByName
+    fetchUserById, fetchFileById, fetchFileByName, clearFileLoadOnSwitch
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(UserDetails)

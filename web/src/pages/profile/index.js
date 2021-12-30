@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux'
-import { fetchUserById, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
+import { fetchUserById, fetchFileById, fetchFileByName, clearFileLoadOnSwitch } from '../../redux/action/trackAction'
 import { updateUser, uploadDoc } from '../../redux/action/registerAction'
 import Confirmation from '../../components/confirmation'
 
@@ -109,6 +109,12 @@ function Profile(props) {
         }
     }, [props.upload_user_doc_loading])
 
+    useEffect(()=>{
+        return()=>{
+            props.clearFileLoadOnSwitch()
+        }
+    },[])
+
 
     const onFileChange = event => {
         let id = event.target.id, file = event.target.files[0]
@@ -189,7 +195,7 @@ function Profile(props) {
                 const url = window.URL.createObjectURL(new Blob([props.file_by_id.toJS().data]));
                 //let blob = new Blob([props.file_by_id.toJS().data])
                 let pdfWindow = window.open("")
-                pdfWindow.document.write(`<iframe width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></iframe>`)
+                pdfWindow.document.write(`<object data='${props.file_by_id.toJS().data}' > <embed width='100%' height='100%' src= '${props.file_by_id.toJS().data}'></embed></object>`)
                 // var fileURL = URL.createObjectURL(blob);
                 // const link = document.createElement('a');
                 // link.href = fileURL;
@@ -375,7 +381,7 @@ const mapDispatchToProps = {
     fetchUserById,
     updateUser,
     uploadDoc,
-    fetchFileById, fetchFileByName
+    fetchFileById, fetchFileByName, clearFileLoadOnSwitch
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Profile)

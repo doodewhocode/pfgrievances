@@ -70,18 +70,18 @@ module.exports.deleteQuery = function (id, callback) {
 module.exports.deleteQueryDoc = function (req, callback) {
     var db = conn.mongoose.connection.db, mongoDriver = conn.mongoose.mongo;
     const gfs = Grid(db, mongoDriver, { bucketName: 'uploads' });
-    let query = { _id: req.body.id }
+    let query = { _id: req.query.typeid }
     Query.find(query, function (err, res) {
         if (err) callback(true, err)
         console.log(res)
         if (res.docs.length > 0) {
             if (res.docs.id !== undefined) {
                 var tempArr = res.docs.map((obj, key) => {
-                    if (obj.id !== req.body.docId) {
+                    if (obj.id !== req.query.fileid) {
                         return obj
                     }
                 })
-                gfs.remove({ _id: new mongoose.Types.ObjectId(req.body.docId), root: 'uploads' }, (err, res) => {
+                gfs.remove({ _id: new mongoose.Types.ObjectId(req.query.fileid), root: 'uploads' }, (err, res) => {
                     //check if file is deleted
                     if (err) {
                         callback(true, err)

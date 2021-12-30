@@ -49,6 +49,21 @@ function QueryControlReducer(state = initialState, action) {
             return state.setIn(['query_list', 'data'], action.data)
                 .setIn(['query_list', 'loading'], action.loading)
                 .setIn(['query_list', 'error'], action.error)
+
+
+        case 'DELETE_FILE_BY_ID_LOADING':
+            return state.setIn(['delete_file_by_id', 'loading'], action.loading)
+                .setIn(['delete_file_by_id', 'error'], action.error)
+        case 'DELETE_FILE_BY_ID':
+            return state.setIn(['delete_file_by_id', 'data'], action.data)
+                .setIn(['delete_file_by_id', 'loading'], action.loading)
+                .setIn(['delete_file_by_id', 'error'], action.error)
+        case 'DELETE_FILE_BY_ID_ERROR':
+            return state.setIn(['delete_file_by_id', 'data'], action.data)
+                .setIn(['delete_file_by_id', 'loading'], action.loading)
+                .setIn(['delete_file_by_id', 'error'], action.error)
+
+            
         default:
             return state
     }

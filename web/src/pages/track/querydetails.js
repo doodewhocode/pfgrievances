@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { updateQuery, fetchFileById, fetchFileByName } from '../../redux/action/trackAction'
+import { updateQuery, fetchFileById, fetchFileByName, clearFileLoadOnSwitch } from '../../redux/action/trackAction'
 import Confirmation from '../../components/confirmation'
 import { history } from '../../modules/helpers'
 import { PDFDocument } from 'pdf-lib'
@@ -143,6 +143,13 @@ function QueryDetails(props) {
     function reUploadDoc() {
         history.push('/app/form/' + query._id)
     }
+
+    useEffect(()=>{
+        return()=>{
+            props.clearFileLoadOnSwitch()
+        }
+    },[])
+
     return (
         <>
             <div>
@@ -222,7 +229,8 @@ const mapStoreToProps = state => ({
 const mapDispatchToProps = {
     updateQuery,
     fetchFileById,
-    fetchFileByName
+    fetchFileByName,
+    clearFileLoadOnSwitch
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(QueryDetails)

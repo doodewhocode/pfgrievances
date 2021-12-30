@@ -103,6 +103,16 @@ router.get('/deletequeryctl', async function (req, res, next) {
     })
 })
 
+router.get('/deletefilebyid', async function (req, res, next) {
+    console.log("delete query", req.query.typeid)
+    Query.deleteQueryDoc(req, function (err, query) {
+        console.log(query)
+        if (err) return next(err);
+        res.json(query)
+    })
+})
+
+
 router.get('/fetchallquery', async function (req, res, next) {
     Query.getQueryList(function (err, query) {
         console.log(query)
