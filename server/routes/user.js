@@ -183,27 +183,25 @@ router.get('/download/:id', async (req, res) => {
     if (err) {
       return res.status(404).json({ err: err })
     }
-    var readStream = await gfs.createReadStream({
+    var readstream = await gfs.createReadStream({
       filename: file.filename
     });
-    let finalFile = ""
-    await readStream.on('data', function (data) {
-      let bufData = data.toString('base64')
-      finalFile = 'data:' + file.contentType + ';base64,' + bufData;
-    })
-    res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
-    res.setHeader('Content-type', file.contentType);
-    readStream.pipe(res)
+    res.set('Content-Type', file.contentType);
+    res.set('Content-Disposition', 'attachment; filename="' + file.filename + '"');
+    readstream.on("error", function(err) { 
+        res.end();
+    });
+    readstream.pipe(res);
   })
 })
 
 
 
 router.get('/view/:id', async (req, res) => {
-  User.viewFile(req.params.id, function (err, data) {    
+  User.viewFile(req.params.id, function (err, data) {
     if (err) {
       return res.status(404).json({ err: data })
-    }    
+    }
     return res.status(200).json(data)
   })
 })
@@ -279,6 +277,7 @@ router.post('/login', function (req, res, next) {
             lastName: user.lastName,
             email: user.emailId,
             userType: user.userType,
+            phNo: user.phNo,
             employerName: user.employerName,
             token: token,
             expire_in: '7d'

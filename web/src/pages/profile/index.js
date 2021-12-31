@@ -278,7 +278,7 @@ function Profile(props) {
                                                 <input class="w-100" type="file" id={'panImg'} name="file" onChange={onFileChange} />
                                             </div>
                                             <div>
-                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("panImg")}>upload</button>
+                                                <button className={'btn-sm btn-common'} disabled={Object.keys(doc['panImg']).length > 0 ? false :true} onClick={() => uploadDoc("panImg")}>upload</button>
                                             </div>
                                         </div>
                                         <br />
@@ -292,7 +292,7 @@ function Profile(props) {
                                                 <input class="w-100" type="file" id={'aadharImg'} name="file" onChange={onFileChange} />
                                             </div>
                                             <div>
-                                                <button className={'btn-sm btn-common'} onClick={() => uploadDoc("aadharImg")}> upload</button>
+                                                <button className={'btn-sm btn-common'} disabled={Object.keys(doc['aadharImg']).length > 0 ? false :true} onClick={() => uploadDoc("aadharImg")}> upload</button>
                                             </div>
                                         </div>
                                         <br />

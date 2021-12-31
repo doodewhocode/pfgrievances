@@ -137,6 +137,7 @@ function EmployeeSignUp(props) {
     function handleConfirmation(value) {
         if (value === 'yes') {
             props.registerEmployee(form)
+            setShowModal(false)
         } else {
             setShowModal(false)
         }

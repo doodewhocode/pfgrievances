@@ -47,13 +47,15 @@ function SideNavbar(props) {
                             </div>
                             <div className="sidenav-menu-heading">Administrative</div>
                           
-                            {(user['userType'] === 'admin') && <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
+                            {/* {(user['userType'] === 'admin') &&  */}
+                            <a className="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse"
                                 data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div className="nav-link-icon"><i className="fa fa-user-secret"></i></div> Admin
                                 <div className="sidenav-collapse-arrow">
                                     <i className="fa fa-angle-down"></i>
                                 </div>
-                            </a>}
+                            </a>
+                            {/* } */}
                             <div className="collapse" id="collapseLayouts" data-parent="#accordionSidenav">
                                 <nav className="sidenav-menu-nested nav accordion" id="accordionSidenavLayout">
                                     <Link className="nav-link" to="/app/usercontrol"> User Check</Link>
@@ -78,7 +80,7 @@ function SideNavbar(props) {
                             <Route path="/app/track" component={Track} />
                             <Route path="/app/usercontrol" component={Users} />
                             <Route path="/app/formcontrol" component={FormControl} />
-                           <Route Path="/app/external" component={Online} /> 
+                            <Route Path="/app/external" component={Online} /> 
                             <Route path="/app/enableiframe" component={EnableIframe} />
                             <Route path="/app/payment" component={PaymentStatus} />
                             <Redirect from="/" to="/app/home" />

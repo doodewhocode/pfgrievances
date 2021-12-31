@@ -68,7 +68,7 @@ router.post('/query', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'fi
     PFGrievance.saveQuery(newGrievance, function (err, grievance) {
         console.log(grievance)
         if (err) return next(err);
-        res.json({ message: 'Query created' })
+        res.json({ message: 'Query created', data: grievance })
     });
 
 })

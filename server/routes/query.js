@@ -41,7 +41,9 @@ router.post('/createquery', upload.fields([{ name: 'file1', maxCount: 1 }, { nam
     console.log(obj)
     req.checkBody('queryName', 'queryName is required').notEmpty();
     req.checkBody('queryDesc', 'queryDesc is required').notEmpty();
-    req.checkBody('price', 'price is required').notEmpty();
+    req.checkBody('offlinePrice', 'offline price is required').notEmpty();
+    req.checkBody('onlinePrice', 'online price is required').notEmpty();
+    req.checkBody('appear', 'query appear is required').notEmpty();
     let missingFieldErrors = req.validationErrors();
     if (missingFieldErrors) {
         let err = new TypedError('error', 400, 'missing_field', {
@@ -76,6 +78,7 @@ router.post('/createquery', upload.fields([{ name: 'file1', maxCount: 1 }, { nam
 
     Query.saveQuery(obj, function (err, query) {
         console.log(query)
+        console.log(err)
         if (err) return next(err);
         res.json({ message: 'Query created', data: query })
     });

@@ -6,8 +6,8 @@ import paypalConfig from '../../configs/paypalConfig'
 
 
 //const URL = 'https://complyhrapi.herokuapp.com'
-const URL = 'http://103.235.105.221:7000'
-//const URL = 'http://localhost:7000'
+//const URL = 'http://103.235.105.221:7000'
+const URL = 'http://localhost:7000'
 
 const serverCall = (config) => {
   //header authorization

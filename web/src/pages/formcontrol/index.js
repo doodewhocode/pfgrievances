@@ -5,13 +5,16 @@ import { fetchFileById, fetchFileByName, downloadFileById, clearFileLoadOnSwitch
 import Confirmation from '../../components/confirmation'
 import Toast from '../../components/toast'
 
-let validationList = ['queryName', 'queryDesc', 'price']
+let validationList = ['queryName', 'queryDesc', 'offlinePrice', 'onlinePrice', 'appear']
 function FormControl(props) {
     let initialObj = {
         queryName: "",
         queryDesc: "",
         additionalDesc: "",
         price: "",
+        offlinePrice: "",
+        onlinePrice: "",
+        appear: "",
         docs: [],
         createdBy: (localStorage.getItem('auth') != null && localStorage.getItem('auth') != 'undefined') ? JSON.parse(localStorage.getItem('auth'))['userName'] : ""
     }
@@ -231,6 +234,8 @@ function FormControl(props) {
         }
     }
 
+    
+
     function onChangeHandler(e) {
         let id = e.target.id, value = e.target.value;
         setState((prevState) => {
@@ -319,7 +324,7 @@ function FormControl(props) {
         //console.log("hehe obj", returnObj)
         return (Object.keys(returnObj).length !== 0 && returnObj !== undefined && returnObj) ? returnObj.file.value : ""
     }
-    console.log("queryList", state)
+    //console.log("queryList", state)
 
     function onToggle(value) {
         setSelectType(value);
@@ -340,14 +345,12 @@ function FormControl(props) {
     }
 
     function onClear() {
-        console.log("asdfasd")
         setState((prevState) => {
             for (var key in initialObj) {
                 prevState[key] = initialObj[key]
             }
             return ({ ...prevState })
         })
-        console.log(state)
     }
 
     function handleConfirmation(value) {
@@ -394,25 +397,26 @@ function FormControl(props) {
     }
     function loadQuery() {
         let temp = []
-        
-        if (Object.keys(selectedForm).length > 0) {
+        console.log("selectedForm.docs", selectedForm.docs)
+
+        if (selectedForm.docs !== undefined && Object.keys(selectedForm).length > 0) {
             selectedForm.docs.map((obj, key) => {
-                temp.push(<div>&nbsp;&nbsp;{key + 1} . Document Name*: <span >{obj[key].docName} </span> , <span>{obj[key].date}</span>&nbsp;
+                temp.push(<div>&nbsp;&nbsp;{key + 1} . <span style={{fontSize:'bold'}}>Document Name*:</span>&nbsp;&nbsp; <span >{obj.docName} </span>&nbsp; ,&nbsp; <span>{obj.date}</span>&nbsp;&nbsp;&nbsp;
+                    {/* <a style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline'
+                    }} onClick={() => getFile(obj.fileId)}>view</a>&nbsp; */}
                     <a style={{
                         cursor: 'pointer',
                         color: '#007bff',
                         textDecoration: 'underline'
-                    }} onClick={() => getFile(obj[key].fileId)}>view</a>&nbsp;
-                    <a style={{
+                    }} onClick={() => downloadFile(obj.fileId)}>download</a>&nbsp;
+                    {/* <a style={{
                         cursor: 'pointer',
                         color: '#007bff',
                         textDecoration: 'underline'
-                    }} onClick={() => downloadFile(obj[key].fileId)}>download</a>&nbsp;
-                    <a style={{
-                        cursor: 'pointer',
-                        color: '#007bff',
-                        textDecoration: 'underline'
-                    }} onClick={() => deleteDoc(obj[key].fileId)}>delete</a>
+                    }} onClick={() => deleteDoc(obj.fileId)}>delete</a> */}
                 </div >)
             })
         }
@@ -434,11 +438,11 @@ function FormControl(props) {
         return temp
     }
 
-    useEffect(()=>{
-        return()=>{
+    useEffect(() => {
+        return () => {
             props.clearFileLoadOnSwitch()
         }
-    },[])
+    }, [])
 
     return (
         <>
@@ -490,9 +494,24 @@ function FormControl(props) {
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-2 col-form-label">Price*:</label>
+                        <label for="staticEmail" class="col-sm-2 col-form-label">Offline Price*:</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="price" value={state.price} onChange={onChangeHandler} />
+                            <input type="text" class="form-control" id="offlinePrice" value={state.offlinePrice} onChange={onChangeHandler} />
+                        </div>
+                        <label for="staticEmail" class="col-sm-2 col-form-label">online Price*:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="onlinePrice" value={state.onlinePrice} onChange={onChangeHandler} />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">Query Appereance*:</label>
+                        <div class="col-sm-4">
+                            <select id="appear" value={state.appear} onChange={onChangeHandler}>
+                                <option value={''}>Select</option>
+                                <option value={'only online'}>Only Online</option>
+                                <option value={'only offline'}>Only Offline</option>
+                                <option value={'both'}>both</option>
+                            </select>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
