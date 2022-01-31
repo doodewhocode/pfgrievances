@@ -12,6 +12,31 @@ oauth2Client.setCredentials({
     refresh_token: process.env.REFRESH_TOKEN
 });
 
+var smtpTransport = require("nodemailer-smtp-transport")
+
+var transporterDetails = smtpTransport({
+    host: 'mail.complyhrm.com',
+    port: 587,
+    secure: true,
+    secureConnection: false, // TLS requires secureConnection to be false
+    debug: true,
+    auth: {
+        user: "noreply@complyhr.com",
+        pass: "yH!!H},vOvn_"
+    },
+    maxConnections: 5,
+    maxMessages: 10
+})
+
+module.exports.cPanelMail = async function (mailOptions, callback) {
+    var transporter = nodemailer.createTransport(transporterDetails);
+    transporter.sendMail(mailOptions, (error, response) => {
+        //error ? callback(error) : callback(response)
+        callback(error, response)
+        transporter.close();
+    });
+}
+
 module.exports.sendMail = async function (mailOptions, callback) {
     const accessToken = await oauth2Client.getAccessToken()
     const smtpTransport = nodemailer.createTransport({
