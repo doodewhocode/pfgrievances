@@ -13,6 +13,7 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const conn = require('../models/init')
 const mongoose = require('mongoose')
+const Mail = require('../middleware/Mail')
 
 const storage = new GridFsStorage({
   url: process.env.MONGO_URI,
@@ -188,8 +189,8 @@ router.get('/download/:id', async (req, res) => {
     });
     res.set('Content-Type', file.contentType);
     res.set('Content-Disposition', 'attachment; filename="' + file.filename + '"');
-    readstream.on("error", function(err) { 
-        res.end();
+    readstream.on("error", function (err) {
+      res.end();
     });
     readstream.pipe(res);
   })
@@ -396,6 +397,19 @@ router.post('/updateuser', function (req, res, next) {
     console.log(user)
     if (err) return next(err);
     res.json(user)
+  })
+})
+router.get('/checkmail', function (req, res, next) {
+  var mailOptions = {
+    to: 'vvkslv3@gmail.com',
+    from: '',
+    subject: 'ComplyHR :: test mail server',
+    text: 'Hello,\n\n' +
+      'This is a test mail to check the server config'
+  };
+  Mail.cPanelMail(mailOptions, function (err, c) {
+    if (err) return next(err)
+    res.json({ status: 'success', message: 'Success!' });
   })
 })
 

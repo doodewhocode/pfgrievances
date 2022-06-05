@@ -156,4 +156,40 @@ router.post('/updatefilequery', upload.fields([{ name: 'file1', maxCount: 1 }, {
     })
 })
 
+
+
+const pdf2html = require('pdf2html')
+//let pdf = require('../assets/doc/New-Joint-Declaration-Form.pdf')
+const pdftohtml = require('pdftohtmljs')
+router.get('/gethtml', async function (req, res, next) {
+
+
+    // See presets (ipad, default)
+    // Feel free to create custom presets
+    // see https://github.com/fagbokforlaget/pdftohtmljs/blob/master/lib/presets/ipad.js
+    const convert = async (file, output, preset) => {
+        const converter = new pdftohtml(file, output)        
+        converter.progress((ret) => {
+            const progress = (ret.current * 100.0) / ret.total
+            console.log(`${progress} %`)
+        })
+        try {          
+            await converter.convert(preset || 'ipad')
+        } catch (err) {
+            console.error(`Psst! something went wrong: ${err.msg}`)
+        }
+
+    }
+    // call method
+    convert('https://github.com/fagbokforlaget/pdftohtmljs/blob/master/lib/presets/ipad.js', 'sample.html')
+
+    // pdf2html.html('https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf', (err, html) => {
+    //     if (err) {
+    //         console.error('Conversion error: ' + err)
+    //     } else {
+    //         console.log(html)
+    //     }
+    // })
+})
+
 module.exports = router;
